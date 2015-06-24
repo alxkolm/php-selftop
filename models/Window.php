@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Helper;
 use Yii;
 
 /**
@@ -57,8 +58,6 @@ class Window extends \yii\db\ActiveRecord
 
     public function getFormattedTime()
     {
-        $output = round($this->time / 1000 / 60, 2);
-
-        return $output;
+        return Helper::formatTimeDuration($this->time / 1000);
     }
 }
