@@ -19,9 +19,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'window_id') ?>
 
-    <?= $form->field($model, 'time') ?>
+    <?= $form->field($model, 'duration') ?>
 
     <?= $form->field($model, 'motions') ?>
+
+    <?= $form->field($model, 'motions_filtered') ?>
 
     <?= $form->field($model, 'clicks') ?>
 

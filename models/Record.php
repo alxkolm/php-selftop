@@ -10,8 +10,11 @@ use Yii;
  *
  * @property integer $id
  * @property integer $window_id
- * @property integer $time
+ * @property integer $start
+ * @property integer $end
+ * @property integer $duration
  * @property integer $motions
+ * @property integer $motions_filtered
  * @property integer $clicks
  * @property integer $keys
  * @property string $created
@@ -23,7 +26,7 @@ class Record extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%metrics}}';
+        return '{{%activity}}';
     }
 
     /**
@@ -33,7 +36,7 @@ class Record extends \yii\db\ActiveRecord
     {
         return [
             [['window_id'], 'required'],
-            [['window_id', 'time', 'motions', 'clicks', 'keys'], 'integer']
+            [['window_id', 'duration', 'motions', 'motions_filtered', 'clicks', 'keys'], 'integer']
         ];
     }
 
@@ -45,8 +48,9 @@ class Record extends \yii\db\ActiveRecord
         return [
             'id'        => Yii::t('app', 'ID'),
             'window_id' => Yii::t('app', 'Window ID'),
-            'time'      => Yii::t('app', 'Time'),
+            'duration'      => Yii::t('app', 'Duration'),
             'motions'   => Yii::t('app', 'Motions'),
+            'motions_filtered'   => Yii::t('app', 'Motions (filtered)'),
             'clicks'    => Yii::t('app', 'Clicks'),
             'keys'      => Yii::t('app', 'Keys'),
             'created'   => Yii::t('app', 'Created'),
@@ -60,8 +64,8 @@ class Record extends \yii\db\ActiveRecord
         return $this->hasOne(Window::className(), ['id' => 'window_id'])->inverseOf('records');
     }
 
-    public function getFormattedTime()
+    public function getFormattedDuration()
     {
-        return Helper::formatTimeDuration($this->time / 1000);
+        return Helper::formatTimeDuration($this->duration / 1000);
     }
 }

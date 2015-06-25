@@ -47,8 +47,9 @@ class WindowSearch extends Window
             ->groupBy('{{window}}.id')
             ->select([
                 '{{window}}.*',
-                'SUM(time) as time',
+                'SUM(duration) as time',
                 'SUM(motions) as motions',
+                'SUM(motions_filtered) as motions_filtered',
                 'SUM(clicks) as clicks',
                 'SUM(keys) as keys',
             ]);

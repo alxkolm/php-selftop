@@ -9,8 +9,9 @@ use yii\grid\GridView;
     'columns' => [
         'id',
         'title',
-        'formattedTime',
+        'formattedDuration',
         'motions',
+        'motions_filtered',
         'clicks',
         'keys',
     ],

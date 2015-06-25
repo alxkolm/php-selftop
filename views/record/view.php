@@ -30,8 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'window_id',
-            'time:datetime',
+            'formattedDuration',
             'motions',
+            'motions_filtered',
             'clicks',
             'keys',
             'created',

@@ -14,9 +14,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'window_id')->textInput() ?>
 
-    <?= $form->field($model, 'time')->textInput() ?>
+    <?= $form->field($model, 'duration')->textInput() ?>
 
     <?= $form->field($model, 'motions')->textInput() ?>
+    <?= $form->field($model, 'motions_filtered')->textInput() ?>
 
     <?= $form->field($model, 'clicks')->textInput() ?>
 

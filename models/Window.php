@@ -17,6 +17,7 @@ class Window extends \yii\db\ActiveRecord
 {
     public $time;
     public $motions;
+    public $motions_filtered;
     public $clicks;
     public $keys;
 
@@ -56,7 +57,7 @@ class Window extends \yii\db\ActiveRecord
         return $this->hasMany(Record::className(), ['window_id' => 'id'])->inverseOf('window');
     }
 
-    public function getFormattedTime()
+    public function getFormattedDuration()
     {
         return Helper::formatTimeDuration($this->time / 1000);
     }

@@ -18,7 +18,7 @@ class RecordSearch extends Record
     public function rules()
     {
         return [
-            [['id', 'window_id', 'time', 'motions', 'clicks', 'keys', 'created'], 'integer'],
+            [['id', 'window_id', 'duration', 'motions', 'motions_filtered', 'clicks', 'keys', 'created'], 'integer'],
         ];
     }
 
@@ -62,7 +62,7 @@ class RecordSearch extends Record
         $query->andFilterWhere([
             'id' => $this->id,
             'window_id' => $this->window_id,
-            'time' => $this->time,
+            'duration' => $this->duration,
             'motions' => $this->motions,
             'clicks' => $this->clicks,
             'keys' => $this->keys,
