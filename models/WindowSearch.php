@@ -14,12 +14,14 @@ use yii\data\ActiveDataProvider;
 
 class WindowSearch extends Window
 {
+    public $groupBy = 'title';
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
+            [['groupBy'], 'in', 'range' => ['title', 'class']],
             [['id', 'created'], 'integer'],
         ];
     }
@@ -42,9 +44,10 @@ class WindowSearch extends Window
      */
     public function search($params)
     {
+        $this->load($params);
+
         $query = Window::find()
             ->joinWith('records', false)
-            ->groupBy('{{window}}.id')
             ->select([
                 '{{window}}.*',
                 'SUM(duration) as time',
@@ -66,13 +69,14 @@ class WindowSearch extends Window
             ]
         ]);
 
-        $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
         }
+
+        $query->groupBy('{{window}}.' . $this->groupBy);
 
         $query->andFilterWhere([
             'created' => $this->created,
