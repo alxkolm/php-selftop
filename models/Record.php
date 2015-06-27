@@ -64,6 +64,15 @@ class Record extends \yii\db\ActiveRecord
         return $this->hasOne(Window::className(), ['id' => 'window_id'])->inverseOf('records');
     }
 
+    public function afterFind()
+    {
+        $timestamp = new \DateTime($this->created, new \DateTimeZone('UTC'));
+        $timestamp->setTimezone(new \DateTimeZone(Yii::$app->timeZone));
+        $this->created = $timestamp->format('Y-m-d H:i:s');
+        return parent::afterFind();
+    }
+
+
     public function getFormattedDuration()
     {
         return Helper::formatTimeDuration($this->duration / 1000);
