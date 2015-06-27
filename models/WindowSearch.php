@@ -15,6 +15,8 @@ use yii\data\ActiveDataProvider;
 class WindowSearch extends Window
 {
     public $groupBy = 'title';
+    public $dateFrom;
+    public $dateTo;
     /**
      * @inheritdoc
      */
@@ -81,6 +83,21 @@ class WindowSearch extends Window
         $query->andFilterWhere([
             'created' => $this->created,
         ]);
+
+        if ($this->dateFrom) {
+            $from = (new \DateTime('now', new \DateTimeZone('UTC')))->setTimestamp($this->dateFrom)->setTimezone(new \DateTimeZone('UTC'));
+            $query->andWhere(
+                '{{activity}}.created >= :today',
+                [':today' => $from->format('Y-m-d H:i:s')]
+            );
+        }
+        if ($this->dateTo) {
+            $to = (new \DateTime('now', new \DateTimeZone('UTC')))->setTimestamp($this->dateTo)->setTimezone(new \DateTimeZone('UTC'));
+            $query->andWhere(
+                '{{activity}}.created < :todayNight',
+                [':todayNight' => $to->format('Y-m-d H:i:s')]
+            );
+        }
 
         return $dataProvider;
     }

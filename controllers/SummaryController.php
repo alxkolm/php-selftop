@@ -20,4 +20,16 @@ class SummaryController extends \yii\web\Controller
         ]);
     }
 
+    public function actionDashboard()
+    {
+        $searchModel           = new WindowSearch();
+        $searchModel->dateFrom = strtotime('today');
+        $searchModel->dateTo   = strtotime('today 23:59:59');
+        $dataProvider          = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+            'searchModel'  => $searchModel,
+        ]);
+    }
 }

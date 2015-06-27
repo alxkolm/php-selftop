@@ -37,6 +37,7 @@ AppAsset::register($this);
                 'items' => [
                     ['label' => 'Records', 'url' => ['record/index']],
                     ['label' => 'Summary', 'url' => ['/summary/index']],
+                    ['label' => 'Dashboard', 'url' => ['/summary/dashboard']],
                     Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/site/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
