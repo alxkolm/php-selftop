@@ -27,7 +27,7 @@ class SummaryController extends \yii\web\Controller
         $searchModel->dateTo   = strtotime('today 23:59:59');
         $dataProvider          = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
+        return $this->render('dashboard', [
             'dataProvider' => $dataProvider,
             'searchModel'  => $searchModel,
         ]);
