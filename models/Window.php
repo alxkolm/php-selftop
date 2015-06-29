@@ -57,6 +57,11 @@ class Window extends \yii\db\ActiveRecord
         return $this->hasMany(Record::className(), ['window_id' => 'id'])->inverseOf('window');
     }
 
+    public function getProcess()
+    {
+        return $this->hasOne(Process::className(), ['id' => 'process_id']);
+    }
+
     public function getFormattedDuration()
     {
         return Helper::formatTimeDuration($this->time / 1000);

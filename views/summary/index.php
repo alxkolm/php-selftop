@@ -14,7 +14,7 @@ use yii\grid\GridView;
         $form->field($searchModel, 'groupBy')
             ->dropDownList([
                 'title' => Yii::t('app', 'Title'),
-                'class' => Yii::t('app', 'WM class'),
+                'process_id' => Yii::t('app', 'Process'),
             ])
     ?>
 
@@ -28,7 +28,11 @@ use yii\grid\GridView;
     'dataProvider' => $dataProvider,
     'columns' => [
         'id',
-        $searchModel->groupBy,
+        'process.name',
+        [
+            'attribute' => 'title',
+            'visible'   => $searchModel->groupBy == 'title'
+        ],
         'formattedDuration',
         'motions',
         'motions_filtered',

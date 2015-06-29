@@ -23,7 +23,7 @@ class WindowSearch extends Window
     public function rules()
     {
         return [
-            [['groupBy'], 'in', 'range' => ['title', 'class']],
+            [['groupBy'], 'in', 'range' => ['title', 'process_id']],
             [['id', 'created'], 'integer'],
         ];
     }

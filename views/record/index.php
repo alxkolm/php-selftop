@@ -24,6 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            'pid',
+            'window.process.name',
             'window.title',
             'formattedDuration',
             'motions',
