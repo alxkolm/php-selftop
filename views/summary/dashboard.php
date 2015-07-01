@@ -1,4 +1,5 @@
 <?php
+use app\components\Helper;
 use yii\bootstrap\ActiveForm;
 use yii\grid\GridView;
 
@@ -22,6 +23,8 @@ use yii\grid\GridView;
         'options' => ['class' => 'btn-primary']
     ]) ?>
 <?php ActiveForm::end(); ?>
+
+<div style="margin: 1em;"><strong>Total activity:</strong> <?= Helper::formatTimeDuration($totalActivity / 1000)?></div>
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,

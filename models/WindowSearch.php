@@ -84,15 +84,16 @@ class WindowSearch extends Window
             'created' => $this->created,
         ]);
 
+        $timezone = new \DateTimeZone('UTC');
         if ($this->dateFrom) {
-            $from = (new \DateTime('now', new \DateTimeZone('UTC')))->setTimestamp($this->dateFrom)->setTimezone(new \DateTimeZone('UTC'));
+            $from = (new \DateTime('now', $timezone))->setTimestamp($this->dateFrom)->setTimezone($timezone);
             $query->andWhere(
                 '{{activity}}.created >= :today',
                 [':today' => $from->format('Y-m-d H:i:s')]
             );
         }
         if ($this->dateTo) {
-            $to = (new \DateTime('now', new \DateTimeZone('UTC')))->setTimestamp($this->dateTo)->setTimezone(new \DateTimeZone('UTC'));
+            $to = (new \DateTime('now', $timezone))->setTimestamp($this->dateTo)->setTimezone($timezone);
             $query->andWhere(
                 '{{activity}}.created < :todayNight',
                 [':todayNight' => $to->format('Y-m-d H:i:s')]

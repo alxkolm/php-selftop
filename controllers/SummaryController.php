@@ -2,10 +2,13 @@
 
 namespace app\controllers;
 
+use app\components\StatsHelper;
+use app\models\Record;
 use app\models\Window;
 use app\models\WindowSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 
 class SummaryController extends \yii\web\Controller
 {
@@ -28,8 +31,9 @@ class SummaryController extends \yii\web\Controller
         $dataProvider          = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('dashboard', [
-            'dataProvider' => $dataProvider,
-            'searchModel'  => $searchModel,
+            'dataProvider'  => $dataProvider,
+            'searchModel'   => $searchModel,
+            'totalActivity' => StatsHelper::totalActivity(strtotime('today'), strtotime('today 23:59:59')),
         ]);
     }
 }
