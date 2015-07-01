@@ -24,13 +24,13 @@ class Helper
         } elseif ($seconds < 60*60*24) {
             $hour   = floor($seconds / (60 * 60));
             $min    = floor(($seconds - $hour * 60 * 60) / 60);
-            $sec    = floor($seconds - ($min * 60));
+            $sec    = floor($seconds - ($hour * 60 * 60) - ($min * 60));
             $output = "{$hour}h{$min}m{$sec}s";
         } else {
             $day    = floor($seconds / (60 * 60 * 24));
             $hour   = floor(($seconds - $day * 60 * 60 * 24) / 60);
             $min    = floor(($seconds - $hour * 60 * 60) / 60);
-            $sec    = floor($seconds - ($min * 60));
+            $sec    = floor($seconds - ($day * 60 * 60 * 24) - ($hour * 60 * 60) - ($min * 60));
             $output = "{$day}d{$hour}h{$min}m{$sec}s";
         }
 
