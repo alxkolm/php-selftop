@@ -34,6 +34,32 @@ class StatsHelper
         return array_values($values);
     }
 
+    public static function processesStats()
+    {
+        $sql = 'SELECT
+                    process.id,
+                    process.name,
+                    process.alias,
+                    SUM(duration) as duration,
+                    SUM(motions) as motions,
+                    SUM(motions_filtered) as motions_filtered,
+                    SUM(clicks) as clicks,
+                    SUM(keys) as keys
+                FROM activity
+                JOIN window ON window.id = activity.window_id
+                JOIN process ON process.id = window.process_id
+                GROUP BY window.process_id';
+        $data = \Yii::$app->db->createCommand($sql)->queryAll();
+        return $data;
+    }
+
+    /**
+     * Apply constrains on datetime
+     * @param ActiveQuery $query
+     * @param $fromTime
+     * @param null $toTime
+     * @return ActiveQuery
+     */
     public static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)
     {
         $timezone = new \DateTimeZone('UTC');

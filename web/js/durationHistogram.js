@@ -30,7 +30,7 @@ $(function(){
         .orient("bottom")
         .tickFormat(formatMinutes);
 
-    var svg = d3.select("#graph-duration-histrogram").append("svg")
+    var svg = d3.select("#graph-duration-histogram").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")

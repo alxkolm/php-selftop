@@ -1,16 +1,16 @@
-#graph-duration-histrogram {
+#graph-duration-histogram {
     font-size: 10px;
 }
-#graph-duration-histrogram .bar rect {
+#graph-duration-histogram .bar rect {
   fill: steelblue;
   shape-rendering: crispEdges;
 }
 
-#graph-duration-histrogram .bar text {
+#graph-duration-histogram .bar text {
   fill: #fff;
 }
 
-#graph-duration-histrogram .axis path, .axis line {
+#graph-duration-histogram .axis path, .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;

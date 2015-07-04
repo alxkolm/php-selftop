@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\assets\AppAsset;
 use app\assets\DurationHistogramAsset;
+use app\assets\ProcessGraphAsset;
 use app\components\StatsHelper;
 use app\models\Record;
 use app\models\Window;
@@ -40,6 +41,12 @@ class SummaryController extends \yii\web\Controller
             View::POS_END);
 
         $this->view->registerAssetBundle(DurationHistogramAsset::className());
+        $this->view->registerAssetBundle(ProcessGraphAsset::className());
+
+        $this->view->registerJs(
+            'var dashboardProcessInfo = '.json_encode(StatsHelper::processesStats()),
+            View::POS_END);
+
 
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,
