@@ -48,8 +48,16 @@ class StatsHelper
                 FROM activity
                 JOIN window ON window.id = activity.window_id
                 JOIN process ON process.id = window.process_id
-                GROUP BY window.process_id';
+                WHERE activity.duration > 30000
+                GROUP BY window.id
+                ';
         $data = \Yii::$app->db->createCommand($sql)->queryAll();
+        $data = array_map(function($a) {
+            foreach ($a as $key => $value) {
+                $a[$key] = is_numeric($value) ? (int) $value : $value;
+            }
+            return $a;
+        }, $data);
         return $data;
     }
 
