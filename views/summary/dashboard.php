@@ -30,7 +30,7 @@ use yii\grid\GridView;
     'dataProvider' => $dataProvider,
     'columns' => [
         'id',
-        'process.name',
+        'process.screenName',
         [
             'attribute' => 'title',
             'visible'   => $searchModel->groupBy == 'title'

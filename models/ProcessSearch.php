@@ -19,7 +19,7 @@ class ProcessSearch extends Process
     {
         return [
             [['id'], 'integer'],
-            [['name', 'cmdline', 'created'], 'safe'],
+            [['name', 'cmdline', 'alias', 'created'], 'safe'],
         ];
     }
 
@@ -61,7 +61,8 @@ class ProcessSearch extends Process
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'cmdline', $this->cmdline]);
+            ->andFilterWhere(['like', 'cmdline', $this->cmdline])
+            ->andFilterWhere(['like', 'alias', $this->cmdline]);
 
         return $dataProvider;
     }

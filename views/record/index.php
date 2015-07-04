@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             'id',
             'pid',
-            'window.process.name',
+            'window.process.screenName',
             'window.title',
             'formattedDuration',
             'motions',

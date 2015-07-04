@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $name
+ * @property string alias
  * @property string $created
  */
 class Process extends \yii\db\ActiveRecord
@@ -18,7 +19,7 @@ class Process extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'process';
+        return '{{process}}';
     }
 
     /**
@@ -27,8 +28,7 @@ class Process extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'string'],
-            [['created'], 'safe']
+            [['alias'], 'string'],
         ];
     }
 
@@ -40,7 +40,13 @@ class Process extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
+            'alias' => Yii::t('app', 'Alias'),
             'created' => Yii::t('app', 'Created'),
         ];
+    }
+
+    public function getScreenName()
+    {
+        return $this->alias ? $this->alias : $this->name;
     }
 }
