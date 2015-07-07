@@ -1,7 +1,5 @@
 $(function(){
-    // Generate a log-normal distribution with a median of 30 minutes.
     var values = dashboardDurations;
-//var values = d3.range(1000).map(d3.random.logNormal(Math.log(30), .4));
 
 // Formatters for counts and times (converting numbers to Dates).
     var formatCount = d3.format(",.0f"),
@@ -13,7 +11,7 @@ $(function(){
         height = (210*2) - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
-        .domain([0, 120])
+        .domain([0, d3.max(dashboardDurations)])
         .range([0, width]);
 
 // Generate a histogram using twenty uniformly-spaced bins.
