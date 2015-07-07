@@ -55,6 +55,7 @@ class WindowController extends Controller
             'query' => $query,
         ]);
         $query->andWhere(['window_id' => $id]);
+        $query->orderBy('id DESC');
 
         return $this->render('view', [
             'model' => $this->findModel($id),
