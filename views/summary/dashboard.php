@@ -33,7 +33,11 @@ use yii\grid\GridView;
         'process.screenName',
         [
             'attribute' => 'title',
-            'visible'   => $searchModel->groupBy == 'title'
+            'visible'   => $searchModel->groupBy == 'title',
+            'value' => function ($model, $key, $index, $column) {
+                return \yii\helpers\Html::a($model->title, ['window/view', 'id' => $model->id]);
+            },
+            'format' => 'html',
         ],
         'formattedDuration',
         'motions',
