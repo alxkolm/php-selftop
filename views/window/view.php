@@ -43,7 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'pid',
             'window.process.screenName',
-            'window.title',
             'formattedDuration',
             'motions',
             'clicks',
