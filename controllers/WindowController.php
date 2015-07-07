@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\Record;
 use Yii;
 use app\models\Window;
 use app\models\WindowCrudSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -48,8 +50,15 @@ class WindowController extends Controller
      */
     public function actionView($id)
     {
+        $query = Record::find();
+        $recordsDataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $query->andWhere(['window_id' => $id]);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'recordsDataProvider' => $recordsDataProvider,
         ]);
     }
 

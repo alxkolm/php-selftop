@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -35,5 +36,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'created',
         ],
     ]) ?>
+
+    <?= GridView::widget([
+        'dataProvider' => $recordsDataProvider,
+        'columns' => [
+            'id',
+            'pid',
+            'window.process.screenName',
+            'window.title',
+            'formattedDuration',
+            'motions',
+            'clicks',
+            'keys',
+            'created',
+
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
 
 </div>
