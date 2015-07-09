@@ -40,14 +40,14 @@ class StatsHelper
         if ($fromTime) {
             $from = (new \DateTime('now', $timezone))->setTimestamp($fromTime)->setTimezone($timezone);
             $query->andWhere(
-                '{{activity}}.created >= :today',
+                '{{record}}.created >= :today',
                 [':today' => $from->format('Y-m-d H:i:s')]
             );
         }
         if ($toTime) {
             $to = (new \DateTime('now', $timezone))->setTimestamp($toTime)->setTimezone($timezone);
             $query->andWhere(
-                '{{activity}}.created < :todayNight',
+                '{{record}}.created < :todayNight',
                 [':todayNight' => $to->format('Y-m-d H:i:s')]
             );
         }

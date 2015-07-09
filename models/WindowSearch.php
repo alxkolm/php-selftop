@@ -89,14 +89,14 @@ class WindowSearch extends Window
         if ($this->dateFrom) {
             $from = (new \DateTime('now', $timezone))->setTimestamp($this->dateFrom)->setTimezone($timezone);
             $query->andWhere(
-                '{{activity}}.created >= :today',
+                '{{record}}.created >= :today',
                 [':today' => $from->format('Y-m-d H:i:s')]
             );
         }
         if ($this->dateTo) {
             $to = (new \DateTime('now', $timezone))->setTimestamp($this->dateTo)->setTimezone($timezone);
             $query->andWhere(
-                '{{activity}}.created < :todayNight',
+                '{{record}}.created < :todayNight',
                 [':todayNight' => $to->format('Y-m-d H:i:s')]
             );
         }

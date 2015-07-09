@@ -26,7 +26,7 @@ class Record extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%activity}}';
+        return '{{%record}}';
     }
 
     /**
