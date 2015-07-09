@@ -40,6 +40,7 @@ AppAsset::register($this);
                     ['label' => 'Dashboard', 'url' => ['/summary/dashboard']],
                     ['label' => 'Process', 'url' => ['/process/index']],
                     ['label' => 'Windows', 'url' => ['/window/index']],
+                    ['label' => 'Tasks', 'url' => ['/task/index']],
                     Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/site/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
