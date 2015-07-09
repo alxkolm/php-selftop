@@ -41,6 +41,7 @@ use yii\grid\GridView;
         'motions',
         'motions_filtered',
         'clicks',
+        'scrolls',
         'keys',
     ],
 ]); ?>

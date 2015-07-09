@@ -19,6 +19,7 @@ class Window extends \yii\db\ActiveRecord
     public $motions;
     public $motions_filtered;
     public $clicks;
+    public $scrolls;
     public $keys;
 
     /**

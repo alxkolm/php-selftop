@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'formattedDuration',
             'motions',
             'clicks',
+            'scrolls',
             'keys',
             'created',
 

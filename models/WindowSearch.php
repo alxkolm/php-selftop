@@ -56,6 +56,7 @@ class WindowSearch extends Window
                 'SUM(motions) as motions',
                 'SUM(motions_filtered) as motions_filtered',
                 'SUM(clicks) as clicks',
+                'SUM(scrolls) as scrolls',
                 'SUM(keys) as keys',
             ]);
 
