@@ -1,5 +1,7 @@
 <?php
 
+use app\models\Task;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -22,6 +24,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'clicks')->textInput() ?>
 
     <?= $form->field($model, 'keys')->textInput() ?>
+
+    <?= $form->field($model, 'tasksForm')->dropDownList(ArrayHelper::map(Task::find()->all(), 'id', 'name'), ['multiple' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

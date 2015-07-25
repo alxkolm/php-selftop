@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\RecordTask;
 use Yii;
 use app\models\Record;
 use app\models\RecordSearch;
@@ -81,7 +82,21 @@ class RecordController extends Controller
     {
         $model = $this->findModel($id);
 
+        $transaction = Yii::$app->db->beginTransaction();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            RecordTask::deleteAll([
+                'record_id' => $model->id,
+            ]);
+            if (is_array($model->tasksForm)) {
+                foreach ($model->tasksForm as $task_id){
+                    $recordTask = new RecordTask([
+                        'record_id' => $model->id,
+                        'task_id'   => $task_id,
+                    ]);
+                    $recordTask->save();
+                }
+            }
+            $transaction->commit();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [

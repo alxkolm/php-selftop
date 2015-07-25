@@ -21,6 +21,7 @@ use Yii;
  */
 class Record extends \yii\db\ActiveRecord
 {
+    public $tasksForm;
     /**
      * @inheritdoc
      */
@@ -36,7 +37,8 @@ class Record extends \yii\db\ActiveRecord
     {
         return [
             [['window_id'], 'required'],
-            [['window_id', 'duration', 'motions', 'motions_filtered', 'clicks', 'keys'], 'integer']
+            [['window_id', 'duration', 'motions', 'motions_filtered', 'clicks', 'keys'], 'integer'],
+            [['tasksForm'], 'safe'],
         ];
     }
 
@@ -64,14 +66,23 @@ class Record extends \yii\db\ActiveRecord
         return $this->hasOne(Window::className(), ['id' => 'window_id'])->inverseOf('records');
     }
 
-    public function afterFind()
+    public function getRecordTasks()
     {
-        $timestamp = new \DateTime($this->created, new \DateTimeZone('UTC'));
-        $timestamp->setTimezone(new \DateTimeZone(Yii::$app->timeZone));
-        $this->created = $timestamp->format('Y-m-d H:i:s');
-        return parent::afterFind();
+        return $this->hasMany(RecordTask::className(), ['record_id' => 'id']);
     }
 
+    public function getTasks()
+    {
+        return $this->hasMany(Task::className(), ['id' => 'task_id'])->via('recordTasks');
+    }
+
+    public function afterFind()
+    {
+        // ID для формы
+        $this->tasksForm = array_map(function ($a) {return $a->id;}, $this->tasks);
+
+        return parent::afterFind();
+    }
 
     public function getFormattedDuration()
     {

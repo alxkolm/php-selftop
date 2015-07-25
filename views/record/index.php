@@ -32,7 +32,24 @@ $this->params['breadcrumbs'][] = $this->title;
             'clicks',
             'scrolls',
             'keys',
-            'created',
+            [
+                'attribute' => 'tasks',
+                'content' => function ($model, $key, $index, $column) {
+                    $tasks = [];
+                    foreach ($model->tasks as $task){
+                        $tasks[] = "<span class='badge'>{$task->name}</span>";
+                    }
+                    return implode("\n", $tasks);
+                },
+            ],
+            [
+                'attribute' => 'created',
+                'content' => function ($model) {
+                    $timestamp = new \DateTime($model->created, new \DateTimeZone('UTC'));
+                    $timestamp->setTimezone(new \DateTimeZone(Yii::$app->timeZone));
+                    return $timestamp->format('Y-m-d H:i:s');
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
