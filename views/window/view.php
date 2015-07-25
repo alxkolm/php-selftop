@@ -1,5 +1,6 @@
 <?php
 
+use app\components\widgets\RecordGridView;
 use app\models\Task;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
@@ -51,19 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-    <?= GridView::widget([
+    <?= RecordGridView::widget([
         'dataProvider' => $recordsDataProvider,
-        'columns' => [
-            'id',
-            'pid',
-            'window.process.screenName',
-            'formattedDuration',
-            'motions',
-            'clicks',
-            'keys',
-            'created',
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
     ]); ?>
 
 </div>
