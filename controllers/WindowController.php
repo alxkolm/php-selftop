@@ -136,7 +136,7 @@ class WindowController extends Controller
         foreach ($records as $record_id) {
             $link            = new RecordTask();
             $link->record_id = $record_id;
-            $link->task_id   = $id;
+            $link->task_id   = Yii::$app->request->getBodyParam('task_id');
             $link->save();
         }
         $transaction->commit();
