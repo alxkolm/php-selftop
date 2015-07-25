@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Record;
+use app\models\RecordTask;
 use Yii;
 use app\models\Window;
 use app\models\WindowCrudSearch;
@@ -127,5 +128,25 @@ class WindowController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionAssignTask($id){
+        $records = Record::find()->where(['window_id' => $id])->select(['id'])->column();
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($records as $record_id) {
+            $link            = new RecordTask();
+            $link->record_id = $record_id;
+            $link->task_id   = $id;
+            $link->save();
+        }
+        $transaction->commit();
+        $this->redirect(['view', 'id' => $id]);
+    }
+    public function actionClearTask($id){
+        // TODO дописать запрос на удаление
+        $sql = 'DELETE FROM {{record_task}}
+                WHERE record_id IN (SELECT id FROM record WHERE window_id = :window_id)';
+        Yii::$app->db->createCommand($sql, [':window_id' => $id])->execute();
+        $this->redirect(['view', 'id' => $id]);
     }
 }

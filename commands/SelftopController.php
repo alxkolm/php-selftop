@@ -51,4 +51,23 @@ class SelftopController extends Controller
             function ($a) { echo $a['process_id']. ' ' .$a['title'].PHP_EOL; }
         );
     }
+    /**
+     * Output window.title and window.id columns
+     */
+    public function actionTitleWindow()
+    {
+        $titles = Window::find()
+            ->select(['title', 'id'])
+            ->orderBy('title')
+            ->createCommand()
+            ->queryAll();
+        array_walk(
+//            array_filter(
+//                $titles,
+//                function ($a) { return !empty(trim($a['title'])); }
+//            ),
+            $titles,
+            function ($a) { echo $a['id'] . ' ' . trim($a['title']) . PHP_EOL; }
+        );
+    }
 }

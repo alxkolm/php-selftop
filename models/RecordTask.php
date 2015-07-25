@@ -45,4 +45,14 @@ class RecordTask extends \yii\db\ActiveRecord
             'created' => Yii::t('app', 'Created'),
         ];
     }
+
+    public function getTask()
+    {
+        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+    }
+
+    public function getRecord()
+    {
+        return $this->hasOne(Record::className(), ['id' => 'record_id']);
+    }
 }

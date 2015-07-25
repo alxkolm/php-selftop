@@ -1,6 +1,8 @@
 <?php
 
+use app\models\Task;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -37,6 +39,18 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <?= Html::beginForm(['window/clear-task', 'id' => $model->id]) ?>
+    <?= Html::submitButton('Clear all tasks') ?>
+    <?= Html::endForm() ?>
+
+    <?= Html::beginForm(['window/assign-task', 'id' => $model->id]) ?>
+    <?= Html::dropDownList('task_id', null, ArrayHelper::map(Task::find()->all(), 'id', 'name')) ?>
+    <?= Html::submitButton('Assign task') ?>
+    <?= Html::endForm() ?>
+
+
+
+
     <?= GridView::widget([
         'dataProvider' => $recordsDataProvider,
         'columns' => [
@@ -48,7 +62,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'clicks',
             'keys',
             'created',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
