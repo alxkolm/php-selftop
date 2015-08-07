@@ -66,11 +66,17 @@ class Record extends \yii\db\ActiveRecord
         return $this->hasOne(Window::className(), ['id' => 'window_id'])->inverseOf('records');
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getRecordTasks()
     {
         return $this->hasMany(RecordTask::className(), ['record_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTasks()
     {
         return $this->hasMany(Task::className(), ['id' => 'task_id'])->via('recordTasks');

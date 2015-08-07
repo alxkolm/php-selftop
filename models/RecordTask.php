@@ -11,6 +11,7 @@ use Yii;
  * @property integer $record_id
  * @property integer $task_id
  * @property string $created
+ * @property integer $is_prediction
  */
 class RecordTask extends \yii\db\ActiveRecord
 {
@@ -29,7 +30,7 @@ class RecordTask extends \yii\db\ActiveRecord
     {
         return [
             [['record_id', 'task_id'], 'required'],
-            [['record_id', 'task_id'], 'integer'],
+            [['record_id', 'task_id', 'is_prediction'], 'integer'],
         ];
     }
 

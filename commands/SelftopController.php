@@ -10,6 +10,7 @@ namespace app\commands;
 
 
 use app\models\Record;
+use app\models\RecordTask;
 use app\models\Window;
 use yii\console\Controller;
 
@@ -76,12 +77,7 @@ class SelftopController extends Controller
      */
     public function actionTitleRecord()
     {
-        $titles = Record::find()
-            ->joinWith('window')
-            ->select(['title', '{{record}}.id'])
-            ->orderBy('{{record}}.id')
-            ->createCommand()
-            ->queryAll();
+        $titles = $this->getTitleRecord();
         array_walk(
             $titles,
             function ($a) { echo $a['id'] . ' ' . trim($a['title']) . PHP_EOL; }
@@ -134,7 +130,136 @@ class SelftopController extends Controller
                 fwrite($out, implode(' ', $parts));
                 fwrite($out, PHP_EOL);
             }
-
         }
+    }
+
+    public function actionTrainData2()
+    {
+        $titleFile = fopen('titles.txt', 'w');
+
+        // Generate titles
+        $titles = $this->getTitleRecord();
+        array_walk($titles, function ($title) use ($titleFile){
+            fwrite($titleFile, $title['title'].PHP_EOL);
+        });
+        fclose($titleFile);
+        echo 'Titles successfully generated.'.PHP_EOL;
+
+        // Run sally command
+        $sallyOptions = implode(' ', [
+            '--input_format lines',
+            '--output_format text',
+            '--ngram_len 1',
+            '--granularity tokens',
+            '--vect_embed tfidf',
+            '--vect_norm none',
+            '--token_delim "%0a%0d%20%22.,:;!?"',
+        ]);
+        $sallyCommand = "sally {$sallyOptions} titles.txt titles.features.txt";
+        echo "Run: {$sallyCommand}\n";
+        exec($sallyCommand);
+
+        // Read sally output and generate train set
+        $trainFile    = fopen('titles.train.svm', 'w');
+        $testFile     = fopen('titles.test.svm', 'w');
+        $featuresFile = fopen('titles.features.txt', 'r');
+        $i = 0;
+        $testIds = [];
+        while(($line = fgets($featuresFile)) !== false){
+            $line = trim($line);
+            if ($line[0] == '#'){
+                continue;
+            }
+
+            // remove comment
+            $posComment = strpos($line, '#');
+
+            $rest = trim(substr($line, 0, -(strlen($line) - $posComment)));
+            if ($rest){
+                $featureTokens = explode(',', $rest);
+
+                $features = [];
+                foreach ($featureTokens as $token) {
+                    list($dimension, $weight) = explode('::', $token);
+                    $features[$dimension] = (float)$weight;
+                }
+
+                // find record
+                /** @var Record $record */
+                $record = Record::findOne(['id' => $titles[$i]['id']]);
+                $i++;
+                $out = $testFile;
+                $label = 0;
+                $tasks = $record->getRecordTasks()->andWhere('is_prediction = 0')->all();
+                if ($tasks){
+                    $out = $trainFile;
+                    $label = $tasks[0]->task_id;
+                } else {
+                    $testIds[] = $record->id;
+                }
+                fwrite($out, $label. ' ');
+                $parts = [
+                    '1:'.$record->window_id,
+                    '2:'.$record->window->process_id,
+                ];
+
+                foreach ($features as $dim => $weight){
+                    $parts[] = $dim.':'.$weight;
+                }
+                fwrite($out, implode(' ', $parts));
+                fwrite($out, PHP_EOL);
+            }
+        }
+
+        fclose($trainFile);
+        fclose($testFile);
+
+        // train libsvm model
+        // best c=0.5, g=0.0078125
+        echo 'Run svm-train'.PHP_EOL;
+        $trainCommnad = '/home/alx/soft/libsvm-3.20/svm-train -c "0.5" -g "0.0078125" titles.train.svm svm.model';
+        exec($trainCommnad);
+
+        // predict
+        echo 'Run svm-predict'.PHP_EOL;
+        $predictCommand = '/home/alx/soft/libsvm-3.20/svm-predict -q titles.test.svm svm.model title.predict.txt';
+        exec($predictCommand);
+
+        $predictionFile = fopen('title.predict.txt', 'r');
+        $i = 0;
+        $transaction = \Yii::$app->db->beginTransaction();
+        while (($line = fgets($predictionFile)) !== false){
+            $recordId = $testIds[$i];
+            // Remove all predictions for this record
+            RecordTask::deleteAll([
+                'record_id' => $recordId,
+                'is_prediction' => 1
+            ]);
+
+            // Save new prediction
+            $model = new RecordTask();
+            $model->task_id = (int)trim($line);
+            $model->record_id = $recordId;
+            $model->is_prediction = 1;
+            $model->save(false);
+
+            $i++;
+        }
+        $transaction->commit();
+    }
+
+    /**
+     * @return array
+     */
+    public function getTitleRecord()
+    {
+        $titles = Record::find()
+            ->joinWith('window')
+            ->select(['title', '{{record}}.id'])
+            ->orderBy('{{record}}.id')
+            ->createCommand()
+            ->queryAll();
+
+        return $titles;
     }
 }
