@@ -12,6 +12,7 @@ namespace app\commands;
 use app\models\Record;
 use app\models\RecordTask;
 use app\models\Window;
+use yii\base\Exception;
 use yii\console\Controller;
 
 class SelftopController extends Controller
@@ -115,9 +116,10 @@ class SelftopController extends Controller
                 $record = Record::findOne(['id' => $label]);
                 $out = $testFile;
                 $label = 0;
-                if ($record->tasks){
+                $tasks = $record->getRecordTasks()->andWhere('is_prediction = 0')->all();
+                if ($tasks){
                     $out = $trainFile;
-                    $label = $record->tasks[0]->id;
+                    $label = $tasks[0]->id;
                 }
                 fwrite($out, $label. ' ');
                 $parts = [
@@ -216,36 +218,53 @@ class SelftopController extends Controller
 
         // train libsvm model
         // best c=0.5, g=0.0078125
+        // best c=128.0, g=0.001953125, rate=67.3947
+        // best c=0.5, g=0.0078125, rate=99.5342
         echo 'Run svm-train'.PHP_EOL;
-        $trainCommnad = '/home/alx/soft/libsvm-3.20/svm-train -c "0.5" -g "0.0078125" titles.train.svm svm.model';
+        $trainCommnad = '/home/alx/soft/libsvm-3.20/svm-train -b 1 -c "0.5" -g "0.0078125" titles.train.svm svm.model';
         exec($trainCommnad);
 
         // predict
         echo 'Run svm-predict'.PHP_EOL;
-        $predictCommand = '/home/alx/soft/libsvm-3.20/svm-predict -q titles.test.svm svm.model title.predict.txt';
+        $predictCommand = '/home/alx/soft/libsvm-3.20/svm-predict -b 1 -q titles.test.svm svm.model title.predict.txt';
         exec($predictCommand);
 
         $predictionFile = fopen('title.predict.txt', 'r');
         $i = 0;
         $transaction = \Yii::$app->db->beginTransaction();
+        // skip first line
+        $dummyLine = fgets($predictionFile);
+        $skiped = 0;
         while (($line = fgets($predictionFile)) !== false){
+            $line = trim($line);
+            if (!isset($testIds[$i])){
+                throw new Exception('Что-то не сходится!');
+            }
             $recordId = $testIds[$i];
+            $i++;
             // Remove all predictions for this record
             RecordTask::deleteAll([
                 'record_id' => $recordId,
                 'is_prediction' => 1
             ]);
-
+            $parts = explode(' ', $line);
+            $predictTask = (int)$parts[0];
+            $probability = array_slice($parts, 1);
+            $max = max(array_map('floatval', $probability));
+            if ($max < 0.75) {
+//                echo "skip (with {$max})".PHP_EOL;
+                $skiped++;
+                continue;
+            }
             // Save new prediction
             $model = new RecordTask();
-            $model->task_id = (int)trim($line);
+            $model->task_id = $predictTask;
             $model->record_id = $recordId;
             $model->is_prediction = 1;
             $model->save(false);
-
-            $i++;
         }
         $transaction->commit();
+        echo "Skiped {$skiped} records\n";
     }
 
     /**
