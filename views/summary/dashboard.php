@@ -25,7 +25,6 @@ use yii\grid\GridView;
 <?php ActiveForm::end(); ?>
 <div id="color-strip" class="color-strip"></div>
 <div style="margin: 1em;"><strong>Total activity:</strong> <?= Helper::formatTimeDuration($totalActivity / 1000)?></div>
-<div id="graph-duration-histrogram"></div>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [

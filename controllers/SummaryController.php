@@ -36,16 +36,11 @@ class SummaryController extends \yii\web\Controller
         $searchModel->dateTo   = $todayEnd;
         $dataProvider          = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->view->registerJs(
-            'var dashboardDurations = '.json_encode(StatsHelper::durations($today, $todayEnd)),
-            View::POS_END);
-
         $timeline = StatsHelper::timeline($today, $todayEnd);
         $this->view->registerJs(
             'var dashboardTimeline = '.json_encode($timeline),
             View::POS_END);
 
-        $this->view->registerAssetBundle(DurationHistogramAsset::className());
         $this->view->registerAssetBundle(ColorStripAsset::className());
 
         return $this->render('dashboard', [
