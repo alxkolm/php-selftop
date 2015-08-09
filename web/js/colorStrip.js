@@ -17,7 +17,7 @@ $(function(){
 
     var svg = d3.select('#color-strip').append('svg')
         .attr('width', width + margin.left + margin.right)
-        .attr('height', 85)
+        .attr('height', 95)
         .append('g')
         .attr('transform', 'translate('+margin.left + ',0)');
 
@@ -45,7 +45,7 @@ $(function(){
     var xOffset = 0;
     colors.domain().forEach(function(pid, index){
         var legendLine = legend.append('g')
-            .attr('transform', 'translate(0, 70)')
+            .attr('transform', 'translate(0, 85)')
             .attr('class', 'legend-item')
             .append('g')
             .attr('transform', 'translate('+(xOffset)+', 0)');
