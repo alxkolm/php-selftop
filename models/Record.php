@@ -25,7 +25,7 @@ use Yii;
  */
 class Record extends \yii\db\ActiveRecord
 {
-    public $tasksForm;
+    protected $_tasksForm;
     /**
      * @inheritdoc
      */
@@ -86,16 +86,22 @@ class Record extends \yii\db\ActiveRecord
         return $this->hasMany(Task::className(), ['id' => 'task_id'])->via('recordTasks');
     }
 
-    public function afterFind()
-    {
-        // ID для формы
-        $this->tasksForm = array_map(function ($a) {return $a->id;}, $this->tasks);
-
-        return parent::afterFind();
-    }
-
     public function getFormattedDuration()
     {
         return Helper::formatTimeDuration($this->duration / 1000);
+    }
+
+    public function getTasksForm()
+    {
+        if ($this->_tasksForm === null){
+            $this->_tasksForm = array_map(function ($a) {return $a->id;}, $this->tasks);
+        }
+
+        return $this->_tasksForm;
+    }
+
+    public function setTasksForm($value)
+    {
+        $this->_tasksForm = $value;
     }
 }
