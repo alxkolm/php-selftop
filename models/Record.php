@@ -18,6 +18,10 @@ use Yii;
  * @property integer $clicks
  * @property integer $keys
  * @property string $created
+ *
+ * @property Window $window
+ * @property Task[] $tasks
+ * @property RecordTask[] $recordTasks
  */
 class Record extends \yii\db\ActiveRecord
 {

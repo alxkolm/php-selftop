@@ -12,6 +12,8 @@ use Yii;
  * @property string $title
  * @property string $class
  * @property integer $created
+ * @property Record[] $records
+ * @property Process $process
  */
 class Window extends \yii\db\ActiveRecord
 {
