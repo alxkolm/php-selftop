@@ -38,7 +38,7 @@ class StatsHelper
     {
         $query = Record::find();
         self::whereFromTo($query, $fromTime, $toTime);
-        $query->joinWith('window.process');
+        $query->with(['window', 'window.process']);
 //        $query->andWhere(['>=','duration', 30*1000]);
         $records = array_map(function (Record $record) {
             return [
