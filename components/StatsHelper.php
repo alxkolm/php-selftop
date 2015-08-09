@@ -34,7 +34,39 @@ class StatsHelper
         return array_values($values);
     }
 
-    public static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)
+    public static function timeline($fromTime, $toTime = null)
+    {
+        $query = Record::find();
+        self::whereFromTo($query, $fromTime, $toTime);
+        $query->joinWith('window.process');
+//        $query->andWhere(['>=','duration', 30*1000]);
+        $records = array_map(function (Record $record) {
+            return [
+                'id'      => $record->id,
+                'window'  => [
+                    'id'    => (int)$record->window->id,
+                    'title' => $record->window->title,
+                ],
+                'process' => [
+                    'id'   => (int)$record->window->process->id,
+                    'name' => $record->window->process->alias ? $record->window->process->alias : $record->window->process->name,
+                ],
+                'duration' => $record->duration / 1000,
+                'start' => $record->start,
+                'end' => $record->end,
+                'formattedDuration' => $record->getFormattedDuration(),
+                'color' => $record->duration > 3000 ? self::rgbcode($record->window->process->id) : '#000',
+            ];
+        }, $query->all());
+        $totalDuration = array_reduce($records, function ($a, $b) {return $a + $b['duration'];}, 0);
+        array_walk($records, function (&$v) use ($totalDuration) {
+            $v['percent'] = ($v['duration'] / $totalDuration)*100;
+        });
+
+        return $records;
+    }
+
+    protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)
     {
         $timezone = new \DateTimeZone('UTC');
         if ($fromTime) {
@@ -52,5 +84,9 @@ class StatsHelper
             );
         }
         return $query;
+    }
+
+    public static function rgbcode($string){
+        return '#'.substr(md5($string), 0, 6);
     }
 }

@@ -1,0 +1,11 @@
+.color-strip {
+    margin: 0.5em;
+}
+.x-axis {
+    font-size: 10px;
+}
+.x-axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}

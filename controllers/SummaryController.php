@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\assets\AppAsset;
+use app\assets\ColorStripAsset;
 use app\assets\DurationHistogramAsset;
 use app\components\StatsHelper;
 use app\models\Record;
@@ -39,7 +40,13 @@ class SummaryController extends \yii\web\Controller
             'var dashboardDurations = '.json_encode(StatsHelper::durations($today, $todayEnd)),
             View::POS_END);
 
+        $timeline = StatsHelper::timeline($today, $todayEnd);
+        $this->view->registerJs(
+            'var dashboardTimeline = '.json_encode($timeline),
+            View::POS_END);
+
         $this->view->registerAssetBundle(DurationHistogramAsset::className());
+        $this->view->registerAssetBundle(ColorStripAsset::className());
 
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,
