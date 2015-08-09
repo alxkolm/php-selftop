@@ -9,3 +9,6 @@
     stroke: #000;
     shape-rendering: crispEdges;
 }
+.x-axis .tick line {
+    stroke: #000;
+}
