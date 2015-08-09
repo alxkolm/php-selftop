@@ -17,7 +17,7 @@ $(function(){
 
     var svg = d3.select('#color-strip').append('svg')
         .attr('width', width + margin.left + margin.right)
-        .attr('height', 70)
+        .attr('height', 85)
         .append('g')
         .attr('transform', 'translate('+margin.left + ',0)');
 
@@ -36,5 +36,29 @@ $(function(){
         .attr('transform', 'translate(0, 42)')
         .call(xAxis);
 
-    console.log(colors.domain(), colors.range());
+    // legend
+    var legend = svg.append('g').attr('class', 'legend');
+    var process = {};
+    values.forEach(function(v){
+        process[v.process.id] = v.process.name;
+    });
+    var xOffset = 0;
+    colors.domain().forEach(function(pid, index){
+        var legendLine = legend.append('g')
+            .attr('transform', 'translate(0, 70)')
+            .attr('class', 'legend-item')
+            .append('g')
+            .attr('transform', 'translate('+(xOffset)+', 0)');
+        legendLine.append('circle')
+            .attr('cx', 0)
+            .attr('cy',0)
+            .attr('r', 6)
+            .style('fill', colors(pid));
+        legendLine.append('text')
+            .text(process[pid] ? process[pid] : 'n/a')
+            .attr('x', 8)
+            .attr('y', 4);
+        var box = legendLine[0][0].getBoundingClientRect();
+        xOffset += box.width + 10;
+    });
 });
