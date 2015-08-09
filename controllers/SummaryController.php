@@ -36,6 +36,9 @@ class SummaryController extends \yii\web\Controller
         $searchModel->dateTo   = $todayEnd;
         $dataProvider          = $searchModel->search(Yii::$app->request->queryParams);
 
+        // eagerly load process info
+        $dataProvider->query->with('process');
+
         $timeline = StatsHelper::timeline($today, $todayEnd);
         $this->view->registerJs(
             'var dashboardTimeline = '.json_encode($timeline),
