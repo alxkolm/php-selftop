@@ -47,6 +47,6 @@ class Process extends \yii\db\ActiveRecord
 
     public function getScreenName()
     {
-        return $this->alias ? $this->alias : $this->name;
+        return $this->alias ? $this->alias : ($this->name ? $this->name : 'n/a');
     }
 }

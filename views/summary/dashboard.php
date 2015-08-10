@@ -23,7 +23,14 @@ use yii\grid\GridView;
         'options' => ['class' => 'btn-primary']
     ]) ?>
 <?php ActiveForm::end(); ?>
-<div id="color-strip" class="color-strip"></div>
+<div id="color-strip" class="color-strip clearfix"></div>
+<div id="sunburst" class="sunburst">
+    <div class="info">
+        <div class="percentage"></div>
+        <div class="window"></div>
+    </div>
+
+</div>
 <div style="margin: 1em;"><strong>Total activity:</strong> <?= Helper::formatTimeDuration($totalActivity / 1000)?></div>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,

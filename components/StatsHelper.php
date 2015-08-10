@@ -9,6 +9,7 @@
 namespace app\components;
 
 
+use app\models\Process;
 use app\models\Record;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
@@ -64,6 +65,42 @@ class StatsHelper
         });
 
         return $records;
+    }
+
+    public static function getProcessWindowHierarchy($fromTime, $toTime = null)
+    {
+        $query = Record::find();
+        self::whereFromTo($query, $fromTime, $toTime);
+        $query->joinWith(['window', 'window.process']);
+        $query->groupBy('window_id');
+        $query->select([
+            'SUM(duration) as duration',
+            'process_id',
+            'window_id',
+            'window.title'
+        ]);
+        $data = $query->createCommand()->queryAll();
+
+        $groups = ['children' => [], 'name' => 'root'];
+        foreach ($data as $window){
+            if (!isset($groups['children'][$window['process_id']])){
+                $groups['children'][$window['process_id']] = [
+                    'name'     => Process::findOne($window['process_id'])->getScreenName(),
+                    'children' => []
+                ];
+            }
+            $groups['children'][$window['process_id']]['children'][] = [
+                'name' => $window['title'],
+                'size' => (int)$window['duration'] / 1000,
+            ];
+        }
+        $groups['children'] = array_values($groups['children']);
+        foreach ($groups['children'] as $key => $process){
+            usort($groups['children'][$key]['children'], function($a, $b){
+                return $b['size'] - $a['size'];
+            });
+        }
+        return $groups;
     }
 
     protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\assets\AppAsset;
 use app\assets\ColorStripAsset;
 use app\assets\DurationHistogramAsset;
+use app\assets\SunburstAsset;
 use app\components\StatsHelper;
 use app\models\Record;
 use app\models\Window;
@@ -45,6 +46,13 @@ class SummaryController extends \yii\web\Controller
             View::POS_END);
 
         $this->view->registerAssetBundle(ColorStripAsset::className());
+
+        $durations = StatsHelper::getProcessWindowHierarchy($today, $todayEnd);
+        $this->view->registerJs(
+            'var dashboardDurations = '.json_encode($durations),
+            View::POS_END);
+
+        $this->view->registerAssetBundle(SunburstAsset::className());
 
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,

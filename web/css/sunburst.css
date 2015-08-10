@@ -1,0 +1,13 @@
+#sunburst {
+    position: relative;
+}
+#sunburst .info {
+    position: absolute;
+    top: 120px;
+    left: 100px;
+    text-align: center;
+    width: 200px;
+}
+#sunburst .percentage {
+    font-size: 32px;
+}
