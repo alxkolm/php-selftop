@@ -105,19 +105,19 @@ class StatsHelper
 
     protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)
     {
-        $timezone = new \DateTimeZone('UTC');
+        $timezone = new \DateTimeZone(\Yii::$app->timeZone);
         if ($fromTime) {
             $from = (new \DateTime('now', $timezone))->setTimestamp($fromTime)->setTimezone($timezone);
             $query->andWhere(
-                '{{record}}.created >= :today',
-                [':today' => $from->format('Y-m-d H:i:s')]
+                '{{record}}.start >= :today',
+                [':today' => $from->format('c')]
             );
         }
         if ($toTime) {
             $to = (new \DateTime('now', $timezone))->setTimestamp($toTime)->setTimezone($timezone);
             $query->andWhere(
-                '{{record}}.created < :todayNight',
-                [':todayNight' => $to->format('Y-m-d H:i:s')]
+                '{{record}}.start < :todayNight',
+                [':todayNight' => $to->format('c')]
             );
         }
         return $query;
