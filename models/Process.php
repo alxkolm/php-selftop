@@ -45,6 +45,16 @@ class Process extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getWindows()
+    {
+        return $this->hasMany(Window::className(), ['process_id' => 'id']);
+    }
+
+    public function getRecords()
+    {
+        return $this->hasMany(Record::className(), ['window_id' => 'id'])->via('windows');
+    }
+
     public function getScreenName()
     {
         return $this->alias ? $this->alias : ($this->name ? $this->name : 'n/a');
