@@ -50,7 +50,7 @@ class StatsHelper
                 ],
                 'process' => [
                     'id'   => (int)$record->window->process->id,
-                    'name' => $record->window->process->alias ? $record->window->process->alias : $record->window->process->name,
+                    'name' => $record->window->process->getScreenName()
                 ],
                 'duration' => $record->duration / 1000,
                 'start' => $record->start,
@@ -86,6 +86,7 @@ class StatsHelper
             if (!isset($groups['children'][$window['process_id']])){
                 $groups['children'][$window['process_id']] = [
                     'name'     => Process::findOne($window['process_id'])->getScreenName(),
+                    'process_id'     => $window['process_id'],
                     'children' => []
                 ];
             }
@@ -101,6 +102,17 @@ class StatsHelper
             });
         }
         return $groups;
+    }
+
+    public static function getProcessList($fromTime, $toTime = null)
+    {
+        $query = Record::find();
+        $query->joinWith('window.process');
+        $query->groupBy('process_id');
+        self::whereFromTo($query, $fromTime, $toTime);
+        $r = $query->all();
+
+        return array_map(function ($a) {return ['id' =>$a->window->process->id, 'name' => $a->window->process->screenName];}, $r);
     }
 
     protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)

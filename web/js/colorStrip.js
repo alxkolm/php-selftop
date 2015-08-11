@@ -8,7 +8,7 @@ $(function(){
         return new Date(value.start);
     });
 
-    var colors = d3.scale.category10();
+    var colors = processColor;
 
     var x = d3.time.scale()
         .domain(xDomain)
@@ -29,8 +29,7 @@ $(function(){
         .attr('y', 0)
         .attr('width', function (d) {return x(new Date(d.end)) - x(new Date(d.start))})
         .attr('height', '40px')
-        .style('fill', function (d) {return colors(d.process.id)})
-        .attr('data-legend', function (d) {return d.process.name});
+        .style('fill', function (d) {return colors(d.process.id)});
     svg.append('g')
         .attr('class', 'x-axis')
         .attr('transform', 'translate(0, 42)')

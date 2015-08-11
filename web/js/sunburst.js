@@ -2,7 +2,7 @@ $(function(){
     var width = 400,
         height = 400,
         radius = Math.min(width, height) / 2,
-        color = d3.scale.category20c();
+        color = processColor;
 
     var svg = d3.select("#sunburst").append("svg")
         .attr("width", width)
@@ -31,7 +31,7 @@ $(function(){
         .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
         .attr("d", arc)
         .style("stroke", "#fff")
-        .style("fill", function(d) { return color(d.name); })
+        .style("fill", function(d) { debugger;return d.depth == 1 ? color(d.process_id) : color(d.name); })
         //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
         .style("fill-rule", "evenodd")
         .on("mouseover", mouseover);

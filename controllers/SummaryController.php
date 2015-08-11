@@ -40,19 +40,26 @@ class SummaryController extends \yii\web\Controller
         // eagerly load process info
         $dataProvider->query->with('process');
 
+        $processList = StatsHelper::getProcessList($today, $todayEnd);
+        $this->view->registerJs(
+            'var dashboardProcess = '.json_encode($processList),
+            View::POS_HEAD);
+
         $timeline = StatsHelper::timeline($today, $todayEnd);
         $this->view->registerJs(
             'var dashboardTimeline = '.json_encode($timeline),
-            View::POS_END);
+            View::POS_HEAD);
 
         $this->view->registerAssetBundle(ColorStripAsset::className());
 
         $durations = StatsHelper::getProcessWindowHierarchy($today, $todayEnd);
         $this->view->registerJs(
             'var dashboardDurations = '.json_encode($durations),
-            View::POS_END);
+            View::POS_HEAD);
 
         $this->view->registerAssetBundle(SunburstAsset::className());
+
+
 
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,

@@ -19,6 +19,7 @@ class SunburstAsset extends AssetBundle
         'css/sunburst.css',
     ];
     public $js = [
+        'js/dashboard.js',
         'js/sunburst.js',
     ];
     public $depends = [

@@ -19,6 +19,7 @@ class ColorStripAsset extends AssetBundle
         'css/colorStrip.css',
     ];
     public $js = [
+        'js/dashboard.js',
         'js/colorStrip.js',
     ];
     public $depends = [
