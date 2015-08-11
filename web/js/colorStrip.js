@@ -29,6 +29,8 @@ $(function(){
         .attr('y', 0)
         .attr('width', function (d) {return x(new Date(d.end)) - x(new Date(d.start))})
         .attr('height', '40px')
+        .attr('process', function (d) {return d.process.id})
+        .attr('window', function (d) {return d.window.id})
         .style('fill', function (d) {return colors(d.process.id)});
     svg.append('g')
         .attr('class', 'x-axis')
@@ -61,3 +63,16 @@ $(function(){
         xOffset += box.width + 10;
     });
 });
+
+function colorStripDim(except_id) {
+    d3.selectAll('#color-strip rect.interval').classed('interval-hide', true);
+    d3.selectAll('#color-strip rect.interval[process="' + except_id +'"]').classed('interval-hide', false);
+}
+function colorStripDimByWindow(except_id) {
+    d3.selectAll('#color-strip rect.interval').classed('interval-hide', true);
+    d3.selectAll('#color-strip rect.interval[window="' + except_id +'"]').classed('interval-hide', false);
+}
+
+function colorStripUndim(){
+    d3.selectAll('#color-strip rect.interval').classed('interval-hide', false);
+}

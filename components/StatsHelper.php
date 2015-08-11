@@ -92,6 +92,7 @@ class StatsHelper
             }
             $groups['children'][$window['process_id']]['children'][] = [
                 'name' => $window['title'],
+                'window_id' => $window['window_id'],
                 'size' => (int)$window['duration'] / 1000,
             ];
         }

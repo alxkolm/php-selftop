@@ -31,10 +31,11 @@ $(function(){
         .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
         .attr("d", arc)
         .style("stroke", "#fff")
-        .style("fill", function(d) { debugger;return d.depth == 1 ? color(d.process_id) : color(d.name); })
+        .style("fill", function(d) { return d.depth == 1 ? color(d.process_id) : color(d.name); })
         //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
         .style("fill-rule", "evenodd")
-        .on("mouseover", mouseover);
+        .on("mouseover", mouseover)
+        .on("mouseleave", mouseleave);
     totalSize = path.node().__data__.value;
 });
 
@@ -44,9 +45,17 @@ function mouseover(d){
     if (percentage < 0.1) {
         percentageString = "< 0.1%";
     }
-
+    if (d.depth == 1) {
+        colorStripDim(d.process_id);
+    } else if (d.depth == 2) {
+        colorStripDimByWindow(d.window_id);
+    }
     d3.select("#sunburst .percentage")
         .text(percentageString);
     d3.select("#sunburst .window")
         .text(d.name);
+}
+
+function mouseleave(){
+    colorStripUndim();
 }

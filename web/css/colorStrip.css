@@ -13,3 +13,7 @@
 .x-axis .tick line {
     stroke: #000;
 }
+
+.interval-hide {
+    display: none;
+}
