@@ -88,15 +88,15 @@ class StatsHelper
         foreach ($data as $window){
             if (!isset($groups['children'][$window['process_id']])){
                 $groups['children'][$window['process_id']] = [
-                    'name'     => $processes[$window['process_id']],
-                    'process_id'     => $window['process_id'],
-                    'children' => []
+                    'name'       => $processes[$window['process_id']],
+                    'process_id' => $window['process_id'],
+                    'children'   => []
                 ];
             }
             $groups['children'][$window['process_id']]['children'][] = [
-                'name' => $window['title'],
+                'name'      => $window['title'],
                 'window_id' => $window['window_id'],
-                'size' => (int)$window['duration'] / 1000,
+                'size'      => (int) $window['duration'] / 1000,
             ];
         }
         $groups['children'] = array_values($groups['children']);
