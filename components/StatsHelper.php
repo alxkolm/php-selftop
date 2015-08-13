@@ -13,6 +13,7 @@ use app\models\Process;
 use app\models\Record;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 
 class StatsHelper
 {
@@ -81,11 +82,13 @@ class StatsHelper
         ]);
         $data = $query->createCommand()->queryAll();
 
+        $processes = ArrayHelper::map(Process::find()->all(), 'id', 'screenName');
+
         $groups = ['children' => [], 'name' => 'root'];
         foreach ($data as $window){
             if (!isset($groups['children'][$window['process_id']])){
                 $groups['children'][$window['process_id']] = [
-                    'name'     => Process::findOne($window['process_id'])->getScreenName(),
+                    'name'     => $processes[$window['process_id']],
                     'process_id'     => $window['process_id'],
                     'children' => []
                 ];
