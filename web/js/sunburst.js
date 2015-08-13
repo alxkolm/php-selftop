@@ -2,7 +2,7 @@ $(function(){
     var width = 400,
         height = 400,
         radius = Math.min(width, height) / 2,
-        color = processColor;
+        color = dashboard.processColor;
 
     var svg = d3.select("#sunburst").append("svg")
         .attr("width", width)
@@ -52,6 +52,8 @@ function mouseover(d){
     }
     d3.select("#sunburst .percentage")
         .text(percentageString);
+    d3.select("#sunburst .duration")
+        .text(dashboard.formatDuration(d.value));
     d3.select("#sunburst .window")
         .text(d.name);
 }

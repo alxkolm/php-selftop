@@ -27,6 +27,7 @@ use yii\grid\GridView;
 <div id="sunburst" class="sunburst">
     <div class="info">
         <div class="percentage"></div>
+        <div class="duration"></div>
         <div class="window"></div>
     </div>
 

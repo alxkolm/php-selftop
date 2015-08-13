@@ -8,7 +8,7 @@ $(function(){
         return new Date(value.start);
     });
 
-    var colors = processColor;
+    var colors = dashboard.processColor;
 
     var x = d3.time.scale()
         .domain(xDomain)
