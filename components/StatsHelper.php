@@ -90,7 +90,8 @@ class StatsHelper
                 $groups['children'][$window['process_id']] = [
                     'name'       => $processes[$window['process_id']],
                     'process_id' => $window['process_id'],
-                    'children'   => []
+                    'children'   => [],
+                    'size'       => 0,
                 ];
             }
             $groups['children'][$window['process_id']]['children'][] = [
@@ -98,6 +99,7 @@ class StatsHelper
                 'window_id' => $window['window_id'],
                 'size'      => (int) $window['duration'] / 1000,
             ];
+            $groups['children'][$window['process_id']]['size'] += (int) $window['duration'] / 1000;
         }
         $groups['children'] = array_values($groups['children']);
         foreach ($groups['children'] as $key => $process){
@@ -105,6 +107,9 @@ class StatsHelper
                 return $b['size'] - $a['size'];
             });
         }
+        usort($groups['children'], function($a, $b){
+            return $b['size'] - $a['size'];
+        });
         return $groups;
     }
 
