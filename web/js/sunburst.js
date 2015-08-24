@@ -38,11 +38,15 @@ $(function(){
                 case 1:
                     return color(d.process_id);
                 case 2:
-                    debugger;
+                    var shiftColorStart = d3.hcl(color(d.parent.process_id));
+                    //shiftColorStart.h -= 20;
+                    var shiftColorEnd = d3.hcl(color(d.parent.process_id));
+                    shiftColorEnd.h += 20;
+
                     var childColor = d3.scale.linear()
                         .range([
-                            d3.rgb(color(d.parent.process_id)).darker(0.5),
-                            d3.rgb(color(d.parent.process_id)).brighter(0.5)
+                            shiftColorEnd,
+                            shiftColorStart
                         ])
                         .domain([
                             d3.min(d.parent.children, function(a){return a.value}),
