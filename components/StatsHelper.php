@@ -86,12 +86,14 @@ class StatsHelper
 
         $groups = ['children' => [], 'name' => 'root'];
         foreach ($data as $window){
+            if ((int) $window['duration'] == 0) continue;
             if (!isset($groups['children'][$window['process_id']])){
                 $groups['children'][$window['process_id']] = [
                     'name'       => $processes[$window['process_id']],
                     'process_id' => $window['process_id'],
                     'children'   => [],
                     'size'       => 0,
+                    'color'      => self::rgbcode($window['process_id']),
                 ];
             }
             $groups['children'][$window['process_id']]['children'][] = [

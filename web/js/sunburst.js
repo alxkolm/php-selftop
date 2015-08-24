@@ -31,7 +31,36 @@ $(function(){
         .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
         .attr("d", arc)
         .style("stroke", "#fff")
-        .style("fill", function(d) { return d.depth == 1 ? color(d.process_id) : color(d.name); })
+        .style("fill", function(d) {
+            switch (d.depth){
+                case 0:
+                    return '#000000';
+                case 1:
+                    return color(d.process_id);
+                case 2:
+                    debugger;
+                    var childColor = d3.scale.linear()
+                        .range([
+                            d3.rgb(color(d.parent.process_id)).darker(0.5),
+                            d3.rgb(color(d.parent.process_id)).brighter(0.5)
+                        ])
+                        .domain([
+                            d3.min(d.parent.children, function(a){return a.value}),
+                            d3.max(d.parent.children, function(a){return a.value})
+                        ])
+                        .interpolate(d3.interpolateHcl);
+
+                    //var interpolator = d3.interpolateHcl(d3.rgb(color(d.parent.process_id)).darker(), d3.rgb(color(d.parent.process_id)).brighter(1));
+                    //var factor = d.value / d.parent.value;
+                    //var factor = d.value / d.parent.value;
+                    //return d3.rgb(d.parent.color).brighter(Math.min(1.5, 2*factor));
+                    return childColor(d.value);
+                default:
+
+            }
+
+            return d.depth == 1 ? color(d.process_id) : color(d.name);
+        })
         //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
         .style("fill-rule", "evenodd")
         .on("mouseover", mouseover)
