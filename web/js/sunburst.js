@@ -39,11 +39,11 @@ $(function(){
                     return color(d.process_id);
                 case 2:
                     var shiftColorStart = d3.hcl(color(d.parent.process_id));
-                    //shiftColorStart.h -= 20;
+                    shiftColorStart.c = 100;
                     var shiftColorEnd = d3.hcl(color(d.parent.process_id));
-                    shiftColorEnd.h += 20;
-                    shiftColorEnd.c -= 20;
-                    //shiftColorEnd.l -= 20;
+                    //shiftColorEnd.h += 40;
+                    shiftColorEnd.c = 10;
+                    shiftColorEnd.l = 90;
 
                     var childColor = d3.scale.linear()
                         .range([
