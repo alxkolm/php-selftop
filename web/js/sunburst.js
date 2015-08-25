@@ -42,6 +42,8 @@ $(function(){
                     //shiftColorStart.h -= 20;
                     var shiftColorEnd = d3.hcl(color(d.parent.process_id));
                     shiftColorEnd.h += 20;
+                    shiftColorEnd.c -= 20;
+                    //shiftColorEnd.l -= 20;
 
                     var childColor = d3.scale.linear()
                         .range([
