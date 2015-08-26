@@ -2,15 +2,18 @@
     margin: 0.5em;
     font-size: 10px;
 }
-.x-axis {
+.x-axis,
+.y-axis {
     font-size: 10px;
 }
-.x-axis path {
+.x-axis path,
+.y-axis path {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
 }
-.x-axis .tick line {
+.x-axis .tick line,
+.y-axis .tick line {
     stroke: #000;
 }
 

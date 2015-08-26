@@ -19,9 +19,13 @@ $(function(){
 
     var y = d3.scale.linear()
         .domain(yDomain)
-        .range([0, height]);
+        .range([height, 0]);
 
     var xAxis = d3.svg.axis().scale(x).orient('bottom');
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("right")
+        .ticks(10);
 
     var svg = d3.select('#keys-activity').append('svg')
         .attr('width', width + margin.left + margin.right)
@@ -33,6 +37,10 @@ $(function(){
         .attr("class", "x-axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis);
 
     svg.selectAll()
         .data(values)
