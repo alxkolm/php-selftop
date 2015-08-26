@@ -48,7 +48,7 @@ $(function(){
         .append('rect')
         .attr('class', 'bar')
         .attr('x', function (d) {return x(new Date(d.date))})
-        .attr('width', 1)
+        .attr('width', 2)
         .attr('y', function (d) {return y(d.count)})
         .attr('height', function (d) {return height - y(d.count)})
 });
