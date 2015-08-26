@@ -9,6 +9,7 @@
 namespace app\components;
 
 
+use app\models\Key;
 use app\models\Process;
 use app\models\Record;
 use yii\db\ActiveQuery;
@@ -124,6 +125,20 @@ class StatsHelper
         $r = $query->all();
 
         return array_map(function ($a) {return ['id' =>$a->window->process->id, 'name' => $a->window->process->screenName];}, $r);
+    }
+
+    public static function keysActivity($fromTime, $toTime = null)
+    {
+        $data = Key::find()
+            ->select([
+                new Expression('COUNT(*) as count'),
+                'at as date'
+            ])
+            ->groupBy(new Expression('strftime("%Y-%m-%d %H:%M", `at`) '))
+            ->createCommand()
+            ->queryAll();
+        array_walk($data, function(&$a){$a['count'] = (int)$a['count'];});
+        return $data;
     }
 
     protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)

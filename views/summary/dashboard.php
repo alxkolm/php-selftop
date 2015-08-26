@@ -23,6 +23,7 @@ use yii\grid\GridView;
         'options' => ['class' => 'btn-primary']
     ]) ?>
 <?php ActiveForm::end(); ?>
+<div id="keys-activity" class="keys-activity clearfix"></div>
 <div id="color-strip" class="color-strip clearfix"></div>
 <div id="sunburst" class="sunburst">
     <div class="info">

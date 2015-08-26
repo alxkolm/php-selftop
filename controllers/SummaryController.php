@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\assets\AppAsset;
 use app\assets\ColorStripAsset;
 use app\assets\DurationHistogramAsset;
+use app\assets\KeysAsset;
 use app\assets\SunburstAsset;
 use app\components\StatsHelper;
 use app\models\Record;
@@ -59,7 +60,11 @@ class SummaryController extends \yii\web\Controller
 
         $this->view->registerAssetBundle(SunburstAsset::className());
 
-
+        $keysActivity = StatsHelper::keysActivity($today, $todayEnd);
+        $this->view->registerJs(
+            'var dashboardKeys = '.json_encode($keysActivity),
+            View::POS_HEAD);
+        $this->view->registerAssetBundle(KeysAsset::className());
 
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,
