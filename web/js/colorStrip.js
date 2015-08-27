@@ -4,9 +4,7 @@ $(function(){
     var margin = {left: 10, right: 10};
     var width = 1140 - margin.left - margin.right;
 
-    var xDomain = d3.extent(values, function(value){
-        return new Date(value.start);
-    });
+    var xDomain = dashboard.timeExtent;
 
     var colors = dashboard.processColor;
 

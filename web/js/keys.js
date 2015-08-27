@@ -5,9 +5,7 @@ $(function(){
     var width = 1140 - margin.left - margin.right;
     var height = 70;
 
-    var xDomain = d3.extent(values, function(value){
-        return new Date(value.date);
-    });
+    var xDomain = dashboard.timeExtent;
 
     var yDomain = d3.extent(values, function(value){
         return value.count;

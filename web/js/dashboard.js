@@ -4,6 +4,12 @@ dashboard = {
      * Common colors of processes for all charts
      */
     processColor: d3.scale.category20(),
+
+    /**
+     * Time domain for all charts
+     */
+    timeExtent: getCommonTimeDomain(),
+
     /**
      * Format time duration to com[act string
      * @param seconds
@@ -35,4 +41,16 @@ dashboard = {
     }
 };
 
-
+/**
+ * Calculate common time domain
+ * @returns {*[]}
+ */
+function getCommonTimeDomain() {
+    var extent1 = d3.extent(dashboardTimeline, function(a){return new Date(a.start)});
+    var extent2 = d3.extent(dashboardTimeline, function(a){return new Date(a.end)});
+    var extent3 = d3.extent(dashboardKeys, function(a){return new Date(a.date)});
+    return [
+        Math.min(extent1[0], extent2[0], extent3[0]),
+        Math.max(extent1[1], extent2[1], extent3[1])
+    ]
+}
