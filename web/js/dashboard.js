@@ -1,7 +1,14 @@
 
 dashboard = {
-    // Common colors of processes for all charts
+    /**
+     * Common colors of processes for all charts
+     */
     processColor: d3.scale.category20(),
+    /**
+     * Format time duration to com[act string
+     * @param seconds
+     * @returns {string}
+     */
     formatDuration: function (seconds) {
         var result = '';
         if (seconds < 1) {
