@@ -129,32 +129,36 @@ class StatsHelper
 
     public static function keysActivity($fromTime, $toTime = null)
     {
-        $data = Key::find()
+        $query = Key::find()
             ->select([
                 new Expression('COUNT(*) as count'),
                 'at as date'
             ])
-            ->groupBy(new Expression('strftime("%Y-%m-%d %H:%M", `at`) '))
-            ->createCommand()
-            ->queryAll();
-        array_walk($data, function(&$a){$a['count'] = (int)$a['count'];});
+            ->groupBy(new Expression('strftime("%Y-%m-%d %H:%M", `at`) '));
+
+        self::whereFromTo($query, $fromTime, $toTime, 'date');
+        $data = $query->createCommand()->queryAll();
+        array_walk($data, function (&$a) {
+            $a['count'] = (int)$a['count'];
+        });
+
         return $data;
     }
 
-    protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null)
+    protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null, $column = '{{record}}.start')
     {
         $timezone = new \DateTimeZone(\Yii::$app->timeZone);
         if ($fromTime) {
             $from = (new \DateTime('now', $timezone))->setTimestamp($fromTime)->setTimezone($timezone);
             $query->andWhere(
-                '{{record}}.start >= :today',
+                $column . ' >= :today',
                 [':today' => $from->format('c')]
             );
         }
         if ($toTime) {
             $to = (new \DateTime('now', $timezone))->setTimestamp($toTime)->setTimezone($timezone);
             $query->andWhere(
-                '{{record}}.start < :todayNight',
+                $column . ' < :todayNight',
                 [':todayNight' => $to->format('c')]
             );
         }
