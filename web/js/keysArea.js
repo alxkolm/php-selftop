@@ -5,7 +5,7 @@ $(function(){
         total += parseInt(item.count);
         values.push({date: new Date(item.date), count: total})
     });
-    console.log(values);
+
     var margin = {left: 10, right: 10};
     var width = 1140 - margin.left - margin.right;
     var height = 70;
@@ -15,7 +15,7 @@ $(function(){
     var yDomain = d3.extent(values, function(value){
         return value.count;
     });
-    console.log(yDomain);
+
     var x = d3.time.scale()
         .domain(xDomain)
         .range([0, width]);
