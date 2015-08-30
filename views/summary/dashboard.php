@@ -34,6 +34,8 @@ use yii\grid\GridView;
     </div>
 
 </div>
+<div id="sunburst-process" class="sunburst-process"></div>
+
 <div style="margin: 1em;"><strong>Total activity:</strong> <?= Helper::formatTimeDuration($totalActivity / 1000)?></div>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,

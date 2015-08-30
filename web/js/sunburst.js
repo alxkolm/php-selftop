@@ -91,8 +91,29 @@ function mouseover(d){
         .text(dashboard.formatDuration(d.value));
     d3.select("#sunburst .window")
         .text(d.name);
+
+
+    if (d.depth == 1){
+        drawProcessList(d);
+    }
+
 }
 
 function mouseleave(){
     colorStripUndim();
+}
+
+function drawProcessList(data){
+    d3.select('#sunburst-process').selectAll('.process').remove();
+    var processEl = d3.select('#sunburst-process').selectAll('.process')
+        .data(data.children)
+        .enter()
+        .append('div')
+        .attr('class', 'process');
+    processEl.append('span')
+        .attr('class', 'duration')
+        .text(function (d) {return dashboard.formatDuration(d.value)});
+    processEl.append('span')
+        .attr('class', 'name')
+        .text(function (d) {return d.name});
 }

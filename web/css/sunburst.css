@@ -1,5 +1,6 @@
 #sunburst {
     position: relative;
+    float: left;
 }
 #sunburst .info {
     position: absolute;
@@ -13,4 +14,15 @@
 }
 #sunburst .percentage {
     font-size: 32px;
+}
+
+
+#sunburst-process {
+    font-size: 10px;
+    margin-left: 450px;
+}
+
+#sunburst-process .duration {
+    display: inline-block;
+    margin-right: 1em;
 }
