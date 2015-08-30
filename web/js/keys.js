@@ -1,5 +1,8 @@
 $(function(){
-    var values = dashboardKeys;
+    var values = [];
+    dashboardKeys.forEach(function(item){
+        values.push({date: new Date(item.date), count: item.count})
+    });
 
     var margin = {left: 10, right: 10};
     var width = 1140 - margin.left - margin.right;
@@ -18,6 +21,11 @@ $(function(){
     var y = d3.scale.linear()
         .domain(yDomain)
         .range([height, 0]);
+
+    var area = d3.svg.area()
+        .x(function(d) { return x(d.date); })
+        .y0(height)
+        .y1(function(d) { return y(d.count); });
 
     var xAxis = d3.svg.axis().scale(x).orient('bottom');
     var yAxis = d3.svg.axis()
@@ -40,13 +48,11 @@ $(function(){
         .attr("class", "y-axis")
         .call(yAxis);
 
-    svg.selectAll()
-        .data(values)
-        .enter()
-        .append('rect')
-        .attr('class', 'bar')
-        .attr('x', function (d) {return x(new Date(d.date))})
-        .attr('width', 2)
-        .attr('y', function (d) {return y(d.count)})
-        .attr('height', function (d) {return height - y(d.count)})
+    svg.append("path")
+        .datum(values)
+        .attr("class", "area")
+        .style('fill', '#1F77B4')
+        .attr("d", area);
+
+
 });

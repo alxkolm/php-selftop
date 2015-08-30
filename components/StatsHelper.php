@@ -132,17 +132,43 @@ class StatsHelper
         $query = Key::find()
             ->select([
                 new Expression('COUNT(*) as count'),
-                'at as date'
+                new Expression('strftime("%Y-%m-%d %H:%M:00", `at`, "localtime") as `date`'),
             ])
             ->groupBy(new Expression('strftime("%Y-%m-%d %H:%M", `at`) '));
 
-        self::whereFromTo($query, $fromTime, $toTime, 'date');
+        self::whereFromTo($query, $fromTime, $toTime, 'at');
         $data = $query->createCommand()->queryAll();
         array_walk($data, function (&$a) {
             $a['count'] = (int)$a['count'];
         });
 
-        return $data;
+        $data = ArrayHelper::map($data, 'date', 'count');
+
+        $timezone = new \DateTimeZone(\Yii::$app->timeZone);
+        $from = (new \DateTime('now', $timezone))->setTimestamp($fromTime)->setTimezone($timezone);
+        $to = (new \DateTime('now', $timezone))->setTimestamp($toTime)->setTimezone($timezone);
+
+        $interval = new \DateInterval('PT1M');
+        $period   = new \DatePeriod($from, $interval, $to);
+
+
+        $out = [];
+        foreach ($period as $min){
+            $date = $min->format('Y-m-d H:i:00');
+            if (isset($data[$date])){
+                $out[] = [
+                    'date'  => $min->setTimezone($timezone)->format('Y-m-d H:i:s'),
+                    'count' => (int)$data[$date],
+                ];
+            } else {
+                $out[] = [
+                    'date'  => $min->setTimezone($timezone)->format('Y-m-d H:i:s'),
+                    'count' => 0,
+                ];
+            }
+        }
+
+        return $out;
     }
 
     protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null, $column = '{{record}}.start')
