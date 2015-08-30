@@ -25,4 +25,5 @@
 #sunburst-process .duration {
     display: inline-block;
     margin-right: 1em;
+    font-weight: bold;
 }
