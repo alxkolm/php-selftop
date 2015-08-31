@@ -3,7 +3,7 @@ dashboard = {
     /**
      * Common colors of processes for all charts
      */
-    processColor: d3.scale.category20(),
+    processColor: d3.scale.ordinal().range(colorbrewer.Set1[9]),
 
     /**
      * Time domain for all charts
