@@ -11,7 +11,7 @@ $(function(){
     var x = d3.time.scale()
         .domain(xDomain)
         .range([0, width]);
-    var xAxis = d3.svg.axis().scale(x);
+    var xAxis = d3.svg.axis().scale(x).tickFormat(dashboard.tickFormat);
 
     var svg = d3.select('#color-strip').append('svg')
         .attr('width', width + margin.left + margin.right)

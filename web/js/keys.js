@@ -14,7 +14,7 @@ $(function(){
         return value.count;
     });
 
-    var x = d3.time.scale()
+    var x = d3.time.scale().clamp(true)
         .domain(xDomain)
         .range([0, width]);
 
@@ -27,7 +27,7 @@ $(function(){
         .y0(height)
         .y1(function(d) { return y(d.count); });
 
-    var xAxis = d3.svg.axis().scale(x).orient('bottom');
+    var xAxis = d3.svg.axis().scale(x).orient('bottom').tickFormat(dashboard.tickFormat);
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("right")
@@ -51,7 +51,7 @@ $(function(){
     svg.append("path")
         .datum(values)
         .attr("class", "area")
-        .style('fill', '#1F77B4')
+        .style('fill', 'rgb(228, 26, 28)')
         .attr("d", area);
 
 
