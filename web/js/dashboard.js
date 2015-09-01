@@ -17,7 +17,7 @@ dashboard = {
         [".%L", function(d) { return d.getMilliseconds(); }],
         [":%S", function(d) { return d.getSeconds(); }],
         ["%H:%M", function(d) { return d.getMinutes(); }],
-        ["%H %p", function(d) { return d.getHours(); }],
+        ["%H", function(d) { return d.getHours(); }],
         ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
         ["%b %d", function(d) { return d.getDate() != 1; }],
         ["%B", function(d) { return d.getMonth(); }],
