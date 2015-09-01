@@ -2,6 +2,7 @@
 use app\components\Helper;
 use yii\bootstrap\ActiveForm;
 use yii\grid\GridView;
+use yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
@@ -16,6 +17,17 @@ use yii\grid\GridView;
                 'title' => Yii::t('app', 'Title'),
                 'process_id' => Yii::t('app', 'Process'),
             ])
+    ?>
+
+    <?=
+        $form->field($searchModel, 'dateFrom')->widget(DatePicker::className(), [
+            'dateFormat' => 'yyyy-MM-dd',
+        ])
+    ?>
+    <?=
+        $form->field($searchModel, 'dateTo')->widget(DatePicker::className(), [
+            'dateFormat' => 'yyyy-MM-dd',
+        ])
     ?>
 
     <?= \yii\bootstrap\Button::widget([

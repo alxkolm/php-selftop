@@ -17,6 +17,9 @@ class WindowSearch extends Window
     public $groupBy = 'title';
     public $dateFrom;
     public $dateTo;
+    public $timestampFrom;
+    public $timestampTo;
+
     /**
      * @inheritdoc
      */
@@ -25,6 +28,8 @@ class WindowSearch extends Window
         return [
             [['groupBy'], 'in', 'range' => ['title', 'process_id']],
             [['id', 'created'], 'integer'],
+            [['dateFrom'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestampFrom'],
+            [['dateTo'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestampTo'],
         ];
     }
 
@@ -86,17 +91,17 @@ class WindowSearch extends Window
         ]);
 
         $timezone = new \DateTimeZone('UTC');
-        if ($this->dateFrom) {
-            $from = (new \DateTime('now', $timezone))->setTimestamp($this->dateFrom)->setTimezone($timezone);
+        if ($this->timestampFrom) {
+            $from = (new \DateTime('now', $timezone))->setTimestamp(strtotime('today',$this->timestampFrom))->setTimezone($timezone);
             $query->andWhere(
-                '{{record}}.created >= :today',
+                '{{record}}.start >= :today',
                 [':today' => $from->format('Y-m-d H:i:s')]
             );
         }
-        if ($this->dateTo) {
-            $to = (new \DateTime('now', $timezone))->setTimestamp($this->dateTo)->setTimezone($timezone);
+        if ($this->timestampTo) {
+            $to = (new \DateTime('now', $timezone))->setTimestamp(strtotime('today 23:59:59', $this->timestampTo))->setTimezone($timezone);
             $query->andWhere(
-                '{{record}}.created < :todayNight',
+                '{{record}}.start < :todayNight',
                 [':todayNight' => $to->format('Y-m-d H:i:s')]
             );
         }
