@@ -9,7 +9,7 @@ use yii\jui\DatePicker;
 /* @var $searchModel \app\models\WindowSearch */
 ?>
 <?php $form = ActiveForm::begin([
-    'method' => 'get',
+    'method' => 'post',
 ])?>
     <?=
         $form->field($searchModel, 'groupBy')
