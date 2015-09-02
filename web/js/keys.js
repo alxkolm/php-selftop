@@ -54,5 +54,8 @@ $(function(){
         .style('fill', 'rgb(228, 26, 28)')
         .attr("d", area);
 
-
+    svg.append('text')
+        .attr('y', 10)
+        .attr('x', 80)
+        .text('Key press per minute');
 });

@@ -55,4 +55,9 @@ $(function(){
         .attr("class", "area")
         .style('fill', 'rgb(55, 126, 184)')
         .attr("d", area);
+
+    svg.append('text')
+        .attr('y', 10)
+        .attr('x', 80)
+        .text('Total keys pressed');
 });
