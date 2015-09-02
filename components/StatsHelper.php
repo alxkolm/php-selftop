@@ -37,13 +37,37 @@ class StatsHelper
         return array_values($values);
     }
 
+    /**
+     * Map process with same name under one id
+     * @return array
+     */
+    public static function processMap()
+    {
+        /** @var Process[] $processes */
+        $processes = Process::find()->all();
+        $out = [];
+        $names = [];
+        $ignore = [
+            'java'
+        ];
+        foreach ($processes as $process) {
+            if (!isset($names[$process->name]) || in_array($process->name, $ignore)) {
+                $names[$process->name] = $process;
+            }
+            $out[$process->id] = $names[$process->name];
+        }
+
+        return $out;
+    }
+
     public static function timeline($fromTime, $toTime = null)
     {
         $query = Record::find();
         self::whereFromTo($query, $fromTime, $toTime);
         $query->with(['window', 'window.process']);
-//        $query->andWhere(['>=','duration', 30*1000]);
-        $records = array_map(function (Record $record) {
+        $processMap = self::processMap();
+        $records = array_map(function (Record $record) use ($processMap) {
+            $mappedProcess = $processMap[$record->window->process->id];
             return [
                 'id'      => $record->id,
                 'window'  => [
@@ -51,14 +75,14 @@ class StatsHelper
                     'title' => $record->window->title,
                 ],
                 'process' => [
-                    'id'   => (int)$record->window->process->id,
-                    'name' => $record->window->process->getScreenName()
+                    'id'   => (int) $mappedProcess->id,
+                    'name' => $mappedProcess->getScreenName()
                 ],
                 'duration' => $record->duration / 1000,
                 'start' => $record->start,
                 'end' => $record->end,
                 'formattedDuration' => $record->getFormattedDuration(),
-                'color' => $record->duration > 3000 ? self::rgbcode($record->window->process->id) : '#000',
+                'color' => $record->duration > 3000 ? self::rgbcode($mappedProcess->id) : '#000',
             ];
         }, $query->all());
         $totalDuration = array_reduce($records, function ($a, $b) {return $a + $b['duration'];}, 0);
@@ -83,26 +107,31 @@ class StatsHelper
         ]);
         $data = $query->createCommand()->queryAll();
 
-        $processes = ArrayHelper::map(Process::find()->all(), 'id', 'screenName');
+        /** @var Process[] $processMap */
+        $processMap = self::processMap();
 
         $groups = ['children' => [], 'name' => 'root'];
+        // build tree of processes
         foreach ($data as $window){
-            if ((int) $window['duration'] == 0) continue;
-            if (!isset($groups['children'][$window['process_id']])){
-                $groups['children'][$window['process_id']] = [
-                    'name'       => $processes[$window['process_id']],
-                    'process_id' => $window['process_id'],
+            if ((int) $window['duration'] == 0) {
+                continue;
+            }
+            $process = $processMap[$window['process_id']];
+            if (!isset($groups['children'][$process->id])){
+                $groups['children'][$process->id] = [
+                    'name'       => $process->getScreenName(),
+                    'process_id' => $process->id,
                     'children'   => [],
                     'size'       => 0,
-                    'color'      => self::rgbcode($window['process_id']),
+                    'color'      => self::rgbcode($process->id),
                 ];
             }
-            $groups['children'][$window['process_id']]['children'][] = [
+            $groups['children'][$process->id]['children'][] = [
                 'name'      => $window['title'],
                 'window_id' => $window['window_id'],
                 'size'      => (int) $window['duration'] / 1000,
             ];
-            $groups['children'][$window['process_id']]['size'] += (int) $window['duration'] / 1000;
+            $groups['children'][$process->id]['size'] += (int) $window['duration'] / 1000;
         }
         $groups['children'] = array_values($groups['children']);
         foreach ($groups['children'] as $key => $process){
