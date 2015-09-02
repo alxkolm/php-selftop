@@ -30,6 +30,7 @@ $(function(){
         .enter().append("path")
         .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
         .attr("d", arc)
+        .attr("id", function (d) {return d.depth == 1 ? 'process-' + d.process_id : 'window-' + d.window_id;})
         .style("stroke", "#fff")
         .style("fill", function(d) {
             switch (d.depth){
@@ -71,7 +72,29 @@ $(function(){
         .style("fill-rule", "evenodd")
         .on("mouseover", mouseover)
         .on("mouseleave", mouseleave);
+
     totalSize = path.node().__data__.value;
+
+    var textNodes = nodes.filter(function(d){return d.depth == 1 && d.dx > 0.5});
+    svg.selectAll('text')
+        .data(textNodes)
+        .enter()
+        .append('text')
+        .attr('x', 0)
+        .attr('dy', '30')
+        .attr('text-anchor', 'middle')
+        .attr('letter-spacing', '0.25em')
+        .on("mouseover", mouseover)
+        .on("mouseleave", mouseleave)
+        .append('textPath')
+        .attr("startOffset",function(d){return '25%';})
+        //.attr('stroke', 'black')
+        .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'process-' + d.process_id : 'window-' + d.window_id);})
+        .text(function (d) {
+            var percentage = (100 * d.value / totalSize).toPrecision(2);
+            return d.name + ' (' + percentage +'%)';
+        });
+
 });
 
 function mouseover(d){
