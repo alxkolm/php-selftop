@@ -84,6 +84,9 @@ $(function(){
         .attr('dy', '30')
         .attr('text-anchor', 'middle')
         .attr('letter-spacing', '0.25em')
+        .style('fill', function(d) {
+            return d3.hcl(color(d.process_id)).brighter(3);
+        })
         .on("mouseover", mouseover)
         .on("mouseleave", mouseleave)
         .append('textPath')
