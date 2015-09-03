@@ -38,6 +38,7 @@ use yii\jui\DatePicker;
 <div id="keys-activity-area" class="keys-activity-area clearfix"></div>
 <div id="keys-activity" class="keys-activity clearfix"></div>
 <div id="color-strip" class="color-strip clearfix"></div>
+<div id="color-strip-clusters" class="color-strip clearfix"></div>
 <div id="sunburst" class="sunburst">
     <div class="info">
         <div class="percentage"></div>

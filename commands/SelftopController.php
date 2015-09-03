@@ -85,6 +85,25 @@ class SelftopController extends Controller
         );
     }
 
+    /**
+     * Output window.titles
+     */
+    public function actionTitles()
+    {
+        $titles = Window::find()
+            ->select([
+                'title'
+            ])
+            ->distinct(true)
+            ->orderBy('title')
+            ->createCommand()
+            ->queryAll();
+        array_walk(
+            array_filter($titles, function ($a) {return trim($a['title']) != '';}),
+            function ($a) { echo trim($a['title']) . PHP_EOL; }
+        );
+    }
+
     public function actionTrainData()
     {
         $trainFile = fopen('train.svm', 'w');

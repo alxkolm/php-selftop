@@ -4,6 +4,7 @@ dashboard = {
      * Common colors of processes for all charts
      */
     processColor: d3.scale.ordinal().range(colorbrewer.Set1[9]),
+    clusterColor: d3.scale.ordinal().range(colorbrewer.Set3[9]),
 
     /**
      * Time domain for all charts
@@ -62,12 +63,22 @@ dashboard = {
 function getCommonTimeDomain() {
     var extent1 = d3.extent(dashboardTimeline, function(a){return new Date(a.start)});
     var extent2 = d3.extent(dashboardTimeline, function(a){return new Date(a.end)});
-    var dashboardKeysFiltered = dashboardKeys.filter(function (d) {
-        return d.count > 0
-    });
-    var extent3 = d3.extent(dashboardKeysFiltered, function(a){return new Date(a.date)});
-    return [
-        Math.min(extent1[0], extent2[0], extent3[0]),
-        Math.max(extent1[1], extent2[1], extent3[1])
-    ]
+    var extent = [
+        Math.min(extent1[0], extent2[0]),
+        Math.max(extent1[1], extent2[1])
+    ];
+
+    if (typeof(dashboardKeys) != 'undefined'){
+        var dashboardKeysFiltered = dashboardKeys.filter(function (d) {
+            return d.count > 0
+        });
+        var extent3 = d3.extent(dashboardKeysFiltered, function(a){return new Date(a.date)});
+
+        extent = [
+            Math.min(extent[0], extent3[0]),
+            Math.max(extent[1], extent3[1])
+        ];
+    }
+
+    return extent;
 }

@@ -4,10 +4,12 @@ namespace app\controllers;
 
 use app\assets\AppAsset;
 use app\assets\ColorStripAsset;
+use app\assets\ColorStripClustersAsset;
 use app\assets\DurationHistogramAsset;
 use app\assets\KeysAreaAsset;
 use app\assets\KeysAsset;
 use app\assets\SunburstAsset;
+use app\components\ClusterHelper;
 use app\components\StatsHelper;
 use app\models\Record;
 use app\models\Window;
@@ -70,10 +72,44 @@ class SummaryController extends \yii\web\Controller
         $this->view->registerAssetBundle(KeysAsset::className());
         $this->view->registerAssetBundle(KeysAreaAsset::className());
 
+        $this->clusterChart();
+
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,
             'searchModel'   => $searchModel,
             'totalActivity' => StatsHelper::totalActivity($from, $to),
         ]);
+    }
+
+    public function clusterChart()
+    {
+        $titles = Window::find()
+            ->select(['title'])
+            ->distinct(true)
+            ->orderBy('title')
+            ->createCommand()
+            ->queryColumn();
+        $titles = array_filter($titles, function ($a) {return trim($a) != '';});
+        $clusters = ClusterHelper::clusterizeStrings($titles);
+
+        $from = strtotime('today');
+        $to = strtotime('today 23:59:59');
+
+        $clustersList = array_map(function($a){
+            return [
+                'id' => $a,
+                'name' => $a,
+            ];
+        }, array_unique(array_values($clusters)));
+        $this->view->registerJs(
+            'var dashboardClusters = '.json_encode($clustersList),
+            View::POS_HEAD);
+
+        $timeline = ClusterHelper::timeline($clusters, $from, $to);
+        $this->view->registerJs(
+            'var dashboardClustersTimeline = '.json_encode($timeline),
+            View::POS_HEAD);
+
+        $this->view->registerAssetBundle(ColorStripClustersAsset::className());
     }
 }

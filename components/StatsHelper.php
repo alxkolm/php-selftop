@@ -200,7 +200,7 @@ class StatsHelper
         return $out;
     }
 
-    protected static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null, $column = '{{record}}.start')
+    public static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null, $column = '{{record}}.start')
     {
         $timezone = new \DateTimeZone(\Yii::$app->timeZone);
         if ($fromTime) {
