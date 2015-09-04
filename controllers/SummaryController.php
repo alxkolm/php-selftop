@@ -111,5 +111,12 @@ class SummaryController extends \yii\web\Controller
             View::POS_HEAD);
 
         $this->view->registerAssetBundle(ColorStripClustersAsset::className());
+
+        $durations = ClusterHelper::getProcessWindowHierarchy($clusters, $from, $to);
+        $this->view->registerJs(
+            'var dashboardClustersDurations = '.json_encode($durations),
+            View::POS_HEAD);
+
+        $this->view->registerAssetBundle(SunburstAsset::className());
     }
 }

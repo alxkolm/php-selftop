@@ -16,10 +16,10 @@
     font-size: 32px;
 }
 
-
 .sunburst-process {
     font-size: 10px;
     margin-left: 450px;
+    border-bottom: 1px #555 solid;
 }
 
 .sunburst-process .sunburst-duration {

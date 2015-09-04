@@ -133,7 +133,9 @@ $.fn.extend({
             }
 
             // Execute callback
-            options.mouseover(d);
+            if (typeof options.mouseover != 'undefined'){
+                options.mouseover(d);
+            }
         }
 
         /**
@@ -141,7 +143,9 @@ $.fn.extend({
          */
         function mouseleave(d){
             // Execute callback
-            options.mouseleave(d);
+            if (typeof options.mouseleave != 'undefined') {
+                options.mouseleave(d);
+            }
         }
 
         /**
@@ -178,6 +182,10 @@ $(function(){
                 colorStripDimByWindow(d.window_id);
             }
         }
+    });
+    $('#sunburst-clusters').sunburst({
+        color: dashboard.clusterColor,
+        data: dashboardClustersDurations
     });
 });
 
