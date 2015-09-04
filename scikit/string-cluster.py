@@ -10,11 +10,11 @@ from sklearn.cluster import MeanShift, estimate_bandwidth
 titles = [line.strip('\n') for line in sys.stdin]
 
 # extract feature
-vectorizer = TfidfVectorizer(token_pattern=ur'\b\w[\w/.:-]+\b')
+vectorizer = TfidfVectorizer()
 x_train = vectorizer.fit_transform(titles)
 
 # clustering
-estimator = KMeans(n_clusters=4)
+estimator = KMeans(n_clusters=100)
 labels = estimator.fit_predict(x_train)
 
 
