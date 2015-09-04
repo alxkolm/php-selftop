@@ -1,28 +1,28 @@
-#sunburst {
+.sunburst .sunburst-chart{
     position: relative;
     float: left;
 }
-#sunburst .info {
+.sunburst .sunburst-info {
     position: absolute;
     top: 120px;
     left: 100px;
     text-align: center;
     width: 200px;
 }
-#sunburst .duration {
+.sunburst .sunburst-duration {
     font-weight: bold;
 }
-#sunburst .percentage {
+.sunburst .sunburst-percentage {
     font-size: 32px;
 }
 
 
-#sunburst-process {
+.sunburst-process {
     font-size: 10px;
     margin-left: 450px;
 }
 
-#sunburst-process .duration {
+.sunburst-process .sunburst-duration {
     display: inline-block;
     margin-right: 1em;
     font-weight: bold;

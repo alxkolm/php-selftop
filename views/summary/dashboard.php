@@ -39,15 +39,8 @@ use yii\jui\DatePicker;
 <div id="keys-activity" class="keys-activity clearfix"></div>
 <div id="color-strip" class="color-strip clearfix"></div>
 <div id="color-strip-clusters" class="color-strip clearfix"></div>
-<div id="sunburst" class="sunburst">
-    <div class="info">
-        <div class="percentage"></div>
-        <div class="duration"></div>
-        <div class="window"></div>
-    </div>
+<div id="sunburst"></div>
 
-</div>
-<div id="sunburst-process" class="sunburst-process clearfix"></div>
 
 <div style="margin: 1em;" class="clearfix"><strong>Total activity:</strong> <?= Helper::formatTimeDuration($totalActivity / 1000)?></div>
 <?= GridView::widget([
