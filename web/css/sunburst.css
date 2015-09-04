@@ -1,3 +1,8 @@
+.sunburst {
+    height: 400px;
+    overflow: hidden;
+    margin-bottom: 2em;
+}
 .sunburst .sunburst-chart{
     position: relative;
     float: left;
