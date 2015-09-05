@@ -12,6 +12,11 @@ use app\models\Record;
  */
 class RecordSearch extends Record
 {
+    public $dateFrom;
+    public $dateTo;
+    public $timestampFrom;
+    public $timestampTo;
+
     /**
      * @inheritdoc
      */
@@ -19,6 +24,8 @@ class RecordSearch extends Record
     {
         return [
             [['id', 'window_id', 'duration', 'motions', 'motions_filtered', 'clicks', 'keys', 'created'], 'integer'],
+            [['dateFrom'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestampFrom'],
+            [['dateTo'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestampTo'],
         ];
     }
 
@@ -68,6 +75,22 @@ class RecordSearch extends Record
             'keys' => $this->keys,
             'created' => $this->created,
         ]);
+
+        $timezone = new \DateTimeZone('UTC');
+        if ($this->timestampFrom) {
+            $from = (new \DateTime('now', $timezone))->setTimestamp(strtotime('today',$this->timestampFrom))->setTimezone($timezone);
+            $query->andWhere(
+                '{{record}}.start >= :today',
+                [':today' => $from->format('Y-m-d H:i:s')]
+            );
+        }
+        if ($this->timestampTo) {
+            $to = (new \DateTime('now', $timezone))->setTimestamp(strtotime('today 23:59:59', $this->timestampTo))->setTimezone($timezone);
+            $query->andWhere(
+                '{{record}}.start < :todayNight',
+                [':todayNight' => $to->format('Y-m-d H:i:s')]
+            );
+        }
 
         return $dataProvider;
     }

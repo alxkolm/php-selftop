@@ -1,23 +1,42 @@
 <?php
 
 use app\components\widgets\RecordGridView;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\RecordSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Records');
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="record-index">
+    <?php $form = ActiveForm::begin([
+        'method' => 'get',
+        'layout' => 'inline',
+        'fieldConfig' => [
+            'labelOptions' => ['class' => ''] // to reset default class enforced by yii
+        ],
+    ])
+    ?>
+        <?=
+        $form->field($searchModel, 'dateFrom')->widget(DatePicker::className(), [
+            'dateFormat' => 'yyyy-MM-dd',
+        ])
+        ?>
+        <?=
+        $form->field($searchModel, 'dateTo')->widget(DatePicker::className(), [
+            'dateFormat' => 'yyyy-MM-dd',
+        ])
+        ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Record'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <?= \yii\bootstrap\Button::widget([
+            'label' => 'Submit',
+            'options' => ['class' => 'btn-primary']
+        ]) ?>
+    <?php ActiveForm::end(); ?>
 
     <?= RecordGridView::widget([
         'dataProvider' => $dataProvider,
