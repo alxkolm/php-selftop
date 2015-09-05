@@ -1,21 +1,36 @@
 <?php
 use yii\bootstrap\ActiveForm;
 use yii\grid\GridView;
+use yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $searchModel \app\models\WindowSearch */
 ?>
 <?php $form = ActiveForm::begin([
-    'action' => ['index'],
-    'method' => 'get',
+    'method' => 'post',
+    'layout' => 'inline',
+    'fieldConfig' => [
+        'labelOptions' => ['class' => ''] // to reset default class enforced by yii
+    ],
 ])?>
     <?=
-        $form->field($searchModel, 'groupBy')
-            ->dropDownList([
-                'title' => Yii::t('app', 'Title'),
-                'process_id' => Yii::t('app', 'Process'),
-            ])
+    $form->field($searchModel, 'groupBy')
+        ->dropDownList([
+            'title' => Yii::t('app', 'Title'),
+            'process_id' => Yii::t('app', 'Process'),
+        ])
+    ?>
+
+    <?=
+    $form->field($searchModel, 'dateFrom')->widget(DatePicker::className(), [
+        'dateFormat' => 'yyyy-MM-dd',
+    ])
+    ?>
+    <?=
+    $form->field($searchModel, 'dateTo')->widget(DatePicker::className(), [
+        'dateFormat' => 'yyyy-MM-dd',
+    ])
     ?>
 
     <?= \yii\bootstrap\Button::widget([

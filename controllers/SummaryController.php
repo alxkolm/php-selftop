@@ -24,7 +24,9 @@ class SummaryController extends \yii\web\Controller
     public function actionIndex()
     {
         $searchModel  = new WindowSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel->dateFrom = date('Y-m-d');
+        $searchModel->dateTo   = date('Y-m-d');
+        $dataProvider = $searchModel->search(Yii::$app->request->post());
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
