@@ -5,6 +5,7 @@ $params = require(__DIR__ . '/params.php');
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'name' => 'Selftop',
     'bootstrap' => ['log'],
     'defaultRoute' => 'summary/index',
     'timeZone' => 'Europe/Moscow',

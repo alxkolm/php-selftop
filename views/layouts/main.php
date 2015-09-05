@@ -9,6 +9,7 @@ use app\assets\AppAsset;
 /* @var $content string */
 
 AppAsset::register($this);
+$this->title .= ' | ' . Yii::$app->name;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
