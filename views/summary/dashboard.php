@@ -7,6 +7,8 @@ use yii\jui\DatePicker;
 /* @var $this yii\web\View */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $searchModel \app\models\WindowSearch */
+
+$this->title = Yii::t('app', 'Dashboard');
 ?>
 <?php $form = ActiveForm::begin([
     'method' => 'post',
