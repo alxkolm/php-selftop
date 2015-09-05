@@ -74,7 +74,7 @@ class SummaryController extends \yii\web\Controller
         $this->view->registerAssetBundle(KeysAsset::className());
         $this->view->registerAssetBundle(KeysAreaAsset::className());
 
-        $this->clusterChart();
+        $this->clusterChart($searchModel);
 
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,
@@ -83,7 +83,7 @@ class SummaryController extends \yii\web\Controller
         ]);
     }
 
-    public function clusterChart()
+    public function clusterChart($searchModel)
     {
         $titles = Window::find()
             ->select(['title'])
@@ -94,8 +94,8 @@ class SummaryController extends \yii\web\Controller
         $titles = array_filter($titles, function ($a) {return trim($a) != '';});
         $clusters = ClusterHelper::clusterizeStrings($titles);
 
-        $from = strtotime('today');
-        $to = strtotime('today 23:59:59');
+        $from = strtotime('today', $searchModel->timestampFrom);
+        $to = strtotime('today 23:59:59', $searchModel->timestampTo);
 
         $clustersList = array_map(function($a){
             return [
