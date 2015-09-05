@@ -14,7 +14,7 @@ $.fn.extend({
             + '<div class="sunburst-window"></div>'
             + '</div>'
             + '</div>'
-            + '<div class="sunburst-process sunburst-side-right"></div>';
+            + '<div class="sunburst-process-list sunburst-side-right"></div>';
         this.append(markup);
         this.addClass("sunburst");
 
@@ -153,18 +153,18 @@ $.fn.extend({
          * @param data
          */
         function drawProcessList(data){
-            var el = that.find('.sunburst-process')[0];
-            d3.select(el).selectAll('.process').remove();
-            var processEl = d3.select(el).selectAll('.process')
+            var el = that.find('.sunburst-process-list')[0];
+            d3.select(el).selectAll('.sunburst-process').remove();
+            var processEl = d3.select(el).selectAll('.sunburst-process')
                 .data(data.children)
                 .enter()
                 .append('div')
-                .attr('class', 'process');
+                .attr('class', 'sunburst-process');
             processEl.append('span')
-                .attr('class', 'duration')
+                .attr('class', 'sunburst-duration')
                 .text(function (d) {return dashboard.formatDuration(d.value)});
             processEl.append('span')
-                .attr('class', 'name')
+                .attr('class', 'sunburst-name')
                 .text(function (d) {return d.name});
         }
     }
