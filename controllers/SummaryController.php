@@ -105,13 +105,6 @@ class SummaryController extends \yii\web\Controller
             'var dashboardClusters = '.json_encode($clustersList),
             View::POS_HEAD);
 
-        $timeline = ClusterHelper::timeline($clusters, $from, $to);
-        $this->view->registerJs(
-            'var dashboardClustersTimeline = '.json_encode($timeline),
-            View::POS_HEAD);
-
-        $this->view->registerAssetBundle(ColorStripClustersAsset::className());
-
         $durations = ClusterHelper::getProcessWindowHierarchy($clusters, $from, $to);
         $this->view->registerJs(
             'var dashboardClustersDurations = '.json_encode($durations),
