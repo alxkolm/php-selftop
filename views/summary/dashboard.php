@@ -10,6 +10,10 @@ use yii\jui\DatePicker;
 ?>
 <?php $form = ActiveForm::begin([
     'method' => 'post',
+    'layout' => 'inline',
+    'fieldConfig' => [
+        'labelOptions' => ['class' => ''] // to reset default class enforced by yii
+    ],
 ])?>
     <?=
         $form->field($searchModel, 'groupBy')

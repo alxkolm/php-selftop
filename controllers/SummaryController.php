@@ -40,7 +40,7 @@ class SummaryController extends \yii\web\Controller
         $searchModel->dateFrom = date('Y-m-d');
         $searchModel->dateTo   = date('Y-m-d');
 
-        $dataProvider          = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider          = $searchModel->search(Yii::$app->request->post());
 
         // eagerly load process info
         $dataProvider->query->with('process');
