@@ -39,6 +39,11 @@ $.fn.extend({
             .filter(function(d) {
                 return (d.dx > 0.01); // 0.005 radians = 0.29 degrees
             });
+
+        var drag = d3.behavior.drag();
+        drag.on('dragstart', dragstart);
+        drag.on('dragend', dragend);
+
         var path = svg.datum(data).selectAll("path")
             .data(nodes)
             .enter().append("path")
@@ -81,7 +86,8 @@ $.fn.extend({
             //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
             .style("fill-rule", "evenodd")
             .on("mouseover", mouseover)
-            .on("mouseleave", mouseleave);
+            .on("mouseleave", mouseleave)
+            .call(drag);
 
         totalSize = path.node().__data__.value;
 
@@ -166,6 +172,14 @@ $.fn.extend({
             processEl.append('span')
                 .attr('class', 'sunburst-name')
                 .text(function (d) {return d.name});
+        }
+
+        function dragstart(d){
+            console.log(d3.event);
+        }
+        function dragend(d){
+            console.log(d3.event.sourceEvent.toElement);
+            console.log(d);
         }
     }
 });

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\assets\AppAsset;
 use app\assets\ColorStripAsset;
 use app\assets\ColorStripClustersAsset;
+use app\assets\DashboardAsset;
 use app\assets\DurationHistogramAsset;
 use app\assets\KeysAreaAsset;
 use app\assets\KeysAsset;
@@ -12,11 +13,13 @@ use app\assets\SunburstAsset;
 use app\components\ClusterHelper;
 use app\components\StatsHelper;
 use app\models\Record;
+use app\models\Task;
 use app\models\Window;
 use app\models\WindowSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\web\View;
 
 class SummaryController extends \yii\web\Controller
@@ -76,6 +79,17 @@ class SummaryController extends \yii\web\Controller
 
         $this->clusterChart($searchModel);
 
+        $tasks = array_map(function ($task) {
+            return [
+                'id'   => $task->id,
+                'name' => $task->name,
+            ];
+        }, Task::find()->all());
+        $this->view->registerJs(
+            'var dashboardTasks = '.json_encode($tasks),
+            View::POS_HEAD);
+
+        $this->view->registerAssetBundle(DashboardAsset::className());
         return $this->render('dashboard', [
             'dataProvider'  => $dataProvider,
             'searchModel'   => $searchModel,

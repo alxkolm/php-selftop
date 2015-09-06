@@ -45,6 +45,7 @@ $this->title = Yii::t('app', 'Dashboard');
 <div id="keys-activity" class="keys-activity clearfix"></div>
 <div id="color-strip" class="color-strip clearfix"></div>
 <div id="color-strip-clusters" class="color-strip clearfix"></div>
+<div id="tasks" class="tasks-list"></div>
 <div id="sunburst" class="clearfix"></div>
 <div id="sunburst-clusters" class="clearfix"></div>
 

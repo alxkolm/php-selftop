@@ -27,3 +27,4 @@ phpunit.phar
 /phpunit.xml
 
 selftop.db
+node_modules
