@@ -183,9 +183,11 @@ $(function(){
             }
         }
     });
-    $('#sunburst-clusters').sunburst({
-        color: dashboard.clusterColor,
-        data: dashboardClustersDurations
-    });
+    if (typeof dashboardClustersDurations != 'undefined'){
+        $('#sunburst-clusters').sunburst({
+            color: dashboard.clusterColor,
+            data: dashboardClustersDurations
+        });
+    }
 });
 
