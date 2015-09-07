@@ -180,6 +180,15 @@ $.fn.extend({
         function dragend(d){
             console.log(d3.event.sourceEvent.toElement);
             console.log(d);
+            var el = $(d3.event.sourceEvent.toElement);
+            var taskId = el.attr('task-id');
+            if (d.depth == 2) {
+                $.ajax('/record/assign', {
+                    type: 'POST',
+                    data: {task: taskId, window: d.window_id}
+                });
+            }
+
         }
     }
 });

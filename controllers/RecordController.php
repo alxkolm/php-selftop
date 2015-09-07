@@ -6,6 +6,7 @@ use app\models\RecordTask;
 use Yii;
 use app\models\Record;
 use app\models\RecordSearch;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -131,6 +132,39 @@ class RecordController extends Controller
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionAssign()
+    {
+        $taskId = Yii::$app->request->getBodyParam('task');
+        $windowId = Yii::$app->request->getBodyParam('window');
+
+        $transaction = Yii::$app->db->beginTransaction();
+        $timezone = new \DateTimeZone(Yii::$app->timeZone);
+        $from = new \DateTime('today', $timezone);
+        $to = new \DateTime('tomorrow', $timezone);
+        try {
+            $ids = Record::find()
+                ->select(['id'])
+                ->where(['window_id' => $windowId])
+                ->andWhere(['>=', 'start', $from->format('Y-m-d H:i:s')])
+                ->andWhere(['<', 'end', $to->format('Y-m-d H:i:s')])
+                ->createCommand()
+                ->queryColumn();
+            RecordTask::deleteAll(['record_id' => $ids]);
+
+            $values = array_map(function($id) use($taskId){
+                return [$id, $taskId];
+            }, $ids);
+            Yii::$app->db
+                ->createCommand()
+                ->batchInsert('{{record_task}}', ['record_id', 'task_id'], $values)
+                ->execute();
+
+            $transaction->commit();
+        } catch (Exception $e) {
+            $transaction->rollBack();
         }
     }
 }
