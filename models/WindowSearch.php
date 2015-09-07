@@ -90,16 +90,16 @@ class WindowSearch extends Window
             'created' => $this->created,
         ]);
 
-        $timezone = new \DateTimeZone('UTC');
+        $timezone = new \DateTimeZone(\Yii::$app->timeZone);
         if ($this->timestampFrom) {
-            $from = (new \DateTime('now', $timezone))->setTimestamp(strtotime('today',$this->timestampFrom))->setTimezone($timezone);
+            $from = (new \DateTime('@'.strtotime('today',$this->timestampFrom)))->setTimezone($timezone);
             $query->andWhere(
                 '{{record}}.start >= :today',
                 [':today' => $from->format('Y-m-d H:i:s')]
             );
         }
         if ($this->timestampTo) {
-            $to = (new \DateTime('now', $timezone))->setTimestamp(strtotime('today 23:59:59', $this->timestampTo))->setTimezone($timezone);
+            $to = (new \DateTime('@'.strtotime('tomorrow', $this->timestampTo)))->setTimezone($timezone);
             $query->andWhere(
                 '{{record}}.start < :todayNight',
                 [':todayNight' => $to->format('Y-m-d H:i:s')]

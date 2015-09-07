@@ -49,7 +49,7 @@ class SummaryController extends \yii\web\Controller
         $dataProvider->query->with('process');
 
         $from = strtotime('today', $searchModel->timestampFrom);
-        $to = strtotime('today 23:59:59', $searchModel->timestampTo);
+        $to = strtotime('tomorrow', $searchModel->timestampTo);
 
         $processList = StatsHelper::getProcessList($from, $to);
         $this->view->registerJs(
@@ -109,7 +109,7 @@ class SummaryController extends \yii\web\Controller
         $clusters = ClusterHelper::clusterizeStrings($titles);
 
         $from = strtotime('today', $searchModel->timestampFrom);
-        $to = strtotime('today 23:59:59', $searchModel->timestampTo);
+        $to = strtotime('tomorrow', $searchModel->timestampTo);
 
         $clustersList = array_map(function($a){
             return [

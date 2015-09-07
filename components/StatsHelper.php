@@ -174,8 +174,8 @@ class StatsHelper
         $data = ArrayHelper::map($data, 'date', 'count');
 
         $timezone = new \DateTimeZone(\Yii::$app->timeZone);
-        $from = (new \DateTime('now', $timezone))->setTimestamp($fromTime)->setTimezone($timezone);
-        $to = (new \DateTime('now', $timezone))->setTimestamp($toTime)->setTimezone($timezone);
+        $from = (new \DateTime('@'.$fromTime))->setTimezone($timezone);
+        $to = (new \DateTime('@'.$toTime))->setTimezone($timezone);
 
         $interval = new \DateInterval('PT1M');
         $period   = new \DatePeriod($from, $interval, $to);
@@ -204,14 +204,14 @@ class StatsHelper
     {
         $timezone = new \DateTimeZone(\Yii::$app->timeZone);
         if ($fromTime) {
-            $from = (new \DateTime('now', $timezone))->setTimestamp($fromTime)->setTimezone($timezone);
+            $from = (new \DateTime('@'.$fromTime))->setTimezone($timezone);
             $query->andWhere(
                 $column . ' >= :today',
                 [':today' => $from->format('c')]
             );
         }
         if ($toTime) {
-            $to = (new \DateTime('now', $timezone))->setTimestamp($toTime)->setTimezone($timezone);
+            $to = (new \DateTime('@'.$toTime))->setTimezone($timezone);
             $query->andWhere(
                 $column . ' < :todayNight',
                 [':todayNight' => $to->format('c')]
