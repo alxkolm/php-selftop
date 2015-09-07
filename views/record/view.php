@@ -35,6 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'motions_filtered',
             'clicks',
             'keys',
+            'start',
+            'end',
             'created',
         ],
     ]) ?>
