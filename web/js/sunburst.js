@@ -178,8 +178,27 @@ $.fn.extend({
             console.log(d3.event);
         }
         function dragend(d){
-            console.log(d3.event.sourceEvent.toElement);
-            console.log(d);
+            // Execute callback
+            if (typeof options.dragend != 'undefined') {
+                options.dragend(d);
+            }
+        }
+    }
+});
+
+$(function(){
+    $('#sunburst').sunburst({
+        color: dashboard.processColor,
+        data: dashboardDurations,
+        mouseleave: colorStripUndim,
+        mouseover: function (d) {
+            if (d.depth == 1) {
+                colorStripDim(d.process_id);
+            } else if (d.depth == 2) {
+                colorStripDimByWindow(d.window_id);
+            }
+        },
+        dragend: function (d) {
             var el = $(d3.event.sourceEvent.toElement);
             var taskId = el.attr('task-id');
             var window_id;
@@ -197,29 +216,38 @@ $.fn.extend({
                 type: 'POST',
                 data: {task: taskId, window: window_id, process: process_id}
             });
-
-
-        }
-    }
-});
-
-$(function(){
-    $('#sunburst').sunburst({
-        color: dashboard.processColor,
-        data: dashboardDurations,
-        mouseleave: colorStripUndim,
-        mouseover: function (d) {
-            if (d.depth == 1) {
-                colorStripDim(d.process_id);
-            } else if (d.depth == 2) {
-                colorStripDimByWindow(d.window_id);
-            }
         }
     });
     if (typeof dashboardClustersDurations != 'undefined'){
         $('#sunburst-clusters').sunburst({
             color: dashboard.clusterColor,
-            data: dashboardClustersDurations
+            data: dashboardClustersDurations,
+            dragend: function (d) {
+                var el = $(d3.event.sourceEvent.toElement);
+                var taskId = el.attr('task-id');
+                var window_id;
+                switch (d.depth) {
+                    case 1:
+                        window_id = d.children.map(function (a) {
+                            return a.window_id;
+                        });
+                        break;
+                    case 2:
+                        window_id = [d.window_id];
+                        break;
+                }
+
+                $.ajax('/record/assign', {
+                    type: 'POST',
+                    data: {task: taskId, window: window_id}
+                });
+            }
+        });
+    }
+    if (typeof dashboardTaskDurations != 'undefined'){
+        $('#sunburst-task').sunburst({
+            color: dashboard.taskColor,
+            data: dashboardTaskDurations
         });
     }
 });

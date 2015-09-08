@@ -63,6 +63,7 @@ class SummaryController extends \yii\web\Controller
 
         $this->view->registerAssetBundle(ColorStripAsset::className());
 
+        // Durations split by process
         $durations = StatsHelper::getProcessWindowHierarchy($from, $to);
         $this->view->registerJs(
             'var dashboardDurations = '.json_encode($durations),
@@ -70,6 +71,13 @@ class SummaryController extends \yii\web\Controller
 
         $this->view->registerAssetBundle(SunburstAsset::className());
 
+        // Durations split by task
+        $durations = StatsHelper::getTaskWindowHierarchy($from, $to);
+        $this->view->registerJs(
+            'var dashboardTaskDurations = '.json_encode($durations),
+            View::POS_HEAD);
+
+        // Keys
         $keysActivity = StatsHelper::keysActivity($from, $to);
         $this->view->registerJs(
             'var dashboardKeys = '.json_encode($keysActivity),

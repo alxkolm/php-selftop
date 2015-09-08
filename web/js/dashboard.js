@@ -5,6 +5,7 @@ dashboard = {
      */
     processColor: d3.scale.ordinal().range(colorbrewer.Set1[9]),
     clusterColor: d3.scale.ordinal().range(colorbrewer.Set3[12]),
+    taskColor:    d3.scale.ordinal().range(colorbrewer.Set2[8]),
 
     /**
      * Time domain for all charts

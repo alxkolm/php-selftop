@@ -12,6 +12,7 @@ namespace app\components;
 use app\models\Key;
 use app\models\Process;
 use app\models\Record;
+use app\models\Task;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
@@ -136,6 +137,62 @@ class StatsHelper
         }
         $groups['children'] = array_values($groups['children']);
         foreach ($groups['children'] as $key => $process){
+            usort($groups['children'][$key]['children'], function($a, $b){
+                return $b['size'] - $a['size'];
+            });
+        }
+        usort($groups['children'], function($a, $b){
+            return $b['size'] - $a['size'];
+        });
+        return $groups;
+    }
+
+    public static function getTaskWindowHierarchy($fromTime, $toTime = null)
+    {
+        $query = Record::find();
+        self::whereFromTo($query, $fromTime, $toTime);
+        $query->joinWith(['tasks', 'window']);
+        $query->groupBy('window_id');
+        $query->select([
+            'SUM(duration) as duration',
+            'task_id',
+            'window_id',
+            'window.title'
+        ]);
+        $data = $query->createCommand()->queryAll();
+
+//        /** @var Process[] $processMap */
+//        $processMap = self::processMap();
+
+        $tasks = ArrayHelper::map(Task::find()->all(), 'id', 'name');
+
+        $groups = ['children' => [], 'name' => 'root'];
+        // build tree of processes
+        foreach ($data as $window){
+            if ((int) $window['duration'] == 0) {
+                continue;
+            }
+            $taskId = $window['task_id'] ? $window['task_id'] : -1;
+            $taskName = $taskId != -1 ? $tasks[$taskId] : 'n/a';
+            if (!isset($groups['children'][$taskId])){
+                $groups['children'][$taskId] = [
+                    'name'       => $taskName,
+                    'sector_id'  => $taskId,
+                    'process_id' => $taskId,
+                    'children'   => [],
+                    'size'       => 0,
+                    'color'      => self::rgbcode($taskId),
+                ];
+            }
+            $groups['children'][$taskId]['children'][] = [
+                'name'      => $window['title'],
+                'window_id' => $window['window_id'],
+                'size'      => (int) $window['duration'] / 1000,
+            ];
+            $groups['children'][$taskId]['size'] += (int) $window['duration'] / 1000;
+        }
+        $groups['children'] = array_values($groups['children']);
+        foreach ($groups['children'] as $key => $task){
             usort($groups['children'][$key]['children'], function($a, $b){
                 return $b['size'] - $a['size'];
             });
