@@ -111,7 +111,8 @@ class ClusterHelper
             if (!isset($groups['children'][$clusterId])){
                 $groups['children'][$clusterId] = [
                     'name'       => $clusterId,
-                    'process_id' => $clusterId,
+                    'sector_id'  => $clusterId,
+                    'process_id' => $window['process_id'],
                     'children'   => [],
                     'size'       => 0,
                 ];

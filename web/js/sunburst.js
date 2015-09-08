@@ -49,18 +49,18 @@ $.fn.extend({
             .enter().append("path")
             .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
             .attr("d", arc)
-            .attr("id", function (d) {return d.depth == 1 ? 'process-' + d.process_id : 'window-' + d.window_id;})
+            .attr("id", function (d) {return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;})
             .style("stroke", "#fff")
             .style("fill", function(d) {
                 switch (d.depth){
                     case 0:
                         return '#000000';
                     case 1:
-                        return color(d.process_id);
+                        return color(d.sector_id);
                     case 2:
-                        var shiftColorStart = d3.hcl(color(d.parent.process_id));
+                        var shiftColorStart = d3.hcl(color(d.parent.sector_id));
                         shiftColorStart.c = 100;
-                        var shiftColorEnd = d3.hcl(color(d.parent.process_id));
+                        var shiftColorEnd = d3.hcl(color(d.parent.sector_id));
                         //shiftColorEnd.h += 40;
                         shiftColorEnd.c = 10;
                         shiftColorEnd.l = 90;
@@ -81,7 +81,7 @@ $.fn.extend({
 
                 }
 
-                return d.depth == 1 ? color(d.process_id) : color(d.name);
+                return d.depth == 1 ? color(d.sector_id) : color(d.name);
             })
             //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
             .style("fill-rule", "evenodd")
@@ -101,7 +101,7 @@ $.fn.extend({
             .attr('text-anchor', 'middle')
             .attr('letter-spacing', '0.25em')
             .style('fill', function(d) {
-                var c = d3.hcl(color(d.process_id));
+                var c = d3.hcl(color(d.sector_id));
                 c.l = c.l > 80 ? c.l = 0 : c.l;
                 return c.brighter(3);
             })
@@ -110,7 +110,7 @@ $.fn.extend({
             .append('textPath')
             .attr("startOffset",function(d){return '25%';})
             //.attr('stroke', 'black')
-            .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'process-' + d.process_id : 'window-' + d.window_id);})
+            .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
             .text(function (d) {
                 var percentage = (100 * d.value / totalSize).toPrecision(2);
                 return d.name + ' (' + percentage +'%)';
@@ -182,12 +182,22 @@ $.fn.extend({
             console.log(d);
             var el = $(d3.event.sourceEvent.toElement);
             var taskId = el.attr('task-id');
-            if (d.depth == 2) {
-                $.ajax('/record/assign', {
-                    type: 'POST',
-                    data: {task: taskId, window: d.window_id}
-                });
+            var window_id;
+            var process_id;
+            switch (d.depth) {
+                case 1:
+                    process_id = d.process_id;
+                    break;
+                case 2:
+                    window_id = [d.window_id];
+                    break;
             }
+
+            $.ajax('/record/assign', {
+                type: 'POST',
+                data: {task: taskId, window: window_id, process: process_id}
+            });
+
 
         }
     }

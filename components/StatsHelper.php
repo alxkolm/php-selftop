@@ -120,6 +120,7 @@ class StatsHelper
             if (!isset($groups['children'][$process->id])){
                 $groups['children'][$process->id] = [
                     'name'       => $process->getScreenName(),
+                    'sector_id'  => $process->id,
                     'process_id' => $process->id,
                     'children'   => [],
                     'size'       => 0,

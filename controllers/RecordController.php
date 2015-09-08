@@ -137,8 +137,9 @@ class RecordController extends Controller
 
     public function actionAssign()
     {
-        $taskId = Yii::$app->request->getBodyParam('task');
-        $windowId = Yii::$app->request->getBodyParam('window');
+        $taskId    = Yii::$app->request->getBodyParam('task');
+        $windowId  = Yii::$app->request->getBodyParam('window');
+        $processId = Yii::$app->request->getBodyParam('process');
 
         $transaction = Yii::$app->db->beginTransaction();
         $timezone = new \DateTimeZone(Yii::$app->timeZone);
@@ -146,8 +147,9 @@ class RecordController extends Controller
         $to = new \DateTime('tomorrow', $timezone);
         try {
             $ids = Record::find()
+                ->with('window')
                 ->select(['id'])
-                ->where(['window_id' => $windowId])
+                ->andFilterWhere(['window_id' => $windowId, 'window.process_id' => $processId])
                 ->andWhere(['>=', 'start', $from->format('Y-m-d H:i:s')])
                 ->andWhere(['<', 'end', $to->format('Y-m-d H:i:s')])
                 ->createCommand()
