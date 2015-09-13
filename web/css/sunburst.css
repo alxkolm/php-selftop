@@ -8,16 +8,16 @@
 }
 .sunburst .sunburst-info {
     position: absolute;
-    top: 120px;
-    left: 100px;
+    top: 85px;
+    left: 67px;
     text-align: center;
-    width: 200px;
+    width: 170px;
 }
 .sunburst .sunburst-duration {
     font-weight: bold;
 }
 .sunburst .sunburst-percentage {
-    font-size: 32px;
+    font-size: 16px;
 }
 
 .sunburst-process-list {

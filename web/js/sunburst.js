@@ -1,7 +1,7 @@
 $.fn.extend({
     sunburst: function (options) {
-        var width = 400,
-            height = 400,
+        var width = 300,
+            height = 300,
             radius = Math.min(width, height) / 2,
             color = options.color,
             data  = options.data,
@@ -175,7 +175,10 @@ $.fn.extend({
         }
 
         function dragstart(d){
-            console.log(d3.event);
+            // Execute callback
+            if (typeof options.dragstart != 'undefined') {
+                options.dragstart(d);
+            }
         }
         function dragend(d){
             // Execute callback
@@ -214,7 +217,10 @@ $(function(){
 
             $.ajax('/record/assign', {
                 type: 'POST',
-                data: {task: taskId, window: window_id, process: process_id}
+                data: {task: taskId, window: window_id, process: process_id},
+                success: function(){
+                    el.css({backgroundColor: 'green'}).animate({backgroundColor: 'none'});
+                }
             });
         }
     });
@@ -239,7 +245,10 @@ $(function(){
 
                 $.ajax('/record/assign', {
                     type: 'POST',
-                    data: {task: taskId, window: window_id}
+                    data: {task: taskId, window: window_id},
+                    success: function(){
+                        el.css({backgroundColor: 'green'}).animate({backgroundColor: 'none'});
+                    }
                 });
             }
         });
