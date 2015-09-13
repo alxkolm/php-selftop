@@ -62,7 +62,7 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(11);
+	var MainView = __webpack_require__(17);
 	
 	module.exports = function (options) {
 	    this.router = new Router({
@@ -14400,7 +14400,7 @@
 	
 	var Backbone = __webpack_require__(3);
 	var Template = __webpack_require__(10);
-	var ProcessModalTemplate = __webpack_require__(17);
+	var ProcessModalTemplate = __webpack_require__(11);
 	var _ = __webpack_require__(7);
 	//var $        = require('jquery');
 	__webpack_require__(12);
@@ -14413,6 +14413,7 @@
 	        // Init charts
 	        this.initChartSunburstWindows();
 	        this.initChartSunburstTasks();
+	        this.initChartSunburstClusters();
 	
 	        return this;
 	    },
@@ -14453,6 +14454,44 @@
 	            }
 	        });
 	    },
+	    initChartSunburstClusters: function initChartSunburstClusters() {
+	        var _this2 = this;
+	
+	        if (typeof dashboardClustersDurations != 'undefined') {
+	            $('#sunburst-clusters', this.$el).sunburst({
+	                color: dashboard.clusterColor,
+	                data: dashboardClustersDurations,
+	                onclick: function onclick(d, el) {
+	                    if (d.depth == 1) {
+	                        _this2.showProcessPopup(d);
+	                    }
+	                },
+	                dragend: function dragend(d) {
+	                    var el = $(d3.event.sourceEvent.toElement);
+	                    var taskId = el.attr('task-id');
+	                    var window_id;
+	                    switch (d.depth) {
+	                        case 1:
+	                            window_id = d.children.map(function (a) {
+	                                return a.window_id;
+	                            });
+	                            break;
+	                        case 2:
+	                            window_id = [d.window_id];
+	                            break;
+	                    }
+	
+	                    $.ajax('/record/assign', {
+	                        type: 'POST',
+	                        data: { task: taskId, window: window_id },
+	                        success: function success() {
+	                            el.css({ backgroundColor: 'green' }).animate({ backgroundColor: 'none' });
+	                        }
+	                    });
+	                }
+	            });
+	        }
+	    },
 	    initChartSunburstTasks: function initChartSunburstTasks() {
 	        $('#sunburst-task', this.$el).sunburst({
 	            color: dashboard.taskColor,
@@ -14474,17 +14513,9 @@
 
 /***/ },
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	"use strict";
-	
-	var Backbone = __webpack_require__(3);
-	
-	module.exports = Backbone.View.extend({
-	    renderPage: function renderPage(view) {
-	        return this.$el.html(view.render().el);
-	    }
-	});
+	module.exports = "<div class=\"ui modal\">\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        <%- data.name %>\n    </div>\n    <div class=\"content process-list-wrapper\">\n        <table class=\"process-list\">\n            <% data.children.forEach(function(p){%>\n            <tr class=\"process-item\">\n                <td class=\"process-item-duration\"><%- dashboard.formatDuration(p.value) %></td>\n                <td class=\"process-item-title\"><%- p.name %></td>\n            </tr>\n            <%}) %>\n        </table>\n\n\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n</div>";
 
 /***/ },
 /* 12 */
@@ -14585,7 +14616,7 @@
 	            var c = d3.hcl(color(d.sector_id));
 	            c.l = c.l > 80 ? c.l = 0 : c.l;
 	            return c.brighter(3);
-	        }).on("mouseover", mouseover).on("mouseleave", mouseleave).append('textPath').attr("startOffset", function (d) {
+	        }).on("mouseover", mouseover).on("mouseleave", mouseleave).on("click", onclick).append('textPath').attr("startOffset", function (d) {
 	            return '25%';
 	        })
 	        //.attr('stroke', 'black')
@@ -15030,9 +15061,17 @@
 
 /***/ },
 /* 17 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = "<div class=\"ui modal\">\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        <%- data.name %>\n    </div>\n    <div class=\"content process-list-wrapper\">\n        <table class=\"process-list\">\n            <% data.children.forEach(function(p){%>\n            <tr class=\"process-item\">\n                <td class=\"process-item-duration\"><%- dashboard.formatDuration(p.value) %></td>\n                <td class=\"process-item-title\"><%- p.name %></td>\n            </tr>\n            <%}) %>\n        </table>\n\n\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n</div>";
+	"use strict";
+	
+	var Backbone = __webpack_require__(3);
+	
+	module.exports = Backbone.View.extend({
+	    renderPage: function renderPage(view) {
+	        return this.$el.html(view.render().el);
+	    }
+	});
 
 /***/ }
 /******/ ]);

@@ -68,7 +68,7 @@ class ClusterHelper
                 ],
                 'process' => [
                     'id'   => (int) $clusterId,
-                    'name' => (int) $clusterId
+                    'name' => 'Cluster #'.$clusterId
                 ],
                 'duration' => $record->duration / 1000,
                 'start' => $record->start,
@@ -110,7 +110,7 @@ class ClusterHelper
             $clusterId = isset($clusters[trim($window['title'])]) ? $clusters[trim($window['title'])] : '-1';
             if (!isset($groups['children'][$clusterId])){
                 $groups['children'][$clusterId] = [
-                    'name'       => $clusterId,
+                    'name'       => 'Cluster #'.$clusterId,
                     'sector_id'  => $clusterId,
                     'process_id' => $window['process_id'],
                     'children'   => [],

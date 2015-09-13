@@ -82,7 +82,7 @@ class AppController extends Controller
         $this->view->registerAssetBundle(KeysAsset::className());
         $this->view->registerAssetBundle(KeysAreaAsset::className());
 
-//        $this->clusterChart($searchModel);
+        $this->clusterChart($searchModel);
 
         $tasks = array_map(function ($task) {
             return [
@@ -126,6 +126,6 @@ class AppController extends Controller
             'var dashboardClustersDurations = '.json_encode($durations),
             View::POS_HEAD);
 
-        $this->view->registerAssetBundle(SunburstAsset::className());
+//        $this->view->registerAssetBundle(SunburstAsset::className());
     }
 }

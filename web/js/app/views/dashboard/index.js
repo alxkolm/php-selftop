@@ -13,6 +13,7 @@ module.exports = Backbone.View.extend({
         // Init charts
         this.initChartSunburstWindows();
         this.initChartSunburstTasks();
+        this.initChartSunburstClusters();
 
         return this;
     },
@@ -52,6 +53,42 @@ module.exports = Backbone.View.extend({
                 });
             }
         });
+    },
+    initChartSunburstClusters: function () {
+        if (typeof dashboardClustersDurations != 'undefined'){
+            $('#sunburst-clusters', this.$el).sunburst({
+                color: dashboard.clusterColor,
+                data: dashboardClustersDurations,
+                onclick: (d, el) => {
+                    if (d.depth == 1) {
+                        this.showProcessPopup(d);
+                    }
+                },
+                dragend: function (d) {
+                    var el = $(d3.event.sourceEvent.toElement);
+                    var taskId = el.attr('task-id');
+                    var window_id;
+                    switch (d.depth) {
+                        case 1:
+                            window_id = d.children.map(function (a) {
+                                return a.window_id;
+                            });
+                            break;
+                        case 2:
+                            window_id = [d.window_id];
+                            break;
+                    }
+
+                    $.ajax('/record/assign', {
+                        type: 'POST',
+                        data: {task: taskId, window: window_id},
+                        success: function(){
+                            el.css({backgroundColor: 'green'}).animate({backgroundColor: 'none'});
+                        }
+                    });
+                }
+            });
+        }
     },
     initChartSunburstTasks: function () {
         $('#sunburst-task', this.$el).sunburst({

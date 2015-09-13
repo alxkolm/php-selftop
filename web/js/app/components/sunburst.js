@@ -120,6 +120,7 @@
             })
             .on("mouseover", mouseover)
             .on("mouseleave", mouseleave)
+            .on("click", onclick)
             .append('textPath')
             .attr("startOffset",function(d){return '25%';})
             //.attr('stroke', 'black')
