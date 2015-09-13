@@ -27,11 +27,11 @@ body {
   padding: 0px;
   overflow-x: hidden;
   min-width: 320px;
-  background: #262626;
+  background: #002b36;
   font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-size: 14px;
   line-height: 1.4285em;
-  color: #8a8a8a;
+  color: #93a1a1;
   font-smoothing: antialiased;
 }
 
@@ -120,32 +120,32 @@ a:hover {
 /* Site */
 ::-webkit-selection {
   background-color: #cce2ff;
-  color: #8a8a8a;
+  color: #93a1a1;
 }
 ::-moz-selection {
   background-color: #cce2ff;
-  color: #8a8a8a;
+  color: #93a1a1;
 }
 ::selection {
   background-color: #cce2ff;
-  color: #8a8a8a;
+  color: #93a1a1;
 }
 
 /* Form */
 textarea::-webkit-selection,
 input::-webkit-selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #8a8a8a;
+  color: #93a1a1;
 }
 textarea::-moz-selection,
 input::-moz-selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #8a8a8a;
+  color: #93a1a1;
 }
 textarea::selection,
 input::selection {
   background-color: rgba(100, 100, 100, 0.4);
-  color: #8a8a8a;
+  color: #93a1a1;
 }
 
 

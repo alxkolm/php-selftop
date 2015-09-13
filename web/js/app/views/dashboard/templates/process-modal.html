@@ -1,0 +1,23 @@
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        <%- data.name %>
+    </div>
+    <div class="content process-list-wrapper">
+        <table class="process-list">
+            <% data.children.forEach(function(p){%>
+            <tr class="process-item">
+                <td class="process-item-duration"><%- dashboard.formatDuration(p.value) %></td>
+                <td class="process-item-title"><%- p.name %></td>
+            </tr>
+            <%}) %>
+        </table>
+
+
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Close
+        </div>
+    </div>
+</div>

@@ -99,6 +99,7 @@
             .style("fill-rule", "evenodd")
             .on("mouseover", mouseover)
             .on("mouseleave", mouseleave)
+            .on("click", onclick)
             .call(drag);
 
         totalSize = path.node().__data__.value;
@@ -143,8 +144,8 @@
                 .text(percentageString);
             d3.select(that.find(".sunburst-duration")[0])
                 .text(dashboard.formatDuration(d.value));
-            //d3.select(that.find(".sunburst-window")[0])
-            //    .text(d.name);
+            d3.select(that.find(".sunburst-window")[0])
+                .text(d.name);
 
             if (d.depth == 1){
                 //drawProcessList(d);
@@ -195,6 +196,13 @@
             // Execute callback
             if (typeof options.dragend != 'undefined') {
                 options.dragend(d);
+            }
+        }
+        function onclick(d){
+            console.log('click!');
+            // Execute callback
+            if (typeof options.onclick != 'undefined') {
+                options.onclick(d, this);
             }
         }
     };

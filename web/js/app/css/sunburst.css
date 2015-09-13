@@ -20,21 +20,16 @@
     font-size: 16px;
 }
 
-.sunburst-process-list {
-    font-size: 10px;
-    margin-left: 450px;
+.process-list-wrapper {
     height: 400px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: scroll;
 }
 
-.sunburst-process .sunburst-duration {
+.process-item-duration {
     display: inline-block;
-    margin-right: 1em;
     font-weight: bold;
-    width: 3em;
 }
 
-.sunburst-process:nth-child(odd) {
+.process-item:nth-child(odd) {
     background: #eee;
 }

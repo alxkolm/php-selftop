@@ -1,5 +1,6 @@
 var Backbone = require('backbone');
 var Template = require('./templates/index.html');
+var ProcessModalTemplate = require('./templates/process-modal.html');
 var _        = require('underscore');
 //var $        = require('jquery');
 require('../../components/sunburst');
@@ -20,8 +21,13 @@ module.exports = Backbone.View.extend({
             color: dashboard.processColor,
             data: dashboardDurations,
             mouseleave: colorStripUndim,
-            mouseover: function (d,el) {
+            mouseover:  (d, el) => {
 
+            },
+            onclick: (d, el) => {
+                if (d.depth == 1) {
+                    this.showProcessPopup(d);
+                }
             },
             dragend: function (d) {
                 var el = $(d3.event.sourceEvent.toElement);
@@ -52,5 +58,10 @@ module.exports = Backbone.View.extend({
             color: dashboard.taskColor,
             data: dashboardTaskDurations
         });
+    },
+    showProcessPopup: function (data) {
+        console.log(data);
+        var el = $(_.template(ProcessModalTemplate)({data: data}));
+        $(el).modal('show');
     }
 });

@@ -14400,6 +14400,7 @@
 	
 	var Backbone = __webpack_require__(3);
 	var Template = __webpack_require__(10);
+	var ProcessModalTemplate = __webpack_require__(17);
 	var _ = __webpack_require__(7);
 	//var $        = require('jquery');
 	__webpack_require__(12);
@@ -14416,11 +14417,18 @@
 	        return this;
 	    },
 	    initChartSunburstWindows: function initChartSunburstWindows() {
+	        var _this = this;
+	
 	        $('#sunburst-windows', this.$el).sunburst({
 	            color: dashboard.processColor,
 	            data: dashboardDurations,
 	            mouseleave: colorStripUndim,
 	            mouseover: function mouseover(d, el) {},
+	            onclick: function onclick(d, el) {
+	                if (d.depth == 1) {
+	                    _this.showProcessPopup(d);
+	                }
+	            },
 	            dragend: function dragend(d) {
 	                var el = $(d3.event.sourceEvent.toElement);
 	                var taskId = el.attr('task-id');
@@ -14450,6 +14458,11 @@
 	            color: dashboard.taskColor,
 	            data: dashboardTaskDurations
 	        });
+	    },
+	    showProcessPopup: function showProcessPopup(data) {
+	        console.log(data);
+	        var el = $(_.template(ProcessModalTemplate)({ data: data }));
+	        $(el).modal('show');
 	    }
 	});
 
@@ -14561,7 +14574,7 @@
 	            return d.depth == 1 ? color(d.sector_id) : color(d.name);
 	        })
 	        //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-	        .style("fill-rule", "evenodd").on("mouseover", mouseover).on("mouseleave", mouseleave).call(drag);
+	        .style("fill-rule", "evenodd").on("mouseover", mouseover).on("mouseleave", mouseleave).on("click", onclick).call(drag);
 	
 	        totalSize = path.node().__data__.value;
 	
@@ -14596,8 +14609,7 @@
 	
 	            d3.select(that.find(".sunburst-percentage")[0]).text(percentageString);
 	            d3.select(that.find(".sunburst-duration")[0]).text(dashboard.formatDuration(d.value));
-	            //d3.select(that.find(".sunburst-window")[0])
-	            //    .text(d.name);
+	            d3.select(that.find(".sunburst-window")[0]).text(d.name);
 	
 	            if (d.depth == 1) {}
 	            //drawProcessList(d);
@@ -14644,6 +14656,13 @@
 	            // Execute callback
 	            if (typeof options.dragend != 'undefined') {
 	                options.dragend(d);
+	            }
+	        }
+	        function onclick(d) {
+	            console.log('click!');
+	            // Execute callback
+	            if (typeof options.onclick != 'undefined') {
+	                options.onclick(d, this);
 	            }
 	        }
 	    };
@@ -14723,7 +14742,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".sunburst {\n    height: 400px;\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    float: left;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.sunburst-process-list {\n    font-size: 10px;\n    margin-left: 450px;\n    height: 400px;\n    overflow-x: hidden;\n    overflow-y: auto;\n}\n\n.sunburst-process .sunburst-duration {\n    display: inline-block;\n    margin-right: 1em;\n    font-weight: bold;\n    width: 3em;\n}\n\n.sunburst-process:nth-child(odd) {\n    background: #eee;\n}", ""]);
+	exports.push([module.id, ".sunburst {\n    height: 400px;\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    float: left;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
 	
 	// exports
 
@@ -15008,6 +15027,12 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"ui modal\">\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        <%- data.name %>\n    </div>\n    <div class=\"content process-list-wrapper\">\n        <table class=\"process-list\">\n            <% data.children.forEach(function(p){%>\n            <tr class=\"process-item\">\n                <td class=\"process-item-duration\"><%- dashboard.formatDuration(p.value) %></td>\n                <td class=\"process-item-title\"><%- p.name %></td>\n            </tr>\n            <%}) %>\n        </table>\n\n\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n</div>";
 
 /***/ }
 /******/ ]);
