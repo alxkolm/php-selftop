@@ -1,8 +1,8 @@
 module.exports = {
-    entry: "./app-dashboard.js",
+    entry: "./index.js",
     output: {
         path: __dirname,
-        filename: "app-dashboard-bundle.js"
+        filename: "dist/app.bundle.js"
     },
     module: {
         loaders: [
@@ -10,5 +10,6 @@ module.exports = {
             { test: /\.html$/, exclude: /node_modules/, loader: "html-loader"},
             { test: /\.css$/, loader: "style!css" }
         ]
-    }
+    },
+    devtool: 'source-map'
 };

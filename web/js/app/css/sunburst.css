@@ -1,0 +1,40 @@
+.sunburst {
+    height: 400px;
+    margin-bottom: 2em;
+}
+.sunburst .sunburst-chart{
+    position: relative;
+    float: left;
+}
+.sunburst .sunburst-info {
+    position: absolute;
+    top: 85px;
+    left: 67px;
+    text-align: center;
+    width: 170px;
+}
+.sunburst .sunburst-duration {
+    font-weight: bold;
+}
+.sunburst .sunburst-percentage {
+    font-size: 16px;
+}
+
+.sunburst-process-list {
+    font-size: 10px;
+    margin-left: 450px;
+    height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sunburst-process .sunburst-duration {
+    display: inline-block;
+    margin-right: 1em;
+    font-weight: bold;
+    width: 3em;
+}
+
+.sunburst-process:nth-child(odd) {
+    background: #eee;
+}
