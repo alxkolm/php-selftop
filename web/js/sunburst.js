@@ -190,15 +190,17 @@ $.fn.extend({
 });
 
 $(function(){
+    var stripChart = $('#color-strip')[0];
     $('#sunburst').sunburst({
         color: dashboard.processColor,
         data: dashboardDurations,
-        mouseleave: colorStripUndim,
+        mouseleave: stripChart.undim,
         mouseover: function (d) {
+
             if (d.depth == 1) {
-                colorStripDim(d.process_id);
+                stripChart.dim(d.process_id);
             } else if (d.depth == 2) {
-                colorStripDimByWindow(d.window_id);
+                stripChart.dimByWindow(d.window_id);
             }
         },
         dragend: function (d) {
