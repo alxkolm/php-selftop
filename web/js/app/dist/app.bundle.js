@@ -14527,7 +14527,7 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n</div>";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n</div>";
 
 /***/ },
 /* 11 */
@@ -15302,7 +15302,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}", ""]);
+	exports.push([module.id, ".task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
 	
 	// exports
 
