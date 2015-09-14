@@ -33,10 +33,31 @@ module.exports = Backbone.View.extend({
         $('#sunburst-windows', this.$el).sunburst({
             color: dashboard.processColor,
             data: dashboardDurations,
-            mouseleave: stripChart.undim,
+            mouseleave: function (d, el) {
+                stripChart.undim();
+                var container = $(el).parents('.sunburst');
+                container.popup('destroy');
+            },
             mouseover:  (d, el) => {
                 if (d.depth == 1) {
                     stripChart.dim(d.process_id);
+                    var content = $('<table></table>');
+                    d.children.slice(0,5).forEach((item) => {
+                        var html = '<tr>'
+                            + '<td>' + dashboard.formatDuration(item.value) + '</td>'
+                            + '<td>' + item.name + '</td>'
+                            +'</tr>';
+                        content.append(html);
+                    });
+                    var container = $(el).parents('.sunburst');
+                    container.popup({
+                        title: d.name,
+                        position: 'right center',
+                        variation: 'very wide',
+                        html: content
+                    });
+                    container.popup('show');
+
                 } else if (d.depth == 2) {
                     stripChart.dimByWindow(d.window_id);
                 }

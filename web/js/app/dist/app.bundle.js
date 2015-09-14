@@ -62,7 +62,7 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(17);
+	var MainView = __webpack_require__(24);
 	
 	module.exports = function (options) {
 	    this.router = new Router({
@@ -14404,8 +14404,8 @@
 	var _ = __webpack_require__(7);
 	//var $        = require('jquery');
 	__webpack_require__(12);
-	__webpack_require__(18);
-	__webpack_require__(23);
+	__webpack_require__(17);
+	__webpack_require__(22);
 	//debugger;
 	
 	module.exports = Backbone.View.extend({
@@ -14435,10 +14435,27 @@
 	        $('#sunburst-windows', this.$el).sunburst({
 	            color: dashboard.processColor,
 	            data: dashboardDurations,
-	            mouseleave: stripChart.undim,
+	            mouseleave: function mouseleave(d, el) {
+	                stripChart.undim();
+	                var container = $(el).parents('.sunburst');
+	                container.popup('destroy');
+	            },
 	            mouseover: function mouseover(d, el) {
 	                if (d.depth == 1) {
 	                    stripChart.dim(d.process_id);
+	                    var content = $('<table></table>');
+	                    d.children.slice(0, 5).forEach(function (item) {
+	                        var html = '<tr>' + '<td>' + dashboard.formatDuration(item.value) + '</td>' + '<td>' + item.name + '</td>' + '</tr>';
+	                        content.append(html);
+	                    });
+	                    var container = $(el).parents('.sunburst');
+	                    container.popup({
+	                        title: d.name,
+	                        position: 'right center',
+	                        variation: 'very wide',
+	                        html: content
+	                    });
+	                    container.popup('show');
 	                } else if (d.depth == 2) {
 	                    stripChart.dimByWindow(d.window_id);
 	                }
@@ -14675,7 +14692,7 @@
 	        function mouseleave(d) {
 	            // Execute callback
 	            if (typeof options.mouseleave != 'undefined') {
-	                options.mouseleave(d);
+	                options.mouseleave(d, this);
 	            }
 	        }
 	
@@ -14716,45 +14733,6 @@
 	        }
 	    };
 	});
-	
-	//$(function(){
-	//
-	//    if (typeof dashboardClustersDurations != 'undefined'){
-	//        $('#sunburst-clusters').sunburst({
-	//            color: dashboard.clusterColor,
-	//            data: dashboardClustersDurations,
-	//            dragend: function (d) {
-	//                var el = $(d3.event.sourceEvent.toElement);
-	//                var taskId = el.attr('task-id');
-	//                var window_id;
-	//                switch (d.depth) {
-	//                    case 1:
-	//                        window_id = d.children.map(function (a) {
-	//                            return a.window_id;
-	//                        });
-	//                        break;
-	//                    case 2:
-	//                        window_id = [d.window_id];
-	//                        break;
-	//                }
-	//
-	//                $.ajax('/record/assign', {
-	//                    type: 'POST',
-	//                    data: {task: taskId, window: window_id},
-	//                    success: function(){
-	//                        el.css({backgroundColor: 'green'}).animate({backgroundColor: 'none'});
-	//                    }
-	//                });
-	//            }
-	//        });
-	//    }
-	//    if (typeof dashboardTaskDurations != 'undefined'){
-	//        $('#sunburst-task').sunburst({
-	//            color: dashboard.taskColor,
-	//            data: dashboardTaskDurations
-	//        });
-	//    }
-	//});
 
 /***/ },
 /* 13 */
@@ -15081,20 +15059,6 @@
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var Backbone = __webpack_require__(3);
-	
-	module.exports = Backbone.View.extend({
-	    renderPage: function renderPage(view) {
-	        return this.$el.html(view.render().el);
-	    }
-	});
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 	
 	(function (factory) {
@@ -15109,8 +15073,8 @@
 	        factory(jQuery);
 	    }
 	})(function ($) {
-	    __webpack_require__(19);
-	    __webpack_require__(21);
+	    __webpack_require__(18);
+	    __webpack_require__(20);
 	    $.fn.colorStrip = function (options) {
 	        this.addClass('color-strip');
 	        var values = options.data;
@@ -15188,13 +15152,13 @@
 	});
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(20);
+	var content = __webpack_require__(19);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -15214,7 +15178,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(15)();
@@ -15228,13 +15192,13 @@
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(22);
+	var content = __webpack_require__(21);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -15254,7 +15218,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(15)();
@@ -15268,13 +15232,13 @@
 
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(24);
+	var content = __webpack_require__(23);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -15294,7 +15258,7 @@
 	}
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(15)();
@@ -15306,6 +15270,20 @@
 	
 	// exports
 
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var Backbone = __webpack_require__(3);
+	
+	module.exports = Backbone.View.extend({
+	    renderPage: function renderPage(view) {
+	        return this.$el.html(view.render().el);
+	    }
+	});
 
 /***/ }
 /******/ ]);
