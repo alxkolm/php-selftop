@@ -162,7 +162,7 @@
         function mouseleave(d){
             // Execute callback
             if (typeof options.mouseleave != 'undefined') {
-                options.mouseleave(d);
+                options.mouseleave(d, this);
             }
         }
 
