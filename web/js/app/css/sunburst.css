@@ -22,6 +22,7 @@
 .process-list-wrapper {
     height: 400px;
     overflow: scroll;
+    color: #586e75;
 }
 
 .process-item-duration {

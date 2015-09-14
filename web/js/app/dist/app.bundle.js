@@ -14791,7 +14791,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
+	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
 	
 	// exports
 
