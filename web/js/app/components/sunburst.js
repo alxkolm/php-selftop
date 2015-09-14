@@ -19,14 +19,13 @@
             data  = options.data,
             that  = this;
 
-        var markup = '<div class="sunburst-chart sunburst-side-left">'
+        var markup = '<div class="sunburst-chart">'
             + '<div class="sunburst-info">'
             + '<div class="sunburst-percentage"></div>'
             + '<div class="sunburst-duration"></div>'
             + '<div class="sunburst-window"></div>'
             + '</div>'
-            + '</div>'
-            + '<div class="sunburst-process-list sunburst-side-right"></div>';
+            + '</div>';
         this.append(markup);
         this.addClass("sunburst");
 

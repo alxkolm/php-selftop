@@ -1,0 +1,8 @@
+.color-strip {
+    margin: 0.5em;
+    font-size: 10px;
+}
+
+.color-strip .interval-hide {
+    display: none;
+}

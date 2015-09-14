@@ -14404,6 +14404,8 @@
 	var _ = __webpack_require__(7);
 	//var $        = require('jquery');
 	__webpack_require__(12);
+	__webpack_require__(18);
+	__webpack_require__(23);
 	//debugger;
 	
 	module.exports = Backbone.View.extend({
@@ -14411,20 +14413,36 @@
 	        this.$el.html(_.template(Template)());
 	
 	        // Init charts
+	        this.initChartProcessStrip();
 	        this.initChartSunburstWindows();
 	        this.initChartSunburstTasks();
 	        this.initChartSunburstClusters();
 	
 	        return this;
 	    },
+	    initChartProcessStrip: function initChartProcessStrip() {
+	        $('#process-strip', this.$el).colorStrip({
+	            data: dashboardTimeline,
+	            color: dashboard.processColor,
+	            xDomain: dashboard.timeExtent,
+	            tickFormat: dashboard.tickFormat
+	        });
+	    },
 	    initChartSunburstWindows: function initChartSunburstWindows() {
 	        var _this = this;
 	
+	        var stripChart = $('#process-strip', this.$el)[0];
 	        $('#sunburst-windows', this.$el).sunburst({
 	            color: dashboard.processColor,
 	            data: dashboardDurations,
-	            mouseleave: colorStripUndim,
-	            mouseover: function mouseover(d, el) {},
+	            mouseleave: stripChart.undim,
+	            mouseover: function mouseover(d, el) {
+	                if (d.depth == 1) {
+	                    stripChart.dim(d.process_id);
+	                } else if (d.depth == 2) {
+	                    stripChart.dimByWindow(d.window_id);
+	                }
+	            },
 	            onclick: function onclick(d, el) {
 	                if (d.depth == 1) {
 	                    _this.showProcessPopup(d);
@@ -14509,7 +14527,7 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"five wide column\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n</div>";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n</div>";
 
 /***/ },
 /* 11 */
@@ -14544,7 +14562,7 @@
 	            data = options.data,
 	            that = this;
 	
-	        var markup = '<div class="sunburst-chart sunburst-side-left">' + '<div class="sunburst-info">' + '<div class="sunburst-percentage"></div>' + '<div class="sunburst-duration"></div>' + '<div class="sunburst-window"></div>' + '</div>' + '</div>' + '<div class="sunburst-process-list sunburst-side-right"></div>';
+	        var markup = '<div class="sunburst-chart">' + '<div class="sunburst-info">' + '<div class="sunburst-percentage"></div>' + '<div class="sunburst-duration"></div>' + '<div class="sunburst-window"></div>' + '</div>' + '</div>';
 	        this.append(markup);
 	        this.addClass("sunburst");
 	
@@ -14773,7 +14791,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".sunburst {\n    height: 400px;\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    float: left;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
+	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
 	
 	// exports
 
@@ -15072,6 +15090,222 @@
 	        return this.$el.html(view.render().el);
 	    }
 	});
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	
+	(function (factory) {
+	    if (true) {
+	        // AMD. Register as an anonymous module.
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof module === 'object' && module.exports) {
+	        // Node/CommonJS
+	        module.exports = factory(require('jquery'));
+	    } else {
+	        // Browser globals
+	        factory(jQuery);
+	    }
+	})(function ($) {
+	    __webpack_require__(19);
+	    __webpack_require__(21);
+	    $.fn.colorStrip = function (options) {
+	        this.addClass('color-strip');
+	        var values = options.data;
+	
+	        var margin = { left: 10, right: 10 };
+	        var width = 1140 - margin.left - margin.right;
+	
+	        var xDomain = options.xDomain;
+	
+	        var colors = options.color;
+	
+	        var x = d3.time.scale().domain(xDomain).range([0, width]);
+	        var xAxis = d3.svg.axis().scale(x).tickFormat(options.tickFormat);
+	
+	        var svg = d3.select(this[0]).append('svg').attr('width', width + margin.left + margin.right).attr('height', 95).append('g').attr('transform', 'translate(' + margin.left + ',0)');
+	
+	        var elements = svg.selectAll('.interval').data(values).enter().append('rect').attr('class', 'interval').attr('x', function (d) {
+	            return x(new Date(d.start));
+	        }).attr('y', 0).attr('width', function (d) {
+	            return x(new Date(d.end)) - x(new Date(d.start));
+	        }).attr('height', '40px').attr('process', function (d) {
+	            return d.process.id;
+	        }).attr('window', function (d) {
+	            return d.window.id;
+	        }).style('fill', function (d) {
+	            return colors(d.process.id);
+	        });
+	        svg.append('g').attr('class', 'x-axis').attr('transform', 'translate(0, 42)').call(xAxis);
+	
+	        // legend
+	        var legend = svg.append('g').attr('class', 'legend');
+	        var process = {};
+	        values.forEach(function (v) {
+	            process[v.process.id] = v.process.name;
+	        });
+	        var xOffset = 0;
+	        colors.domain().forEach(function (pid, index) {
+	            var legendLine = legend.append('g').attr('transform', 'translate(0, 85)').attr('class', 'legend-item').append('g').attr('transform', 'translate(' + xOffset + ', 0)');
+	            legendLine.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 6).style('fill', colors(pid));
+	            legendLine.append('text').text(process[pid] ? process[pid] : 'n/a').attr('x', 8).attr('y', 4);
+	            var box = legendLine[0][0].getBoundingClientRect();
+	            xOffset += box.width + 10;
+	        });
+	
+	        /**
+	         * Hide elements
+	         * @param except_id process_id that skip to hide
+	         */
+	        var colorStripDim = function colorStripDim(except_id) {
+	            d3.selectAll($(this).find('rect.interval')).classed('interval-hide', true);
+	            d3.selectAll($(this).find('rect.interval[process="' + except_id + '"]')).classed('interval-hide', false);
+	        };
+	
+	        /**
+	         * Hide elements
+	         * @param except_id window_id that skip to hide
+	         */
+	        var colorStripDimByWindow = function colorStripDimByWindow(except_id) {
+	            d3.selectAll($(this).find('rect.interval')).classed('interval-hide', true);
+	            d3.selectAll($(this).find('rect.interval[window="' + except_id + '"]')).classed('interval-hide', false);
+	        };
+	
+	        /**
+	         * Show all elements
+	         */
+	        var colorStripUndim = function colorStripUndim() {
+	            d3.selectAll($(this).find('rect.interval')).classed('interval-hide', false);
+	        };
+	
+	        // Attach functions
+	        this[0].dim = $.proxy(colorStripDim, this);
+	        this[0].dimByWindow = $.proxy(colorStripDimByWindow, this);
+	        this[0].undim = $.proxy(colorStripUndim, this);
+	    };
+	});
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(20);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./color-strip.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./color-strip.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(15)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".color-strip {\n    margin: 0.5em;\n    font-size: 10px;\n}\n\n.color-strip .interval-hide {\n    display: none;\n}", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(22);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./axis.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./axis.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(15)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".x-axis {\n    font-size: 10px;\n}\n.y-axis {\n    font-size: 8px;\n}\n.x-axis path,\n.y-axis path {\n    fill: none;\n    stroke: #fdf6e3;\n    shape-rendering: crispEdges;\n}\n.x-axis .tick line,\n.y-axis .tick line {\n    stroke: #fdf6e3;\n}\n\n.x-axis .tick text,\n.y-axis .tick text {\n    fill: #fdf6e3;\n}\n\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(24);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./dashboard.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./dashboard.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(15)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}", ""]);
+	
+	// exports
+
 
 /***/ }
 /******/ ]);

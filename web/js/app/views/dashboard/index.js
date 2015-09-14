@@ -4,6 +4,8 @@ var ProcessModalTemplate = require('./templates/process-modal.html');
 var _        = require('underscore');
 //var $        = require('jquery');
 require('../../components/sunburst');
+require('../../components/color-strip');
+require('../../css/dashboard.css');
 //debugger;
 
 module.exports = Backbone.View.extend({
@@ -11,19 +13,33 @@ module.exports = Backbone.View.extend({
         this.$el.html(_.template(Template)());
 
         // Init charts
+        this.initChartProcessStrip();
         this.initChartSunburstWindows();
         this.initChartSunburstTasks();
         this.initChartSunburstClusters();
 
         return this;
     },
+    initChartProcessStrip: function () {
+        $('#process-strip', this.$el).colorStrip({
+            data:       dashboardTimeline,
+            color:      dashboard.processColor,
+            xDomain:    dashboard.timeExtent,
+            tickFormat: dashboard.tickFormat
+        });
+    },
     initChartSunburstWindows: function () {
+        var stripChart = $('#process-strip', this.$el)[0];
         $('#sunburst-windows', this.$el).sunburst({
             color: dashboard.processColor,
             data: dashboardDurations,
-            mouseleave: colorStripUndim,
+            mouseleave: stripChart.undim,
             mouseover:  (d, el) => {
-
+                if (d.depth == 1) {
+                    stripChart.dim(d.process_id);
+                } else if (d.depth == 2) {
+                    stripChart.dimByWindow(d.window_id);
+                }
             },
             onclick: (d, el) => {
                 if (d.depth == 1) {

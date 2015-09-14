@@ -1,10 +1,9 @@
 .sunburst {
-    height: 400px;
     margin-bottom: 2em;
 }
 .sunburst .sunburst-chart{
     position: relative;
-    float: left;
+    display: inline-block;
 }
 .sunburst .sunburst-info {
     position: absolute;

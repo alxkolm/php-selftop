@@ -58,7 +58,7 @@ class AppController extends Controller
             'var dashboardTimeline = '.json_encode($timeline),
             View::POS_HEAD);
 
-        $this->view->registerAssetBundle(ColorStripAsset::className());
+//        $this->view->registerAssetBundle(ColorStripAsset::className());
 
         // Durations split by process
         $durations = StatsHelper::getProcessWindowHierarchy($from, $to);
