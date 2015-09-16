@@ -15,6 +15,8 @@ module.exports = function (options) {
         el: $('#app')
     });
 
+    this.toolbar = $('#toolbar-main');
+
     this.showApp = function () {
         Backbone.history.start({ pushState: true });
     };

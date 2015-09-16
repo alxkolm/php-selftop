@@ -62,7 +62,7 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(24);
+	var MainView = __webpack_require__(26);
 	
 	module.exports = function (options) {
 	    this.router = new Router({
@@ -75,6 +75,8 @@
 	    this.mainView = new MainView({
 	        el: $('#app')
 	    });
+	
+	    this.toolbar = $('#toolbar-main');
 	
 	    this.showApp = function () {
 	        Backbone.history.start({ pushState: true });
@@ -14380,6 +14382,8 @@
 	'use strict';
 	
 	var ViewIndex = __webpack_require__(9);
+	var ViewFilter = __webpack_require__(24);
+	var $ = __webpack_require__(5);
 	
 	module.exports = function (options) {
 	    var app = options.app;
@@ -14388,6 +14392,12 @@
 	            console.log('route: dashboard/index');
 	            var view = new ViewIndex();
 	            app.mainView.renderPage(view);
+	
+	            // add filter to toolbar
+	            var viewFilter = new ViewFilter({
+	                className: 'five wide column right floated'
+	            });
+	            app.toolbar.append(viewFilter.render().el);
 	        }
 	    };
 	};
@@ -15273,6 +15283,29 @@
 
 /***/ },
 /* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Backbone = __webpack_require__(3);
+	var Template = __webpack_require__(25);
+	var _ = __webpack_require__(7);
+	
+	module.exports = Backbone.View.extend({
+	    render: function render() {
+	        this.$el.html(_.template(Template)());
+	        return this;
+	    }
+	});
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\">\n        <div class=\"two fields\">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        From\n                    </div>\n                    <input type=\"date\" value=\"2015-09-16\" name=\"from\" title=\"From\">\n                </div>\n            </div>\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        To\n                    </div>\n                    <input type=\"date\" name=\"to\" title=\"To\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

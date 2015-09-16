@@ -3,6 +3,6 @@ body {
     height: 100%;
 }
 
-.main-menu {
-    padding: 20px 0;
+header {
+    padding: 20px 0 30px;
 }

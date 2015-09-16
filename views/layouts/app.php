@@ -23,14 +23,20 @@ $this->title .= ' | ' . Yii::$app->name;
 </head>
 <body>
 <?php $this->beginBody() ?>
-<div class="ui container main-menu" id="main-menu">
-    <div class="ui labeled button mini">
-        <div class="ui button mini black">
-            Menu
+<header>
+    <div class="ui grid container">
+        <div class="row toolbar toolbar-main" id="toolbar-main">
+            <div class="five wide column">
+                <div class="ui labeled button mini">
+                    <div class="ui button mini black">
+                        Menu
+                    </div>
+                    <a class="ui basic left pointing black label">Dashboard</a>
+                </div>
+            </div>
         </div>
-        <a class="ui basic left pointing black label">Dashboard</a>
     </div>
-</div>
+</header>
 <div id="app"></div>
 
 <?php $this->endBody() ?>
