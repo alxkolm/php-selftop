@@ -14436,6 +14436,7 @@
 	//var $        = require('jquery');
 	__webpack_require__(12);
 	__webpack_require__(17);
+	__webpack_require__(27);
 	__webpack_require__(22);
 	//debugger;
 	
@@ -14450,6 +14451,7 @@
 	        this.initChartSunburstWindows();
 	        this.initChartSunburstTasks();
 	        this.initChartSunburstClusters();
+	        this.initChartKeysActivity();
 	    },
 	    initChartProcessStrip: function initChartProcessStrip() {
 	        var el = $('#process-strip', this.$el);
@@ -14569,6 +14571,13 @@
 	            data: dashboardTaskDurations
 	        });
 	    },
+	    initChartKeysActivity: function initChartKeysActivity() {
+	        $('#keys-activity', this.$el).keys({
+	            data: dashboardKeys,
+	            xDomain: dashboard.timeExtent,
+	            tickFormat: dashboard.tickFormat
+	        });
+	    },
 	    showProcessPopup: function showProcessPopup(data) {
 	        console.log(data);
 	        var el = $(_.template(ProcessModalTemplate)({ data: data }));
@@ -14580,7 +14589,7 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n</div>";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>";
 
 /***/ },
 /* 11 */
@@ -15373,7 +15382,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
+	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
 	
 	// exports
 
@@ -15422,6 +15431,82 @@
 	    renderPage: function renderPage(view) {
 	        return this.$el.html(view.render().el);
 	    }
+	});
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	
+	(function (factory) {
+	    if (true) {
+	        // AMD. Register as an anonymous module.
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof module === 'object' && module.exports) {
+	        // Node/CommonJS
+	        module.exports = factory(require('jquery'));
+	    } else {
+	        // Browser globals
+	        factory(jQuery);
+	    }
+	})(function ($) {
+	    __webpack_require__(20);
+	    $.fn.keys = function (options) {
+	        var values = [];
+	        options.data.forEach(function (item) {
+	            values.push({ date: new Date(item.date), count: item.count });
+	        });
+	
+	        var margin = { left: 10, right: 10 };
+	        var width = 1140 - margin.left - margin.right;
+	        var height = 70;
+	
+	        var xDomain = options.xDomain;
+	
+	        var yDomain = d3.extent(values, function (value) {
+	            return value.count;
+	        });
+	
+	        var x = d3.time.scale().clamp(true).domain(xDomain).range([0, width]);
+	
+	        var y = d3.scale.linear().domain(yDomain).range([height, 0]);
+	
+	        var area = d3.svg.area().x(function (d) {
+	            return x(d.date);
+	        }).y0(height).y1(function (d) {
+	            return y(d.count);
+	        });
+	
+	        var xAxis = d3.svg.axis().scale(x).orient('bottom').tickFormat(options.tickFormat);
+	        var yAxis = d3.svg.axis().scale(y).orient("right").ticks(10);
+	
+	        var svg = d3.select(this[0]).append('svg').attr('width', width + margin.left + margin.right).attr('height', height + 50).append('g').attr('transform', 'translate(' + margin.left + ',0)');
+	
+	        svg.append("g").attr("class", "x-axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+	
+	        svg.append("g").attr("class", "y-axis").call(yAxis);
+	
+	        var path = svg.append("path");
+	        path.datum(values).attr("class", "area").style('fill', 'rgb(228, 26, 28)').attr("d", area);
+	
+	        svg.append('text').attr('y', 10).attr('x', 80).text('Key press per minute');
+	
+	        function draw(values) {
+	            yDomain = d3.extent(values, function (value) {
+	                return value.count;
+	            });
+	            //
+	            y.domain(yDomain);
+	            x.domain(d3.extent(values, function (d) {
+	                return d.date;
+	            }));
+	
+	            // TODO: rebuild line
+	        }
+	
+	        draw(values);
+	    };
 	});
 
 /***/ }

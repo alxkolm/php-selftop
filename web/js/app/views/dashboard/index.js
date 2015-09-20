@@ -5,6 +5,7 @@ var _        = require('underscore');
 //var $        = require('jquery');
 require('../../components/sunburst');
 require('../../components/color-strip');
+require('../../components/keys-activity');
 require('../../css/dashboard.css');
 //debugger;
 
@@ -19,6 +20,7 @@ module.exports = Backbone.View.extend({
         this.initChartSunburstWindows();
         this.initChartSunburstTasks();
         this.initChartSunburstClusters();
+        this.initChartKeysActivity();
     },
     initChartProcessStrip: function () {
         var el = $('#process-strip', this.$el);
@@ -136,6 +138,13 @@ module.exports = Backbone.View.extend({
         $('#sunburst-task', this.$el).sunburst({
             color: dashboard.taskColor,
             data: dashboardTaskDurations
+        });
+    },
+    initChartKeysActivity: function () {
+        $('#keys-activity', this.$el).keys({
+            data: dashboardKeys,
+            xDomain:    dashboard.timeExtent,
+            tickFormat: dashboard.tickFormat
         });
     },
     showProcessPopup: function (data) {

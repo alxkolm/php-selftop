@@ -1,3 +1,7 @@
+text {
+    fill: #fdf6e3;
+}
+
 .task-list .task {
     display: inline-block;
     border: 1px solid #888;
