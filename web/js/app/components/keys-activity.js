@@ -75,13 +75,13 @@
             .style('fill', 'rgb(228, 26, 28)')
             .attr("d", area);
 
-        function draw(values){
+        function draw(values, xDomain){
             yDomain = d3.extent(values, function(value){
                 return value.count;
             });
             //
             y.domain(yDomain);
-            x.domain(d3.extent(values, function (d) {return d.date}));
+            x.domain(xDomain);
 
             xAxisEl.call(xAxis);
             yAxisEl.call(yAxis);
@@ -91,15 +91,15 @@
                 .attr("d", area);
         }
 
-        draw(values);
+        draw(values, xDomain);
 
-        function update(data){
+        function update(data, timeDomain){
             console.log('update keys');
             var values = [];
             data.forEach(function(item){
                 values.push({date: new Date(item.date), count: item.count})
             });
-            draw(values)
+            draw(values, timeDomain)
         }
 
         this[0].update = $.proxy(update, this);

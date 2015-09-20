@@ -94,9 +94,10 @@
 	            dataType: 'json',
 	            type: 'POST',
 	            success: function success(reply) {
-	                app.trigger('update:timeline', reply.timeLine);
+	                var timeDomain = getCommonTimeDomain(reply.timeLine, reply.keys);
+	                app.trigger('update:timeline', reply.timeLine, timeDomain);
 	                app.trigger('update:sunburst-windows', reply.durationProcess);
-	                app.trigger('update:keys', reply.keys);
+	                app.trigger('update:keys', reply.keys, timeDomain);
 	            }
 	        });
 	    };
@@ -15498,15 +15499,13 @@
 	        var path = svg.append("path");
 	        path.datum(values).attr("class", "area").style('fill', 'rgb(228, 26, 28)').attr("d", area);
 	
-	        function draw(values) {
+	        function draw(values, xDomain) {
 	            yDomain = d3.extent(values, function (value) {
 	                return value.count;
 	            });
 	            //
 	            y.domain(yDomain);
-	            x.domain(d3.extent(values, function (d) {
-	                return d.date;
-	            }));
+	            x.domain(xDomain);
 	
 	            xAxisEl.call(xAxis);
 	            yAxisEl.call(yAxis);
@@ -15515,15 +15514,15 @@
 	            path.datum(values).attr("d", area);
 	        }
 	
-	        draw(values);
+	        draw(values, xDomain);
 	
-	        function update(data) {
+	        function update(data, timeDomain) {
 	            console.log('update keys');
 	            var values = [];
 	            data.forEach(function (item) {
 	                values.push({ date: new Date(item.date), count: item.count });
 	            });
-	            draw(values);
+	            draw(values, timeDomain);
 	        }
 	
 	        this[0].update = $.proxy(update, this);

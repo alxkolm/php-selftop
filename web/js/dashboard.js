@@ -61,14 +61,16 @@ dashboard = {
  * Calculate common time domain
  * @returns {*[]}
  */
-function getCommonTimeDomain() {
-    var extent = timeLineExtent(dashboardTimeline);
+function getCommonTimeDomain(timelineData, keysData) {
+    keysData = keysData || dashboardKeys;
+    timelineData   = timelineData || dashboardTimeline;
+    var extent     = timeLineExtent(timelineData);
 
-    if (typeof(dashboardKeys) != 'undefined'){
-        var dashboardKeysFiltered = dashboardKeys.filter(function (d) {
+    if (typeof(keysData) != 'undefined'){
+        var keysFiltered = keysData.filter(function (d) {
             return d.count > 0
         });
-        var extent3 = d3.extent(dashboardKeysFiltered, function(a){return new Date(a.date)});
+        var extent3 = d3.extent(keysFiltered, function(a){return new Date(a.date)});
 
         extent = [
             Math.min(extent[0], extent3[0]),

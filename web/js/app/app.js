@@ -32,9 +32,10 @@ module.exports = function (options) {
             dataType: 'json',
             type:     'POST',
             success:  (reply) => {
-                app.trigger('update:timeline', reply.timeLine);
+                var timeDomain = getCommonTimeDomain(reply.timeLine, reply.keys);
+                app.trigger('update:timeline', reply.timeLine, timeDomain);
                 app.trigger('update:sunburst-windows', reply.durationProcess);
-                app.trigger('update:keys', reply.keys);
+                app.trigger('update:keys', reply.keys, timeDomain);
             }
         });
     };
