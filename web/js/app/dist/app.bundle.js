@@ -96,6 +96,7 @@
 	            success: function success(reply) {
 	                app.trigger('update:timeline', reply.timeLine);
 	                app.trigger('update:sunburst-windows', reply.durationProcess);
+	                app.trigger('update:keys', reply.keys);
 	            }
 	        });
 	    };
@@ -14572,11 +14573,14 @@
 	        });
 	    },
 	    initChartKeysActivity: function initChartKeysActivity() {
-	        $('#keys-activity', this.$el).keys({
+	        var chart = $('#keys-activity', this.$el);
+	        chart.keys({
 	            data: dashboardKeys,
 	            xDomain: dashboard.timeExtent,
 	            tickFormat: dashboard.tickFormat
 	        });
+	
+	        app.on('update:keys', chart[0].update);
 	    },
 	    showProcessPopup: function showProcessPopup(data) {
 	        console.log(data);
@@ -15483,14 +15487,16 @@
 	
 	        var svg = d3.select(this[0]).append('svg').attr('width', width + margin.left + margin.right).attr('height', height + 50).append('g').attr('transform', 'translate(' + margin.left + ',0)');
 	
-	        svg.append("g").attr("class", "x-axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+	        var xAxisEl = svg.append("g").attr("class", "x-axis").attr("transform", "translate(0," + height + ")");
+	        xAxisEl.call(xAxis);
 	
-	        svg.append("g").attr("class", "y-axis").call(yAxis);
+	        var yAxisEl = svg.append("g").attr("class", "y-axis");
+	        yAxisEl.call(yAxis);
+	
+	        svg.append('text').attr('y', 10).attr('x', 80).text('Key press per minute');
 	
 	        var path = svg.append("path");
 	        path.datum(values).attr("class", "area").style('fill', 'rgb(228, 26, 28)').attr("d", area);
-	
-	        svg.append('text').attr('y', 10).attr('x', 80).text('Key press per minute');
 	
 	        function draw(values) {
 	            yDomain = d3.extent(values, function (value) {
@@ -15502,10 +15508,25 @@
 	                return d.date;
 	            }));
 	
+	            xAxisEl.call(xAxis);
+	            yAxisEl.call(yAxis);
+	
 	            // TODO: rebuild line
+	            path.datum(values).attr("d", area);
 	        }
 	
 	        draw(values);
+	
+	        function update(data) {
+	            console.log('update keys');
+	            var values = [];
+	            data.forEach(function (item) {
+	                values.push({ date: new Date(item.date), count: item.count });
+	            });
+	            draw(values);
+	        }
+	
+	        this[0].update = $.proxy(update, this);
 	    };
 	});
 

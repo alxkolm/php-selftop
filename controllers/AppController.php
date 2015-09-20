@@ -165,7 +165,7 @@ class AppController extends Controller
                 'timeLine' => StatsHelper::timeline($from, $to),
                 'durationProcess' => StatsHelper::getProcessWindowHierarchy($from, $to),
                 'durationTask' => StatsHelper::getTaskWindowHierarchy($from, $to),
-//                'keys' => StatsHelper::keysActivity($from, $to)
+                'keys' => StatsHelper::keysActivity($from, $to)
             ];
 
 //            $clusterData = $this->clusterData($from, $to);

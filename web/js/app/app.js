@@ -34,6 +34,7 @@ module.exports = function (options) {
             success:  (reply) => {
                 app.trigger('update:timeline', reply.timeLine);
                 app.trigger('update:sunburst-windows', reply.durationProcess);
+                app.trigger('update:keys', reply.keys);
             }
         });
     };

@@ -141,11 +141,14 @@ module.exports = Backbone.View.extend({
         });
     },
     initChartKeysActivity: function () {
-        $('#keys-activity', this.$el).keys({
+        var chart = $('#keys-activity', this.$el);
+        chart.keys({
             data: dashboardKeys,
             xDomain:    dashboard.timeExtent,
             tickFormat: dashboard.tickFormat
         });
+
+        app.on('update:keys', chart[0].update);
     },
     showProcessPopup: function (data) {
         console.log(data);

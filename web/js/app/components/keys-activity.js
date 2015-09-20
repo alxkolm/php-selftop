@@ -52,14 +52,21 @@
             .append('g')
             .attr('transform', 'translate('+margin.left + ',0)');
 
-        svg.append("g")
+        var xAxisEl = svg.append("g")
             .attr("class", "x-axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
+            .attr("transform", "translate(0," + height + ")");
+        xAxisEl.call(xAxis);
 
-        svg.append("g")
-            .attr("class", "y-axis")
-            .call(yAxis);
+        var yAxisEl = svg.append("g")
+            .attr("class", "y-axis");
+        yAxisEl.call(yAxis);
+
+
+
+        svg.append('text')
+            .attr('y', 10)
+            .attr('x', 80)
+            .text('Key press per minute');
 
         var path = svg.append("path");
         path
@@ -67,11 +74,6 @@
             .attr("class", "area")
             .style('fill', 'rgb(228, 26, 28)')
             .attr("d", area);
-
-        svg.append('text')
-            .attr('y', 10)
-            .attr('x', 80)
-            .text('Key press per minute');
 
         function draw(values){
             yDomain = d3.extent(values, function(value){
@@ -81,9 +83,25 @@
             y.domain(yDomain);
             x.domain(d3.extent(values, function (d) {return d.date}));
 
+            xAxisEl.call(xAxis);
+            yAxisEl.call(yAxis);
+
             // TODO: rebuild line
+            path.datum(values)
+                .attr("d", area);
         }
 
         draw(values);
+
+        function update(data){
+            console.log('update keys');
+            var values = [];
+            data.forEach(function(item){
+                values.push({date: new Date(item.date), count: item.count})
+            });
+            draw(values)
+        }
+
+        this[0].update = $.proxy(update, this);
     };
 }));
