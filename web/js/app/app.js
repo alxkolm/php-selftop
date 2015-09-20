@@ -35,6 +35,7 @@ module.exports = function (options) {
                 var timeDomain = getCommonTimeDomain(reply.timeLine, reply.keys);
                 app.trigger('update:timeline', reply.timeLine, timeDomain);
                 app.trigger('update:sunburst-windows', reply.durationProcess);
+                app.trigger('update:sunburst-cluster', reply.durationCluster);
                 app.trigger('update:keys', reply.keys, timeDomain);
             }
         });

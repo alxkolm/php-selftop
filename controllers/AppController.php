@@ -168,9 +168,9 @@ class AppController extends Controller
                 'keys' => StatsHelper::keysActivity($from, $to)
             ];
 
-//            $clusterData = $this->clusterData($from, $to);
-//            $reply['clusterList'] = $clusterData['clusters'];
-//            $reply['durationsCluster'] = $clusterData['durations'];
+            $clusterData = $this->clusterData($from, $to);
+            $reply['clusterList'] = $clusterData['clusters'];
+            $reply['durationCluster'] = $clusterData['durations'];
         } else {
             throw new BadRequestHttpException;
         }

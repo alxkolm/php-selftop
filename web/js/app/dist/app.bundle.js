@@ -97,6 +97,7 @@
 	                var timeDomain = getCommonTimeDomain(reply.timeLine, reply.keys);
 	                app.trigger('update:timeline', reply.timeLine, timeDomain);
 	                app.trigger('update:sunburst-windows', reply.durationProcess);
+	                app.trigger('update:sunburst-cluster', reply.durationCluster);
 	                app.trigger('update:keys', reply.keys, timeDomain);
 	            }
 	        });
@@ -14533,7 +14534,8 @@
 	        var _this2 = this;
 	
 	        if (typeof dashboardClustersDurations != 'undefined') {
-	            $('#sunburst-clusters', this.$el).sunburst({
+	            var chart = $('#sunburst-clusters', this.$el);
+	            chart.sunburst({
 	                color: dashboard.clusterColor,
 	                data: dashboardClustersDurations,
 	                onclick: function onclick(d, el) {
@@ -14565,6 +14567,7 @@
 	                    });
 	                }
 	            });
+	            app.on('update:sunburst-cluster', chart[0].update);
 	        }
 	    },
 	    initChartSunburstTasks: function initChartSunburstTasks() {
@@ -14661,7 +14664,9 @@
 	            var path = svg.selectAll("path").data(nodes);
 	
 	            // move exist elements
-	            path.attr("d", arc).style("fill", fillColorFn);
+	            path.attr("d", arc).style("fill", fillColorFn).attr("id", function (d) {
+	                return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;
+	            });
 	
 	            // draw new elements
 	            path.enter().append("path").attr("display", function (d) {
@@ -14681,7 +14686,6 @@
 	                return d.depth == 1 && d.dx > 0.5;
 	            });
 	
-	            var text = svg.selectAll('text').remove();
 	            var text = svg.selectAll('text').data(textNodes, function (d) {
 	                return d.sector_id;
 	            });

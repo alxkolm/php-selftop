@@ -100,7 +100,8 @@ module.exports = Backbone.View.extend({
     },
     initChartSunburstClusters: function () {
         if (typeof dashboardClustersDurations != 'undefined'){
-            $('#sunburst-clusters', this.$el).sunburst({
+            var chart = $('#sunburst-clusters', this.$el);
+            chart.sunburst({
                 color: dashboard.clusterColor,
                 data: dashboardClustersDurations,
                 onclick: (d, el) => {
@@ -132,6 +133,7 @@ module.exports = Backbone.View.extend({
                     });
                 }
             });
+            app.on('update:sunburst-cluster', chart[0].update);
         }
     },
     initChartSunburstTasks: function () {
