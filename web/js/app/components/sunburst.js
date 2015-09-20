@@ -64,7 +64,9 @@
             // move exist elements
             path
                 .attr("d", arc)
-                .style("fill", fillColorFn);
+                .style("fill", fillColorFn)
+                .attr("id", function (d) {return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;});
+
 
             // draw new elements
             path.enter().append("path")
@@ -87,9 +89,8 @@
 
             var textNodes = nodes.filter(function(d){return d.depth == 1 && d.dx > 0.5});
 
-            var text = svg.selectAll('text').remove();
             var text = svg.selectAll('text')
-                .data(textNodes, function (d) { return d.sector_id });
+                .data(textNodes, function (d) {return d.sector_id });
 
             // Change exist elements
             //text
