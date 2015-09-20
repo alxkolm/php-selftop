@@ -118,10 +118,13 @@ class AppController extends Controller
 
     public function clusterData($fromTimestamp, $toTimestamp)
     {
-        $titles = Window::find()
+        $query = Window::find()
             ->select(['title'])
+            ->joinWith('records')
             ->distinct(true)
-            ->orderBy('title')
+            ->orderBy('title');
+        StatsHelper::whereFromTo($query, $fromTimestamp, $toTimestamp);
+        $titles = $query
             ->createCommand()
             ->queryColumn();
         $titles = array_filter($titles, function ($a) {return trim($a) != '';});

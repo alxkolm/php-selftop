@@ -14,7 +14,7 @@ vectorizer = TfidfVectorizer()
 x_train = vectorizer.fit_transform(titles)
 
 # clustering
-estimator = KMeans(n_clusters=100)
+estimator = KMeans(n_clusters=len(titles)/5)
 labels = estimator.fit_predict(x_train)
 
 

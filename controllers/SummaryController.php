@@ -107,17 +107,22 @@ class SummaryController extends \yii\web\Controller
 
     public function clusterChart($searchModel)
     {
-        $titles = Window::find()
+        $from = strtotime('today', $searchModel->timestampFrom);
+        $to = strtotime('tomorrow', $searchModel->timestampTo);
+
+        $query = Window::find()
             ->select(['title'])
+            ->joinWith('records')
             ->distinct(true)
-            ->orderBy('title')
+            ->orderBy('title');
+        StatsHelper::whereFromTo($query, $from, $to);
+        $titles = $query
             ->createCommand()
             ->queryColumn();
         $titles = array_filter($titles, function ($a) {return trim($a) != '';});
         $clusters = ClusterHelper::clusterizeStrings($titles);
 
-        $from = strtotime('today', $searchModel->timestampFrom);
-        $to = strtotime('tomorrow', $searchModel->timestampTo);
+
 
         $clustersList = array_map(function($a){
             return [
