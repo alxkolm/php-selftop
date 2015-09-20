@@ -51,6 +51,7 @@
 	
 	$(function () {
 	    window.app = new App();
+	    window.app.showApp();
 	});
 
 /***/ },
@@ -63,8 +64,12 @@
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
 	var MainView = __webpack_require__(26);
+	var _ = __webpack_require__(7);
+	var $ = __webpack_require__(5);
 	
 	module.exports = function (options) {
+	    _.extend(this, Backbone.Events);
+	
 	    this.router = new Router({
 	        app: this,
 	        controllers: {
@@ -81,8 +86,23 @@
 	    this.showApp = function () {
 	        Backbone.history.start({ pushState: true });
 	    };
+	    var app = this;
 	
-	    this.showApp();
+	    this.loadData = function (data) {
+	        $.ajax('/app/data', {
+	            data: data,
+	            dataType: 'json',
+	            type: 'POST',
+	            success: function success(reply) {
+	                app.trigger('update:timeline', reply.timeLine);
+	                app.trigger('update:sunburst-windows', reply.durationProcess);
+	            }
+	        });
+	    };
+	
+	    this.on('filter:date:change', this.loadData);
+	
+	    return this;
 	};
 
 /***/ },
@@ -14431,18 +14451,22 @@
 	        return this;
 	    },
 	    initChartProcessStrip: function initChartProcessStrip() {
-	        $('#process-strip', this.$el).colorStrip({
+	        var el = $('#process-strip', this.$el);
+	        el.colorStrip({
 	            data: dashboardTimeline,
 	            color: dashboard.processColor,
 	            xDomain: dashboard.timeExtent,
 	            tickFormat: dashboard.tickFormat
 	        });
+	
+	        app.on('update:timeline', el[0].update);
 	    },
 	    initChartSunburstWindows: function initChartSunburstWindows() {
 	        var _this = this;
 	
 	        var stripChart = $('#process-strip', this.$el)[0];
-	        $('#sunburst-windows', this.$el).sunburst({
+	        var el = $('#sunburst-windows', this.$el);
+	        el.sunburst({
 	            color: dashboard.processColor,
 	            data: dashboardDurations,
 	            mouseleave: function mouseleave(d, el) {
@@ -14498,6 +14522,7 @@
 	                });
 	            }
 	        });
+	        app.on('update:sunburst-windows', el[0].update);
 	    },
 	    initChartSunburstClusters: function initChartSunburstClusters() {
 	        var _this2 = this;
@@ -14609,69 +14634,69 @@
 	            return Math.sqrt(d.y + d.dy);
 	        });
 	
-	        var nodes = partition.nodes(data).filter(function (d) {
-	            return d.dx > 0.01; // 0.005 radians = 0.29 degrees
-	        });
-	
 	        var drag = d3.behavior.drag();
 	        drag.on('dragstart', dragstart);
 	        drag.on('dragend', dragend);
 	
-	        var path = svg.datum(data).selectAll("path").data(nodes).enter().append("path").attr("display", function (d) {
-	            return d.depth ? null : "none";
-	        }) // hide inner ring
-	        .attr("d", arc).attr("id", function (d) {
-	            return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;
-	        }).style("stroke", "#262626").style("fill", function (d) {
-	            switch (d.depth) {
-	                case 0:
-	                    return '#000000';
-	                case 1:
-	                    return color(d.sector_id);
-	                case 2:
-	                    var shiftColorStart = d3.hcl(color(d.parent.sector_id));
-	                    shiftColorStart.c = 100;
-	                    var shiftColorEnd = d3.hcl(color(d.parent.sector_id));
-	                    //shiftColorEnd.h += 40;
-	                    shiftColorEnd.c = 10;
-	                    shiftColorEnd.l = 90;
+	        function draw(data) {
+	            var nodes = partition.nodes(data).filter(function (d) {
+	                return d.dx > 0.01; // 0.005 radians = 0.29 degrees
+	            });
 	
-	                    var childColor = d3.scale.linear().range([shiftColorEnd, shiftColorStart]).domain([d3.min(d.parent.children, function (a) {
-	                        return a.value;
-	                    }), d3.max(d.parent.children, function (a) {
-	                        return a.value;
-	                    })]).interpolate(d3.interpolateHcl);
+	            var path = svg.selectAll("path").data(nodes);
 	
-	                    return childColor(d.value);
-	                default:
+	            // move exist elements
+	            path.attr("d", arc).style("fill", fillColorFn);
 	
-	            }
+	            // draw new elements
+	            path.enter().append("path").attr("display", function (d) {
+	                return d.depth ? null : "none";
+	            }) // hide inner ring
+	            .attr("d", arc).attr("id", function (d) {
+	                return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;
+	            }).style("stroke", "#262626").style("fill", fillColorFn)
+	            //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+	            .style("fill-rule", "evenodd").on("mouseover", mouseover).on("mouseleave", mouseleave).on("click", onclick).call(drag);
 	
-	            return d.depth == 1 ? color(d.sector_id) : color(d.name);
-	        })
-	        //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-	        .style("fill-rule", "evenodd").on("mouseover", mouseover).on("mouseleave", mouseleave).on("click", onclick).call(drag);
+	            path.exit().remove();
 	
-	        totalSize = path.node().__data__.value;
+	            totalSize = path.node().__data__.value;
 	
-	        var textNodes = nodes.filter(function (d) {
-	            return d.depth == 1 && d.dx > 0.5;
-	        });
-	        svg.selectAll('text').data(textNodes).enter().append('text').attr('x', 0).attr('dy', '30').attr('text-anchor', 'middle').attr('letter-spacing', '0.25em').style('fill', function (d) {
-	            var c = d3.hcl(color(d.sector_id));
-	            c.l = c.l > 80 ? c.l = 0 : c.l;
-	            return c.brighter(3);
-	        }).on("mouseover", mouseover).on("mouseleave", mouseleave).on("click", onclick).append('textPath').attr("startOffset", function (d) {
-	            return '25%';
-	        })
-	        //.attr('stroke', 'black')
-	        .attr('xlink:href', function (d) {
-	            return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);
-	        }).text(function (d) {
-	            var percentage = (100 * d.value / totalSize).toPrecision(2);
-	            return d.name + ' (' + percentage + '%)';
-	        });
+	            var textNodes = nodes.filter(function (d) {
+	                return d.depth == 1 && d.dx > 0.5;
+	            });
 	
+	            var text = svg.selectAll('text').remove();
+	            var text = svg.selectAll('text').data(textNodes, function (d) {
+	                return d.sector_id;
+	            });
+	
+	            // Change exist elements
+	            //text
+	            //    .attr("startOffset",function(d){return '25%';})
+	            //    .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
+	            //    .text(function (d) {
+	            //        var percentage = (100 * d.value / totalSize).toPrecision(2);
+	            //        return d.name + ' (' + percentage +'%)';
+	            //    });
+	
+	            text.enter().append('text').attr('x', 0).attr('dy', '30').attr('text-anchor', 'middle').attr('letter-spacing', '0.25em').style('fill', function (d) {
+	                var c = d3.hcl(color(d.sector_id));
+	                c.l = c.l > 80 ? c.l = 0 : c.l;
+	                return c.brighter(3);
+	            }).on("mouseover", mouseover).on("mouseleave", mouseleave).on("click", onclick).append('textPath').attr("startOffset", function (d) {
+	                return '25%';
+	            }).attr('xlink:href', function (d) {
+	                return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);
+	            }).text(function (d) {
+	                var percentage = (100 * d.value / totalSize).toPrecision(2);
+	                return d.name + ' (' + percentage + '%)';
+	            });
+	
+	            //text.exit().remove();
+	        }
+	
+	        draw(data);
 	        /**
 	         * Mouse move callback
 	         * @param d
@@ -14741,6 +14766,40 @@
 	                options.onclick(d, this);
 	            }
 	        }
+	
+	        function update(data) {
+	            draw(data);
+	        }
+	
+	        function fillColorFn(d) {
+	            switch (d.depth) {
+	                case 0:
+	                    return '#000000';
+	                case 1:
+	                    return color(d.sector_id);
+	                case 2:
+	                    var shiftColorStart = d3.hcl(color(d.parent.sector_id));
+	                    shiftColorStart.c = 100;
+	                    var shiftColorEnd = d3.hcl(color(d.parent.sector_id));
+	                    //shiftColorEnd.h += 40;
+	                    shiftColorEnd.c = 10;
+	                    shiftColorEnd.l = 90;
+	
+	                    var childColor = d3.scale.linear().range([shiftColorEnd, shiftColorStart]).domain([d3.min(d.parent.children, function (a) {
+	                        return a.value;
+	                    }), d3.max(d.parent.children, function (a) {
+	                        return a.value;
+	                    })]).interpolate(d3.interpolateHcl);
+	
+	                    return childColor(d.value);
+	                default:
+	
+	            }
+	
+	            return d.depth == 1 ? color(d.sector_id) : color(d.name);
+	        }
+	
+	        this[0].update = $.proxy(update, this);
 	    };
 	});
 
@@ -15101,33 +15160,69 @@
 	
 	        var svg = d3.select(this[0]).append('svg').attr('width', width + margin.left + margin.right).attr('height', 95).append('g').attr('transform', 'translate(' + margin.left + ',0)');
 	
-	        var elements = svg.selectAll('.interval').data(values).enter().append('rect').attr('class', 'interval').attr('x', function (d) {
-	            return x(new Date(d.start));
-	        }).attr('y', 0).attr('width', function (d) {
-	            return x(new Date(d.end)) - x(new Date(d.start));
-	        }).attr('height', '40px').attr('process', function (d) {
-	            return d.process.id;
-	        }).attr('window', function (d) {
-	            return d.window.id;
-	        }).style('fill', function (d) {
-	            return colors(d.process.id);
-	        });
 	        svg.append('g').attr('class', 'x-axis').attr('transform', 'translate(0, 42)').call(xAxis);
 	
+	        /**
+	         * Draw elements
+	         * @param data
+	         */
+	        function draw(data) {
+	            // change domain
+	            x.domain(timeLineExtent(data));
+	
+	            // change x axis
+	            svg.select('.x-axis').call(xAxis);
+	
+	            // select exist elements
+	            var elements = svg.selectAll('.interval').data(data, function (d) {
+	                return d.id;
+	            });
+	
+	            // move exist elements
+	            elements.transition().attr('cx', function (d) {
+	                return x(new Date(d.start));
+	            }).attr('width', function (d) {
+	                return x(new Date(d.end)) - x(new Date(d.start));
+	            });
+	
+	            // draw new elements
+	            elements.enter().append('rect').attr('class', 'interval').attr('x', function (d) {
+	                return x(new Date(d.start));
+	            }).attr('y', 0).attr('width', function (d) {
+	                return x(new Date(d.end)) - x(new Date(d.start));
+	            }).attr('height', '40px').attr('process', function (d) {
+	                return d.process.id;
+	            }).attr('window', function (d) {
+	                return d.window.id;
+	            }).style('fill', function (d) {
+	                return colors(d.process.id);
+	            });
+	
+	            // remove elements
+	            elements.exit().remove();
+	        }
+	
+	        draw(values);
+	
 	        // legend
-	        var legend = svg.append('g').attr('class', 'legend');
+	        var legend = svg.append('g').attr('class', 'legend').attr('transform', 'translate(0, 85)');
 	        var process = {};
 	        values.forEach(function (v) {
 	            process[v.process.id] = v.process.name;
 	        });
 	        var xOffset = 0;
 	        colors.domain().forEach(function (pid, index) {
-	            var legendLine = legend.append('g').attr('transform', 'translate(0, 85)').attr('class', 'legend-item').append('g').attr('transform', 'translate(' + xOffset + ', 0)');
+	            var legendLine = legend.append('g').attr('class', 'legend-item').append('g').attr('transform', 'translate(' + xOffset + ', 0)');
 	            legendLine.append('circle').attr('cx', 0).attr('cy', 0).attr('r', 6).style('fill', colors(pid));
 	            legendLine.append('text').text(process[pid] ? process[pid] : 'n/a').attr('x', 8).attr('y', 4);
 	            var box = legendLine[0][0].getBoundingClientRect();
 	            xOffset += box.width + 10;
 	        });
+	
+	        var update = function update(data) {
+	            console.log('update color strip ...');
+	            draw(data);
+	        };
 	
 	        /**
 	         * Hide elements
@@ -15158,6 +15253,7 @@
 	        this[0].dim = $.proxy(colorStripDim, this);
 	        this[0].dimByWindow = $.proxy(colorStripDimByWindow, this);
 	        this[0].undim = $.proxy(colorStripUndim, this);
+	        this[0].update = $.proxy(update, this);
 	    };
 	});
 
@@ -15293,7 +15389,16 @@
 	
 	module.exports = Backbone.View.extend({
 	    render: function render() {
+	        var _this = this;
+	
 	        this.$el.html(_.template(Template)());
+	        this.from = this.$el.find('#filter-date-input-from');
+	        this.to = this.$el.find('#filter-date-input-to');
+	        // bind events
+	        this.$el.find('.filter-date-input').change(function (e) {
+	            e.preventDefault();
+	            app.trigger('filter:date:change', { from: _this.from.val(), to: _this.to.val() });
+	        });
 	        return this;
 	    }
 	});
@@ -15302,7 +15407,7 @@
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\">\n        <div class=\"two fields\">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        From\n                    </div>\n                    <input type=\"date\" value=\"2015-09-16\" name=\"from\" title=\"From\">\n                </div>\n            </div>\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        To\n                    </div>\n                    <input type=\"date\" name=\"to\" title=\"To\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
+	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"two fields\">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        From\n                    </div>\n                    <input type=\"date\" name=\"from\" title=\"From\" id=\"filter-date-input-from\" class=\"filter-date-input\">\n                </div>\n            </div>\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        To\n                    </div>\n                    <input type=\"date\" name=\"to\" title=\"To\" id=\"filter-date-input-to\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
 
 /***/ },
 /* 26 */

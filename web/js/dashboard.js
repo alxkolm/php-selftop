@@ -62,12 +62,7 @@ dashboard = {
  * @returns {*[]}
  */
 function getCommonTimeDomain() {
-    var extent1 = d3.extent(dashboardTimeline, function(a){return new Date(a.start)});
-    var extent2 = d3.extent(dashboardTimeline, function(a){return new Date(a.end)});
-    var extent = [
-        Math.min(extent1[0], extent2[0]),
-        Math.max(extent1[1], extent2[1])
-    ];
+    var extent = timeLineExtent(dashboardTimeline);
 
     if (typeof(dashboardKeys) != 'undefined'){
         var dashboardKeysFiltered = dashboardKeys.filter(function (d) {
@@ -82,4 +77,13 @@ function getCommonTimeDomain() {
     }
 
     return extent;
+}
+
+function timeLineExtent(timelineData) {
+    var extent1 = d3.extent(timelineData, function(a){return new Date(a.start)});
+    var extent2 = d3.extent(timelineData, function(a){return new Date(a.end)});
+    return [
+        Math.min(extent1[0], extent2[0]),
+        Math.max(extent1[1], extent2[1])
+    ];
 }

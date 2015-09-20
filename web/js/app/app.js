@@ -2,8 +2,12 @@ var Router = require('./router');
 var Backbone = require('backbone');
 var DashboardController = require('./controllers/dashboard');
 var MainView = require('./views/main-view');
+var _ = require('underscore');
+var $ = require('jquery');
 
 module.exports = function (options) {
+    _.extend(this, Backbone.Events);
+
     this.router = new Router({
         app: this,
         controllers: {
@@ -20,6 +24,23 @@ module.exports = function (options) {
     this.showApp = function () {
         Backbone.history.start({ pushState: true });
     };
+    var app = this;
 
-    this.showApp();
+    this.loadData = (data) =>  {
+        $.ajax('/app/data', {
+            data:     data,
+            dataType: 'json',
+            type:     'POST',
+            success:  (reply) => {
+                app.trigger('update:timeline', reply.timeLine);
+                app.trigger('update:sunburst-windows', reply.durationProcess);
+            }
+        });
+    };
+
+
+
+    this.on('filter:date:change', this.loadData);
+
+    return this;
 };

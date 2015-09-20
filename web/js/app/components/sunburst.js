@@ -46,89 +46,87 @@
             .innerRadius(function(d) { return Math.sqrt(d.y); })
             .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-        var nodes = partition.nodes(data)
-            .filter(function(d) {
-                return (d.dx > 0.01); // 0.005 radians = 0.29 degrees
-            });
+
 
         var drag = d3.behavior.drag();
         drag.on('dragstart', dragstart);
         drag.on('dragend', dragend);
 
-        var path = svg.datum(data).selectAll("path")
-            .data(nodes)
-            .enter().append("path")
-            .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
-            .attr("d", arc)
-            .attr("id", function (d) {return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;})
-            .style("stroke", "#262626")
-            .style("fill", function(d) {
-                switch (d.depth){
-                    case 0:
-                        return '#000000';
-                    case 1:
-                        return color(d.sector_id);
-                    case 2:
-                        var shiftColorStart = d3.hcl(color(d.parent.sector_id));
-                        shiftColorStart.c = 100;
-                        var shiftColorEnd = d3.hcl(color(d.parent.sector_id));
-                        //shiftColorEnd.h += 40;
-                        shiftColorEnd.c = 10;
-                        shiftColorEnd.l = 90;
+        function draw(data) {
+            var nodes = partition.nodes(data)
+                .filter(function(d) {
+                    return (d.dx > 0.01); // 0.005 radians = 0.29 degrees
+                });
 
-                        var childColor = d3.scale.linear()
-                            .range([
-                                shiftColorEnd,
-                                shiftColorStart
-                            ])
-                            .domain([
-                                d3.min(d.parent.children, function(a){return a.value}),
-                                d3.max(d.parent.children, function(a){return a.value})
-                            ])
-                            .interpolate(d3.interpolateHcl);
+            var path = svg.selectAll("path")
+                .data(nodes);
 
-                        return childColor(d.value);
-                    default:
+            // move exist elements
+            path
+                .attr("d", arc)
+                .style("fill", fillColorFn);
 
-                }
+            // draw new elements
+            path.enter().append("path")
+                .attr("display", function(d) { return d.depth ? null : "none"; }) // hide inner ring
+                .attr("d", arc)
+                .attr("id", function (d) {return d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id;})
+                .style("stroke", "#262626")
+                .style("fill", fillColorFn)
+                //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+                .style("fill-rule", "evenodd")
+                .on("mouseover", mouseover)
+                .on("mouseleave", mouseleave)
+                .on("click", onclick)
+                .call(drag);
 
-                return d.depth == 1 ? color(d.sector_id) : color(d.name);
-            })
-            //.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-            .style("fill-rule", "evenodd")
-            .on("mouseover", mouseover)
-            .on("mouseleave", mouseleave)
-            .on("click", onclick)
-            .call(drag);
 
-        totalSize = path.node().__data__.value;
+            path.exit().remove();
 
-        var textNodes = nodes.filter(function(d){return d.depth == 1 && d.dx > 0.5});
-        svg.selectAll('text')
-            .data(textNodes)
-            .enter()
-            .append('text')
-            .attr('x', 0)
-            .attr('dy', '30')
-            .attr('text-anchor', 'middle')
-            .attr('letter-spacing', '0.25em')
-            .style('fill', function(d) {
-                var c = d3.hcl(color(d.sector_id));
-                c.l = c.l > 80 ? c.l = 0 : c.l;
-                return c.brighter(3);
-            })
-            .on("mouseover", mouseover)
-            .on("mouseleave", mouseleave)
-            .on("click", onclick)
-            .append('textPath')
-            .attr("startOffset",function(d){return '25%';})
-            //.attr('stroke', 'black')
-            .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
-            .text(function (d) {
-                var percentage = (100 * d.value / totalSize).toPrecision(2);
-                return d.name + ' (' + percentage +'%)';
-            });
+            totalSize = path.node().__data__.value;
 
+            var textNodes = nodes.filter(function(d){return d.depth == 1 && d.dx > 0.5});
+
+            var text = svg.selectAll('text').remove();
+            var text = svg.selectAll('text')
+                .data(textNodes, function (d) { return d.sector_id });
+
+            // Change exist elements
+            //text
+            //    .attr("startOffset",function(d){return '25%';})
+            //    .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
+            //    .text(function (d) {
+            //        var percentage = (100 * d.value / totalSize).toPrecision(2);
+            //        return d.name + ' (' + percentage +'%)';
+            //    });
+
+            text
+                .enter()
+                .append('text')
+                .attr('x', 0)
+                .attr('dy', '30')
+                .attr('text-anchor', 'middle')
+                .attr('letter-spacing', '0.25em')
+                .style('fill', function(d) {
+                    var c = d3.hcl(color(d.sector_id));
+                    c.l = c.l > 80 ? c.l = 0 : c.l;
+                    return c.brighter(3);
+                })
+                .on("mouseover", mouseover)
+                .on("mouseleave", mouseleave)
+                .on("click", onclick)
+                .append('textPath')
+                .attr("startOffset",function(d){return '25%';})
+                .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
+                .text(function (d) {
+                    var percentage = (100 * d.value / totalSize).toPrecision(2);
+                    return d.name + ' (' + percentage +'%)';
+                });
+
+            //text.exit().remove();
+        }
+
+        draw(data);
         /**
          * Mouse move callback
          * @param d
@@ -205,5 +203,45 @@
                 options.onclick(d, this);
             }
         }
+
+        function update(data) {
+            draw(data);
+        }
+
+
+        function fillColorFn(d) {
+            switch (d.depth){
+                case 0:
+                    return '#000000';
+                case 1:
+                    return color(d.sector_id);
+                case 2:
+                    var shiftColorStart = d3.hcl(color(d.parent.sector_id));
+                    shiftColorStart.c = 100;
+                    var shiftColorEnd = d3.hcl(color(d.parent.sector_id));
+                    //shiftColorEnd.h += 40;
+                    shiftColorEnd.c = 10;
+                    shiftColorEnd.l = 90;
+
+                    var childColor = d3.scale.linear()
+                        .range([
+                            shiftColorEnd,
+                            shiftColorStart
+                        ])
+                        .domain([
+                            d3.min(d.parent.children, function(a){return a.value}),
+                            d3.max(d.parent.children, function(a){return a.value})
+                        ])
+                        .interpolate(d3.interpolateHcl);
+
+                    return childColor(d.value);
+                default:
+
+            }
+
+            return d.depth == 1 ? color(d.sector_id) : color(d.name);
+        }
+
+        this[0].update = $.proxy(update, this);
     };
 }));

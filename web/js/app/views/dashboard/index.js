@@ -21,16 +21,20 @@ module.exports = Backbone.View.extend({
         return this;
     },
     initChartProcessStrip: function () {
-        $('#process-strip', this.$el).colorStrip({
+        var el = $('#process-strip', this.$el);
+        el.colorStrip({
             data:       dashboardTimeline,
             color:      dashboard.processColor,
             xDomain:    dashboard.timeExtent,
             tickFormat: dashboard.tickFormat
         });
+
+        app.on('update:timeline', el[0].update);
     },
     initChartSunburstWindows: function () {
         var stripChart = $('#process-strip', this.$el)[0];
-        $('#sunburst-windows', this.$el).sunburst({
+        var el = $('#sunburst-windows', this.$el);
+        el.sunburst({
             color: dashboard.processColor,
             data: dashboardDurations,
             mouseleave: function (d, el) {
@@ -90,6 +94,7 @@ module.exports = Backbone.View.extend({
                 });
             }
         });
+        app.on('update:sunburst-windows', el[0].update);
     },
     initChartSunburstClusters: function () {
         if (typeof dashboardClustersDurations != 'undefined'){
