@@ -12,13 +12,13 @@ module.exports = Backbone.View.extend({
     render: function () {
         this.$el.html(_.template(Template)());
 
-        // Init charts
+        return this;
+    },
+    initCharts: function () {
         this.initChartProcessStrip();
         this.initChartSunburstWindows();
         this.initChartSunburstTasks();
         this.initChartSunburstClusters();
-
-        return this;
     },
     initChartProcessStrip: function () {
         var el = $('#process-strip', this.$el);

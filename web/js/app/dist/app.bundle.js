@@ -14412,6 +14412,7 @@
 	            console.log('route: dashboard/index');
 	            var view = new ViewIndex();
 	            app.mainView.renderPage(view);
+	            view.initCharts();
 	
 	            // add filter to toolbar
 	            var viewFilter = new ViewFilter({
@@ -14442,13 +14443,13 @@
 	    render: function render() {
 	        this.$el.html(_.template(Template)());
 	
-	        // Init charts
+	        return this;
+	    },
+	    initCharts: function initCharts() {
 	        this.initChartProcessStrip();
 	        this.initChartSunburstWindows();
 	        this.initChartSunburstTasks();
 	        this.initChartSunburstClusters();
-	
-	        return this;
 	    },
 	    initChartProcessStrip: function initChartProcessStrip() {
 	        var el = $('#process-strip', this.$el);
@@ -15292,7 +15293,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".color-strip {\n    margin: 0.5em;\n    font-size: 10px;\n}\n\n.color-strip .interval-hide {\n    display: none;\n}", ""]);
+	exports.push([module.id, ".color-strip {\n    margin: 0.5em;\n    font-size: 10px;\n}\n\n.color-strip text {\n    fill: #fdf6e3;\n}\n\n.color-strip .interval-hide {\n    display: none;\n}", ""]);
 	
 	// exports
 

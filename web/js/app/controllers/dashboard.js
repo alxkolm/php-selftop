@@ -9,6 +9,7 @@ module.exports = function (options) {
             console.log('route: dashboard/index');
             var view = new ViewIndex;
             app.mainView.renderPage(view);
+            view.initCharts();
 
             // add filter to toolbar
             var viewFilter = new ViewFilter({
