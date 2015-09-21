@@ -72,7 +72,7 @@
         path
             .datum(values)
             .attr("class", "area")
-            .style('fill', 'rgb(228, 26, 28)')
+            .style('fill', '#dc322f')
             .attr("d", area);
 
         function draw(values, xDomain){

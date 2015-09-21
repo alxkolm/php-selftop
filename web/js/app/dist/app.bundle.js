@@ -15419,7 +15419,7 @@
 	        svg.append('text').attr('y', 10).attr('x', 80).text('Key press per minute');
 	
 	        var path = svg.append("path");
-	        path.datum(values).attr("class", "area").style('fill', 'rgb(228, 26, 28)').attr("d", area);
+	        path.datum(values).attr("class", "area").style('fill', '#dc322f').attr("d", area);
 	
 	        function draw(values, xDomain) {
 	            yDomain = d3.extent(values, function (value) {
