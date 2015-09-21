@@ -1,8 +1,8 @@
 var Backbone = require('backbone');
 var Template = require('./templates/index.html');
+var HintTemplate = require('./templates/process-hint.html');
 var ProcessModalTemplate = require('./templates/process-modal.html');
 var _        = require('underscore');
-//var $        = require('jquery');
 require('../../components/sunburst');
 require('../../components/color-strip');
 require('../../components/keys-activity');
@@ -47,14 +47,9 @@ module.exports = Backbone.View.extend({
             mouseover:  (d, el) => {
                 if (d.depth == 1) {
                     stripChart.dim(d.process_id);
-                    var content = $('<table></table>');
-                    d.children.slice(0,5).forEach((item) => {
-                        var html = '<tr>'
-                            + '<td>' + dashboard.formatDuration(item.value) + '</td>'
-                            + '<td>' + item.name + '</td>'
-                            +'</tr>';
-                        content.append(html);
-                    });
+
+                    var tpl = _.template(HintTemplate)({items: d.children.slice(0,5)});
+                    var content = $(tpl);
                     var container = $(el).parents('.sunburst');
                     container.popup({
                         title: d.name,

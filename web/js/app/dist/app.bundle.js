@@ -14434,9 +14434,9 @@
 	
 	var Backbone = __webpack_require__(3);
 	var Template = __webpack_require__(10);
+	var HintTemplate = __webpack_require__(28);
 	var ProcessModalTemplate = __webpack_require__(11);
 	var _ = __webpack_require__(7);
-	//var $        = require('jquery');
 	__webpack_require__(12);
 	__webpack_require__(17);
 	__webpack_require__(22);
@@ -14483,11 +14483,9 @@
 	            mouseover: function mouseover(d, el) {
 	                if (d.depth == 1) {
 	                    stripChart.dim(d.process_id);
-	                    var content = $('<table></table>');
-	                    d.children.slice(0, 5).forEach(function (item) {
-	                        var html = '<tr>' + '<td>' + dashboard.formatDuration(item.value) + '</td>' + '<td>' + item.name + '</td>' + '</tr>';
-	                        content.append(html);
-	                    });
+	
+	                    var tpl = _.template(HintTemplate)({ items: d.children.slice(0, 5) });
+	                    var content = $(tpl);
 	                    var container = $(el).parents('.sunburst');
 	                    container.popup({
 	                        title: d.name,
@@ -15532,6 +15530,12 @@
 	        return this.$el.html(view.render().el);
 	    }
 	});
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	module.exports = "<table>\n    <% items.map(function(item){ %>\n        <tr>\n            <td><%= dashboard.formatDuration(item.value) %></td>\n            <td><%= item.name %></td>\n        </tr>\n    <% }) %>\n\n</table>";
 
 /***/ }
 /******/ ]);

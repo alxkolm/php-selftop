@@ -1,0 +1,9 @@
+<table>
+    <% items.map(function(item){ %>
+        <tr>
+            <td><%= dashboard.formatDuration(item.value) %></td>
+            <td><%= item.name %></td>
+        </tr>
+    <% }) %>
+
+</table>
