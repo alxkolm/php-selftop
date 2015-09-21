@@ -63,7 +63,7 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(26);
+	var MainView = __webpack_require__(27);
 	var _ = __webpack_require__(7);
 	var $ = __webpack_require__(5);
 	
@@ -14405,7 +14405,7 @@
 	'use strict';
 	
 	var ViewIndex = __webpack_require__(9);
-	var ViewFilter = __webpack_require__(24);
+	var ViewFilter = __webpack_require__(25);
 	var $ = __webpack_require__(5);
 	
 	module.exports = function (options) {
@@ -14439,8 +14439,8 @@
 	//var $        = require('jquery');
 	__webpack_require__(12);
 	__webpack_require__(17);
-	__webpack_require__(27);
 	__webpack_require__(22);
+	__webpack_require__(23);
 	//debugger;
 	
 	module.exports = Backbone.View.extend({
@@ -14857,7 +14857,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
+	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n\n}\n\n.process-list {\n    font-size: 0.8em;\n}\n\n.process-item-duration {\n    display: inline-block;\n    font-weight: bold;\n    padding: 0.25em  0.5em 0.25em 0.25em;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee;\n}", ""]);
 	
 	// exports
 
@@ -15360,92 +15360,6 @@
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(23);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(16)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./dashboard.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./dashboard.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(15)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Backbone = __webpack_require__(3);
-	var Template = __webpack_require__(25);
-	var _ = __webpack_require__(7);
-	
-	module.exports = Backbone.View.extend({
-	    render: function render() {
-	        var _this = this;
-	
-	        this.$el.html(_.template(Template)());
-	        this.from = this.$el.find('#filter-date-input-from');
-	        this.to = this.$el.find('#filter-date-input-to');
-	        // bind events
-	        this.$el.find('.filter-date-input').change(function (e) {
-	            e.preventDefault();
-	            app.trigger('filter:date:change', { from: _this.from.val(), to: _this.to.val() });
-	        });
-	        return this;
-	    }
-	});
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"two fields\">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        From\n                    </div>\n                    <input type=\"date\" name=\"from\" title=\"From\" id=\"filter-date-input-from\" class=\"filter-date-input\">\n                </div>\n            </div>\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        To\n                    </div>\n                    <input type=\"date\" name=\"to\" title=\"To\" id=\"filter-date-input-to\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var Backbone = __webpack_require__(3);
-	
-	module.exports = Backbone.View.extend({
-	    renderPage: function renderPage(view) {
-	        return this.$el.html(view.render().el);
-	    }
-	});
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 	
 	(function (factory) {
@@ -15531,6 +15445,92 @@
 	
 	        this[0].update = $.proxy(update, this);
 	    };
+	});
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(24);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./dashboard.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./dashboard.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(15)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Backbone = __webpack_require__(3);
+	var Template = __webpack_require__(26);
+	var _ = __webpack_require__(7);
+	
+	module.exports = Backbone.View.extend({
+	    render: function render() {
+	        var _this = this;
+	
+	        this.$el.html(_.template(Template)());
+	        this.from = this.$el.find('#filter-date-input-from');
+	        this.to = this.$el.find('#filter-date-input-to');
+	        // bind events
+	        this.$el.find('.filter-date-input').change(function (e) {
+	            e.preventDefault();
+	            app.trigger('filter:date:change', { from: _this.from.val(), to: _this.to.val() });
+	        });
+	        return this;
+	    }
+	});
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"two fields\">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        From\n                    </div>\n                    <input type=\"date\" name=\"from\" title=\"From\" id=\"filter-date-input-from\" class=\"filter-date-input\">\n                </div>\n            </div>\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        To\n                    </div>\n                    <input type=\"date\" name=\"to\" title=\"To\" id=\"filter-date-input-to\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var Backbone = __webpack_require__(3);
+	
+	module.exports = Backbone.View.extend({
+	    renderPage: function renderPage(view) {
+	        return this.$el.html(view.render().el);
+	    }
 	});
 
 /***/ }
