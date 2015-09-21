@@ -33,7 +33,7 @@
 .process-item-duration {
     display: inline-block;
     font-weight: bold;
-    padding: 0.25em  0.5em 0.25em 0.25em;
+    padding: 0.25em  1em 0.25em 0.25em;
 }
 
 .process-item:nth-child(odd) {
