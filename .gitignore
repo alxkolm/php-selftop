@@ -28,3 +28,4 @@ phpunit.phar
 
 selftop.db
 node_modules
+app.bundle.js.map
