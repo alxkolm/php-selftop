@@ -31,11 +31,15 @@
 }
 
 .process-item-duration {
-    display: inline-block;
     font-weight: bold;
     padding: 0.25em  1em 0.25em 0.25em;
 }
 
 .process-item:nth-child(odd) {
     background: #eee8d5;
+}
+
+.process-hint--duration {
+    font-weight: bold;
+    padding: 0.25em  1em 0.25em 0.25em;
 }

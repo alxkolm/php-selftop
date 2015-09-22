@@ -104,6 +104,20 @@ module.exports = Backbone.View.extend({
                         this.showProcessPopup(d);
                     }
                 },
+                mouseover:  (d, el) => {
+                    if (d.depth == 1) {
+                        var tpl       = _.template(HintTemplate)({items: d.children.slice(0, 5)});
+                        var content   = $(tpl);
+                        var container = $(el).parents('.sunburst');
+                        container.popup({
+                            title:     d.name,
+                            position:  'right center',
+                            variation: 'very wide',
+                            html:      content
+                        });
+                        container.popup('show');
+                    }
+                },
                 dragend: function (d) {
                     var el = $(d3.event.sourceEvent.toElement);
                     var taskId = el.attr('task-id');
