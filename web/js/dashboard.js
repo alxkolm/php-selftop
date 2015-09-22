@@ -4,7 +4,7 @@ dashboard = {
      * Common colors of processes for all charts
      */
     processColor: d3.scale.ordinal().range(colorbrewer.Set1[9]),
-    clusterColor: d3.scale.ordinal().range(hclColors.rainbow00),
+    clusterColor: d3.scale.ordinal().range(hclColors.rainbow02),
     taskColor:    d3.scale.ordinal().range(colorbrewer.Set2[8]),
 
     /**
