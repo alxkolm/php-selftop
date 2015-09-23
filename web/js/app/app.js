@@ -2,8 +2,8 @@ var Router = require('./router');
 var Backbone = require('backbone');
 var DashboardController = require('./controllers/dashboard');
 var MainView = require('./views/main-view');
+var TaskCreateModal = require('./views/modal-task-create/view');
 var _ = require('underscore');
-//var $ = require('jquery');
 
 module.exports = function (options) {
     _.extend(this, Backbone.Events);
@@ -44,8 +44,8 @@ module.exports = function (options) {
     this.on('filter:date:change', this.loadData);
 
     this.showCreateTaskDialog = function () {
-        var tpl = require('./views/dashboard/templates/task-add-modal.html');
-        var el = $(_.template(tpl)());
+        var view = new TaskCreateModal();
+        var el = view.render().el;
         $(el).modal('show');
     };
 

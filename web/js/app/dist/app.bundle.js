@@ -64,8 +64,8 @@
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
 	var MainView = __webpack_require__(28);
+	var TaskCreateModal = __webpack_require__(30);
 	var _ = __webpack_require__(7);
-	//var $ = require('jquery');
 	
 	module.exports = function (options) {
 	    _.extend(this, Backbone.Events);
@@ -106,8 +106,8 @@
 	    this.on('filter:date:change', this.loadData);
 	
 	    this.showCreateTaskDialog = function () {
-	        var tpl = __webpack_require__(29);
-	        var el = $(_.template(tpl)());
+	        var view = new TaskCreateModal();
+	        var el = view.render().el;
 	        $(el).modal('show');
 	    };
 	
@@ -15556,10 +15556,30 @@
 	});
 
 /***/ },
-/* 29 */
+/* 29 */,
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Backbone = __webpack_require__(3);
+	var ModalTemplate = __webpack_require__(31);
+	var _ = __webpack_require__(7);
+	
+	module.exports = Backbone.View.extend({
+	    className: 'ui small modal',
+	    render: function render() {
+	        this.$el.html(_.template(ModalTemplate)());
+	
+	        return this;
+	    }
+	});
+
+/***/ },
+/* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"ui small modal\">\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        Create task\n    </div>\n    <div class=\"content\">\n        <form action=\"\">\n            <div class=\"ui input fluid\">\n                <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n            </div>\n        </form>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black primary button\">\n            Create\n        </div>\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n</div>";
+	module.exports = "\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        Create task\n    </div>\n    <div class=\"content\">\n        <form action=\"\">\n            <div class=\"ui input fluid\">\n                <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n            </div>\n        </form>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black primary button\">\n            Create\n        </div>\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n";
 
 /***/ }
 /******/ ]);
