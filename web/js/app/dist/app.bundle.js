@@ -65,7 +65,7 @@
 	var DashboardController = __webpack_require__(8);
 	var MainView = __webpack_require__(28);
 	var _ = __webpack_require__(7);
-	var $ = __webpack_require__(5);
+	//var $ = require('jquery');
 	
 	module.exports = function (options) {
 	    _.extend(this, Backbone.Events);
@@ -104,6 +104,12 @@
 	    };
 	
 	    this.on('filter:date:change', this.loadData);
+	
+	    this.showCreateTaskDialog = function () {
+	        var tpl = __webpack_require__(29);
+	        var el = $(_.template(tpl)());
+	        $(el).modal('show');
+	    };
 	
 	    return this;
 	};
@@ -14446,7 +14452,6 @@
 	module.exports = Backbone.View.extend({
 	    render: function render() {
 	        this.$el.html(_.template(Template)());
-	
 	        return this;
 	    },
 	    initCharts: function initCharts() {
@@ -14599,7 +14604,6 @@
 	        app.on('update:keys', chart[0].update);
 	    },
 	    showProcessPopup: function showProcessPopup(data) {
-	        console.log(data);
 	        var el = $(_.template(ProcessModalTemplate)({ data: data }));
 	        $(el).modal('show');
 	    }
@@ -14609,7 +14613,7 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <button class=\"ui olive basic mini button\" onclick=\"app.showCreateTaskDialog()\">Add task</button>\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>";
 
 /***/ },
 /* 11 */
@@ -15550,6 +15554,12 @@
 	        return this.$el.html(view.render().el);
 	    }
 	});
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"ui small modal\">\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        Create task\n    </div>\n    <div class=\"content\">\n        <form action=\"\">\n            <div class=\"ui input fluid\">\n                <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n            </div>\n        </form>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black primary button\">\n            Create\n        </div>\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n</div>";
 
 /***/ }
 /******/ ]);

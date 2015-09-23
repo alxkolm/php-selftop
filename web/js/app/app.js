@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var DashboardController = require('./controllers/dashboard');
 var MainView = require('./views/main-view');
 var _ = require('underscore');
-var $ = require('jquery');
+//var $ = require('jquery');
 
 module.exports = function (options) {
     _.extend(this, Backbone.Events);
@@ -41,9 +41,13 @@ module.exports = function (options) {
         });
     };
 
-
-
     this.on('filter:date:change', this.loadData);
+
+    this.showCreateTaskDialog = function () {
+        var tpl = require('./views/dashboard/templates/task-add-modal.html');
+        var el = $(_.template(tpl)());
+        $(el).modal('show');
+    };
 
     return this;
 };

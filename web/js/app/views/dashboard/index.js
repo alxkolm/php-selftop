@@ -12,7 +12,6 @@ require('../../css/dashboard.css');
 module.exports = Backbone.View.extend({
     render: function () {
         this.$el.html(_.template(Template)());
-
         return this;
     },
     initCharts: function () {
@@ -162,7 +161,6 @@ module.exports = Backbone.View.extend({
         app.on('update:keys', chart[0].update);
     },
     showProcessPopup: function (data) {
-        console.log(data);
         var el = $(_.template(ProcessModalTemplate)({data: data}));
         $(el).modal('show');
     }
