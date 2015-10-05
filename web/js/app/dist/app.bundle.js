@@ -14819,6 +14819,7 @@
 	
 	        function update(data) {
 	            draw(data);
+	            showTotalText();
 	        }
 	
 	        function fillColorFn(d) {
