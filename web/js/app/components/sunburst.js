@@ -217,6 +217,7 @@
 
         function update(data) {
             draw(data);
+            showTotalText();
         }
 
 
