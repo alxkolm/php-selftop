@@ -13,14 +13,12 @@ use yii\base\Model;
 
 class DateFilterForm extends Model
 {
-    public $from;
-    public $to;
+    public $date;
 
     public function rules()
     {
         return [
-            [['from'], 'date', 'format' => 'php:Y-m-d', 'timestampAttribute' => 'from'],
-            [['to'],   'date', 'format' => 'php:Y-m-d', 'timestampAttribute' => 'to'],
+            [['date'], 'date', 'format' => 'php:Y-m-d', 'timestampAttribute' => 'date'],
         ];
     }
 }

@@ -64,7 +64,7 @@
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
 	var MainView = __webpack_require__(28);
-	var TaskCreateModal = __webpack_require__(30);
+	var TaskCreateModal = __webpack_require__(29);
 	var _ = __webpack_require__(7);
 	
 	module.exports = function (options) {
@@ -15524,12 +15524,11 @@
 	        var _this = this;
 	
 	        this.$el.html(_.template(Template)());
-	        this.from = this.$el.find('#filter-date-input-from');
-	        this.to = this.$el.find('#filter-date-input-to');
+	        this.date = this.$el.find('#filter-date-input');
 	        // bind events
 	        this.$el.find('.filter-date-input').change(function (e) {
 	            e.preventDefault();
-	            app.trigger('filter:date:change', { from: _this.from.val(), to: _this.to.val() });
+	            app.trigger('filter:date:change', { date: _this.date.val() });
 	        });
 	        return this;
 	    }
@@ -15539,7 +15538,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"two fields\">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        From\n                    </div>\n                    <input type=\"date\" name=\"from\" title=\"From\" id=\"filter-date-input-from\" class=\"filter-date-input\">\n                </div>\n            </div>\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        To\n                    </div>\n                    <input type=\"date\" name=\"to\" title=\"To\" id=\"filter-date-input-to\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
+	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"one \">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        Date\n                    </div>\n                    <input type=\"date\" name=\"date\" title=\"From\" id=\"filter-date-input\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
 
 /***/ },
 /* 28 */
@@ -15556,14 +15555,13 @@
 	});
 
 /***/ },
-/* 29 */,
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var Backbone = __webpack_require__(3);
-	var ModalTemplate = __webpack_require__(31);
+	var ModalTemplate = __webpack_require__(30);
 	var _ = __webpack_require__(7);
 	
 	module.exports = Backbone.View.extend({
@@ -15576,7 +15574,7 @@
 	});
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports = "\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        Create task\n    </div>\n    <div class=\"content\">\n        <form action=\"\">\n            <div class=\"ui input fluid\">\n                <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n            </div>\n        </form>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black primary button\">\n            Create\n        </div>\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n";

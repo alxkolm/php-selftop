@@ -15,10 +15,8 @@ use yii\data\ActiveDataProvider;
 class WindowSearch extends Window
 {
     public $groupBy = 'title';
-    public $dateFrom;
-    public $dateTo;
-    public $timestampFrom;
-    public $timestampTo;
+    public $date;
+    public $timestamp;
 
     /**
      * @inheritdoc
@@ -28,8 +26,7 @@ class WindowSearch extends Window
         return [
             [['groupBy'], 'in', 'range' => ['title', 'process_id']],
             [['id', 'created'], 'integer'],
-            [['dateFrom'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestampFrom'],
-            [['dateTo'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestampTo'],
+            [['date'], 'date', 'format' => 'yyyy-MM-dd', 'timestampAttribute' => 'timestamp'],
         ];
     }
 
@@ -91,15 +88,15 @@ class WindowSearch extends Window
         ]);
 
         $timezone = new \DateTimeZone(\Yii::$app->timeZone);
-        if ($this->timestampFrom) {
-            $from = (new \DateTime('@'.strtotime('today',$this->timestampFrom)))->setTimezone($timezone);
+        if ($this->timestamp) {
+            $from = (new \DateTime('@'.strtotime('today',$this->timestamp)))->setTimezone($timezone);
             $query->andWhere(
                 '{{record}}.start >= :today',
                 [':today' => $from->format('Y-m-d H:i:s')]
             );
         }
-        if ($this->timestampTo) {
-            $to = (new \DateTime('@'.strtotime('tomorrow', $this->timestampTo)))->setTimezone($timezone);
+        if ($this->timestamp) {
+            $to = (new \DateTime('@'.strtotime('tomorrow', $this->timestamp)))->setTimezone($timezone);
             $query->andWhere(
                 '{{record}}.start < :todayNight',
                 [':todayNight' => $to->format('Y-m-d H:i:s')]

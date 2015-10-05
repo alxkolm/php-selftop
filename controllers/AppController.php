@@ -40,16 +40,15 @@ class AppController extends Controller
 
     public function exposeData(){
         $searchModel           = new WindowSearch();
-        $searchModel->dateFrom = date('Y-m-d');
-        $searchModel->dateTo   = date('Y-m-d');
+        $searchModel->date = date('Y-m-d');
 
         $dataProvider          = $searchModel->search(Yii::$app->request->post());
 
         // eagerly load process info
         $dataProvider->query->with('process');
 
-        $from = strtotime('today', $searchModel->timestampFrom);
-        $to = strtotime('tomorrow', $searchModel->timestampTo);
+        $from = strtotime('today', $searchModel->timestamp);
+        $to = strtotime('tomorrow', $searchModel->timestamp);
 
         $processList = StatsHelper::getProcessList($from, $to);
         $this->view->registerJs(
@@ -102,8 +101,8 @@ class AppController extends Controller
 
     public function clusterChart($searchModel)
     {
-        $from = strtotime('today', $searchModel->timestampFrom);
-        $to = strtotime('tomorrow', $searchModel->timestampTo);
+        $from = strtotime('today', $searchModel->timestamp);
+        $to = strtotime('tomorrow', $searchModel->timestamp);
 
         $data = $this->clusterData($from, $to);
 
@@ -160,8 +159,8 @@ class AppController extends Controller
             && $filter->load(Yii::$app->request->bodyParams, '')
             && $filter->validate())
         {
-            $from = strtotime('today', $filter->from ? $filter->from : time());
-            $to   = strtotime('tomorrow', $filter->to ? $filter->to : time());
+            $from = strtotime('today', $filter->date ? $filter->date : time());
+            $to   = strtotime('tomorrow', $filter->date ? $filter->date : time());
 
             $reply = [
                 'processList' => StatsHelper::getProcessList($from, $to),
