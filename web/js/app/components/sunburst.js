@@ -17,6 +17,7 @@
             radius = Math.min(width, height) / 2,
             color = options.color,
             data  = options.data,
+            showLabels = options.showLabels || false,
             that  = this;
 
         var markup = '<div class="sunburst-chart">'
@@ -87,44 +88,46 @@
 
             totalSize = path.node().__data__.value;
 
-            var textNodes = nodes.filter(function(d){return d.depth == 1 && d.dx > 0.5});
+            if (showLabels) {
+                var textNodes = nodes.filter(function(d){return d.depth == 1 && d.dx > 0.5});
 
-            var text = svg.selectAll('text')
-                .data(textNodes, function (d) {return d.sector_id });
+                var text = svg.selectAll('text')
+                    .data(textNodes, function (d) {return d.sector_id });
 
-            // Change exist elements
-            //text
-            //    .attr("startOffset",function(d){return '25%';})
-            //    .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
-            //    .text(function (d) {
-            //        var percentage = (100 * d.value / totalSize).toPrecision(2);
-            //        return d.name + ' (' + percentage +'%)';
-            //    });
+                // Change exist elements
+                //text
+                //    .attr("startOffset",function(d){return '25%';})
+                //    .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
+                //    .text(function (d) {
+                //        var percentage = (100 * d.value / totalSize).toPrecision(2);
+                //        return d.name + ' (' + percentage +'%)';
+                //    });
 
-            text
-                .enter()
-                .append('text')
-                .attr('x', 0)
-                .attr('dy', '30')
-                .attr('text-anchor', 'middle')
-                .attr('letter-spacing', '0.25em')
-                .style('fill', function(d) {
-                    var c = d3.hcl(color(d.sector_id));
-                    c.l = c.l > 80 ? c.l = 0 : c.l;
-                    return c.brighter(3);
-                })
-                .on("mouseover", mouseover)
-                .on("mouseleave", mouseleave)
-                .on("click", onclick)
-                .append('textPath')
-                .attr("startOffset",function(d){return '25%';})
-                .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
-                .text(function (d) {
-                    var percentage = (100 * d.value / totalSize).toPrecision(2);
-                    return d.name + ' (' + percentage +'%)';
-                });
+                text
+                    .enter()
+                    .append('text')
+                    .attr('x', 0)
+                    .attr('dy', '30')
+                    .attr('text-anchor', 'middle')
+                    .attr('letter-spacing', '0.25em')
+                    .style('fill', function(d) {
+                        var c = d3.hcl(color(d.sector_id));
+                        c.l = c.l > 80 ? c.l = 0 : c.l;
+                        return c.brighter(3);
+                    })
+                    .on("mouseover", mouseover)
+                    .on("mouseleave", mouseleave)
+                    .on("click", onclick)
+                    .append('textPath')
+                    .attr("startOffset",function(d){return '25%';})
+                    .attr('xlink:href', function (d) {return '#' + (d.depth == 1 ? 'sector-' + d.sector_id : 'window-' + d.window_id);})
+                    .text(function (d) {
+                        var percentage = (100 * d.value / totalSize).toPrecision(2);
+                        return d.name + ' (' + percentage +'%)';
+                    });
 
-            //text.exit().remove();
+                //text.exit().remove();
+            }
         }
 
         draw(data);

@@ -38,6 +38,7 @@ module.exports = Backbone.View.extend({
         el.sunburst({
             color: dashboard.processColor,
             data: dashboardDurations,
+            showLabels: true,
             mouseleave: function (d, el) {
                 stripChart.undim();
                 var container = $(el).parents('.sunburst');
