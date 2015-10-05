@@ -25,12 +25,14 @@
             + '<div class="sunburst-percentage"></div>'
             + '<div class="sunburst-duration"></div>'
             + '<div class="sunburst-window"></div>'
+
             + '</div>'
+            + '<div class="sunburst-holder"></div>'
             + '</div>';
         this.append(markup);
         this.addClass("sunburst");
 
-        var svg = d3.select(this.find('.sunburst-chart')[0]).append("svg")
+        var svg = d3.select(this.find('.sunburst-holder')[0]).append("svg")
             .attr("width", width)
             .attr("height", height)
             .append("g")
@@ -131,6 +133,9 @@
         }
 
         draw(data);
+
+        showTotalText();
+
         /**
          * Mouse move callback
          * @param d
@@ -162,6 +167,8 @@
          * Mouse leave callback
          */
         function mouseleave(d){
+            showTotalText();
+
             // Execute callback
             if (typeof options.mouseleave != 'undefined') {
                 options.mouseleave(d, this);
@@ -244,6 +251,15 @@
             }
 
             return d.depth == 1 ? color(d.sector_id) : color(d.name);
+        }
+
+        function showTotalText(){
+            d3.select(that.find(".sunburst-percentage")[0])
+                .text('100%');
+            d3.select(that.find(".sunburst-duration")[0])
+                .text(dashboard.formatDuration(totalSize));
+            d3.select(that.find(".sunburst-window")[0])
+                .text('Total');
         }
 
         this[0].update = $.proxy(update, this);

@@ -14656,11 +14656,11 @@
 	            showLabels = options.showLabels || false,
 	            that = this;
 	
-	        var markup = '<div class="sunburst-chart">' + '<div class="sunburst-info">' + '<div class="sunburst-percentage"></div>' + '<div class="sunburst-duration"></div>' + '<div class="sunburst-window"></div>' + '</div>' + '</div>';
+	        var markup = '<div class="sunburst-chart">' + '<div class="sunburst-info">' + '<div class="sunburst-percentage"></div>' + '<div class="sunburst-duration"></div>' + '<div class="sunburst-window"></div>' + '</div>' + '<div class="sunburst-holder"></div>' + '</div>';
 	        this.append(markup);
 	        this.addClass("sunburst");
 	
-	        var svg = d3.select(this.find('.sunburst-chart')[0]).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + "," + height * .5 + ")");
+	        var svg = d3.select(this.find('.sunburst-holder')[0]).append("svg").attr("width", width).attr("height", height).append("g").attr("transform", "translate(" + width / 2 + "," + height * .5 + ")");
 	
 	        var partition = d3.layout.partition().sort(null).size([2 * Math.PI, radius * radius]).value(function (d) {
 	            return d.size;
@@ -14742,6 +14742,9 @@
 	        }
 	
 	        draw(data);
+	
+	        showTotalText();
+	
 	        /**
 	         * Mouse move callback
 	         * @param d
@@ -14770,6 +14773,8 @@
 	         * Mouse leave callback
 	         */
 	        function mouseleave(d) {
+	            showTotalText();
+	
 	            // Execute callback
 	            if (typeof options.mouseleave != 'undefined') {
 	                options.mouseleave(d, this);
@@ -14844,6 +14849,12 @@
 	            return d.depth == 1 ? color(d.sector_id) : color(d.name);
 	        }
 	
+	        function showTotalText() {
+	            d3.select(that.find(".sunburst-percentage")[0]).text('100%');
+	            d3.select(that.find(".sunburst-duration")[0]).text(dashboard.formatDuration(totalSize));
+	            d3.select(that.find(".sunburst-window")[0]).text('Total');
+	        }
+	
 	        this[0].update = $.proxy(update, this);
 	    };
 	});
@@ -14883,7 +14894,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n\n}\n\n.process-list {\n\n}\n\n.process-item-duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee8d5;\n}\n\n.process-hint--duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}", ""]);
+	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-holder {\n    position: relative;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n\n}\n\n.process-list {\n\n}\n\n.process-item-duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee8d5;\n}\n\n.process-hint--duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}", ""]);
 	
 	// exports
 

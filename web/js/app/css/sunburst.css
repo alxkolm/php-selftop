@@ -12,6 +12,9 @@
     text-align: center;
     width: 170px;
 }
+.sunburst .sunburst-holder {
+    position: relative;
+}
 .sunburst .sunburst-duration {
     font-weight: bold;
 }
