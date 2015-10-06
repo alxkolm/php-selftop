@@ -15604,7 +15604,10 @@
 	        e.preventDefault();
 	        $.ajax('/api/tasks', {
 	            type: 'post',
-	            data: this.addForm.serialize()
+	            data: this.addForm.serialize(),
+	            success: function success(reply) {
+	                app.tasks.add(reply);
+	            }
 	        });
 	    }
 	});
@@ -15627,6 +15630,9 @@
 	var tasksTpl = __webpack_require__(32);
 	
 	module.exports = Backbone.View.extend({
+	    initialize: function initialize() {
+	        this.collection.on('add', $.proxy(this.render, this));
+	    },
 	    render: function render() {
 	        this.$el.html(_.template(tasksTpl)({ tasks: this.collection }));
 	        return this;

@@ -17,7 +17,10 @@ module.exports = Backbone.View.extend({
         e.preventDefault();
         $.ajax('/api/tasks', {
             type: 'post',
-            data: this.addForm.serialize()
+            data: this.addForm.serialize(),
+            success: function (reply) {
+                app.tasks.add(reply);
+            }
         })
     }
 });
