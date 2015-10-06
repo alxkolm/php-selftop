@@ -20,6 +20,7 @@ module.exports = function (options) {
     });
 
     this.toolbar = $('#toolbar-main');
+    this.tasks = new Backbone.Collection(dashboardTasks);
 
     this.showApp = function () {
         Backbone.history.start({ pushState: true });

@@ -22,7 +22,7 @@ module.exports = function (options) {
 
             // add task list
             var viewTask = new ViewTask({
-                collection: new Backbone.Collection(dashboardTasks)
+                collection: app.tasks
             });
             view.$el.append(viewTask.render().el);
         }

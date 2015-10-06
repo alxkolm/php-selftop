@@ -82,6 +82,7 @@
 	    });
 	
 	    this.toolbar = $('#toolbar-main');
+	    this.tasks = new Backbone.Collection(dashboardTasks);
 	
 	    this.showApp = function () {
 	        Backbone.history.start({ pushState: true });
@@ -14433,7 +14434,7 @@
 	
 	            // add task list
 	            var viewTask = new ViewTask({
-	                collection: new Backbone.Collection(dashboardTasks)
+	                collection: app.tasks
 	            });
 	            view.$el.append(viewTask.render().el);
 	        }
