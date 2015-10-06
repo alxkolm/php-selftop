@@ -14412,6 +14412,8 @@
 	
 	var ViewIndex = __webpack_require__(9);
 	var ViewFilter = __webpack_require__(26);
+	var ViewTask = __webpack_require__(31);
+	var Backbone = __webpack_require__(3);
 	var $ = __webpack_require__(5);
 	
 	module.exports = function (options) {
@@ -14428,6 +14430,12 @@
 	                className: 'five wide column right floated'
 	            });
 	            app.toolbar.append(viewFilter.render().el);
+	
+	            // add task list
+	            var viewTask = new ViewTask({
+	                collection: new Backbone.Collection(dashboardTasks)
+	            });
+	            view.$el.append(viewTask.render().el);
 	        }
 	    };
 	};
@@ -14614,7 +14622,7 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <button class=\"ui olive basic mini button\" onclick=\"app.showCreateTaskDialog()\">Add task</button>\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <button class=\"ui olive basic mini button\" onclick=\"app.showCreateTaskDialog()\">Add task</button>\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>\n";
 
 /***/ },
 /* 11 */
@@ -15520,7 +15528,7 @@
 	
 	
 	// module
-	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    display: inline-block;\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
+	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
 	
 	// exports
 
@@ -15585,7 +15593,18 @@
 	    render: function render() {
 	        this.$el.html(_.template(ModalTemplate)());
 	
+	        this.addForm = this.$el.find('#form-add-task');
+	        // bind callback to form submit
+	        this.addForm.submit($.proxy(this.onSubmit, this));
+	
 	        return this;
+	    },
+	    onSubmit: function onSubmit(e) {
+	        e.preventDefault();
+	        $.ajax('/api/tasks', {
+	            type: 'post',
+	            data: this.addForm.serialize()
+	        });
 	    }
 	});
 
@@ -15593,7 +15612,31 @@
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "\n    <i class=\"close icon\"></i>\n    <div class=\"header\">\n        Create task\n    </div>\n    <div class=\"content\">\n        <form action=\"\">\n            <div class=\"ui input fluid\">\n                <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n            </div>\n        </form>\n    </div>\n    <div class=\"actions\">\n        <div class=\"ui black primary button\">\n            Create\n        </div>\n        <div class=\"ui black deny button\">\n            Close\n        </div>\n    </div>\n";
+	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Backbone = __webpack_require__(3);
+	var _ = __webpack_require__(7);
+	var $ = __webpack_require__(5);
+	var tasksTpl = __webpack_require__(32);
+	
+	module.exports = Backbone.View.extend({
+	    render: function render() {
+	        this.$el.html(_.template(tasksTpl)({ tasks: this.collection }));
+	        return this;
+	    }
+	});
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\"><%= task.get('name')%></div>\n        <% })%>\n    </div>\n</div>\n";
 
 /***/ }
 /******/ ]);

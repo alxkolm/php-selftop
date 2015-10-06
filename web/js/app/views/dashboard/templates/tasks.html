@@ -1,0 +1,7 @@
+<div id="dashboard-tasks">
+    <div class="task-list">
+        <% tasks.forEach(function(task){ %>
+        <div class="task" task-id="<%= task.get('id') %>"><%= task.get('name')%></div>
+        <% })%>
+    </div>
+</div>
