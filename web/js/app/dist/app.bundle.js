@@ -15616,7 +15616,7 @@
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
+	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary ok button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
 
 /***/ },
 /* 31 */
