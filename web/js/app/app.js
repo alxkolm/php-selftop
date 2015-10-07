@@ -27,6 +27,10 @@ module.exports = function (options) {
     };
     var app = this;
 
+    /**
+     * Load data from server
+     * @param data
+     */
     this.loadData = (data) =>  {
         $.ajax('/app/data', {
             data:     data,
@@ -37,6 +41,7 @@ module.exports = function (options) {
                 app.trigger('update:timeline', reply.timeLine, timeDomain);
                 app.trigger('update:sunburst-windows', reply.durationProcess);
                 app.trigger('update:sunburst-cluster', reply.durationCluster);
+                app.trigger('update:sunburst-task', reply.durationTask);
                 app.trigger('update:keys', reply.keys, timeDomain);
             }
         });

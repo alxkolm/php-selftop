@@ -146,10 +146,12 @@ module.exports = Backbone.View.extend({
         }
     },
     initChartSunburstTasks: function () {
-        $('#sunburst-task', this.$el).sunburst({
+        var chart = $('#sunburst-task', this.$el);
+        chart.sunburst({
             color: dashboard.taskColor,
             data: dashboardTaskDurations
         });
+        app.on('update:sunburst-task', chart[0].update);
     },
     initChartKeysActivity: function () {
         var chart = $('#keys-activity', this.$el);

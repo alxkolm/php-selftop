@@ -63,8 +63,8 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(28);
-	var TaskCreateModal = __webpack_require__(29);
+	var MainView = __webpack_require__(30);
+	var TaskCreateModal = __webpack_require__(31);
 	var _ = __webpack_require__(7);
 	
 	module.exports = function (options) {
@@ -89,6 +89,10 @@
 	    };
 	    var app = this;
 	
+	    /**
+	     * Load data from server
+	     * @param data
+	     */
 	    this.loadData = function (data) {
 	        $.ajax('/app/data', {
 	            data: data,
@@ -99,6 +103,7 @@
 	                app.trigger('update:timeline', reply.timeLine, timeDomain);
 	                app.trigger('update:sunburst-windows', reply.durationProcess);
 	                app.trigger('update:sunburst-cluster', reply.durationCluster);
+	                app.trigger('update:sunburst-task', reply.durationTask);
 	                app.trigger('update:keys', reply.keys, timeDomain);
 	            }
 	        });
@@ -14413,7 +14418,7 @@
 	
 	var ViewIndex = __webpack_require__(9);
 	var ViewFilter = __webpack_require__(26);
-	var ViewTask = __webpack_require__(31);
+	var ViewTask = __webpack_require__(28);
 	var Backbone = __webpack_require__(3);
 	var $ = __webpack_require__(5);
 	
@@ -14598,10 +14603,12 @@
 	        }
 	    },
 	    initChartSunburstTasks: function initChartSunburstTasks() {
-	        $('#sunburst-task', this.$el).sunburst({
+	        var chart = $('#sunburst-task', this.$el);
+	        chart.sunburst({
 	            color: dashboard.taskColor,
 	            data: dashboardTaskDurations
 	        });
+	        app.on('update:sunburst-task', chart[0].update);
 	    },
 	    initChartKeysActivity: function initChartKeysActivity() {
 	        var chart = $('#keys-activity', this.$el);
@@ -15569,6 +15576,33 @@
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	var Backbone = __webpack_require__(3);
+	var _ = __webpack_require__(7);
+	var $ = __webpack_require__(5);
+	var tasksTpl = __webpack_require__(29);
+	
+	module.exports = Backbone.View.extend({
+	    initialize: function initialize() {
+	        this.collection.on('add', $.proxy(this.render, this));
+	    },
+	    render: function render() {
+	        this.$el.html(_.template(tasksTpl)({ tasks: this.collection }));
+	        return this;
+	    }
+	});
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\"><%= task.get('name')%></div>\n        <% })%>\n    </div>\n</div>\n";
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 	
 	var Backbone = __webpack_require__(3);
@@ -15580,13 +15614,13 @@
 	});
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var Backbone = __webpack_require__(3);
-	var ModalTemplate = __webpack_require__(30);
+	var ModalTemplate = __webpack_require__(32);
 	var _ = __webpack_require__(7);
 	
 	module.exports = Backbone.View.extend({
@@ -15613,37 +15647,10 @@
 	});
 
 /***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary ok button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var Backbone = __webpack_require__(3);
-	var _ = __webpack_require__(7);
-	var $ = __webpack_require__(5);
-	var tasksTpl = __webpack_require__(32);
-	
-	module.exports = Backbone.View.extend({
-	    initialize: function initialize() {
-	        this.collection.on('add', $.proxy(this.render, this));
-	    },
-	    render: function render() {
-	        this.$el.html(_.template(tasksTpl)({ tasks: this.collection }));
-	        return this;
-	    }
-	});
-
-/***/ },
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\"><%= task.get('name')%></div>\n        <% })%>\n    </div>\n</div>\n";
+	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary ok button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
 
 /***/ }
 /******/ ]);
