@@ -15586,11 +15586,23 @@
 	
 	module.exports = Backbone.View.extend({
 	    initialize: function initialize() {
-	        this.collection.on('add', $.proxy(this.render, this));
+	        this.collection.on('update', $.proxy(this.render, this));
 	    },
 	    render: function render() {
 	        this.$el.html(_.template(tasksTpl)({ tasks: this.collection }));
+	        this.$el.find('.c-remove').click(this.removeTask);
 	        return this;
+	    },
+	    removeTask: function removeTask(e) {
+	        e.preventDefault();
+	        var el = $(e.currentTarget);
+	        var taskId = el.attr('task-id');
+	        $.ajax('/api/tasks/' + taskId, {
+	            type: 'DELETE',
+	            success: function success() {
+	                app.tasks.remove(taskId);
+	            }
+	        });
 	    }
 	});
 
@@ -15598,7 +15610,7 @@
 /* 29 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\"><%= task.get('name')%></div>\n        <% })%>\n    </div>\n</div>\n";
+	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\">\n            <%= task.get('name')%>\n            <a class=\"c-remove\" task-id=\"<%= task.get('id') %>\"><i class=\"remove icon\"></i></a>\n        </div>\n        <% })%>\n    </div>\n</div>\n";
 
 /***/ },
 /* 30 */

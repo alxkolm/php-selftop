@@ -42,4 +42,10 @@ class Task extends \yii\db\ActiveRecord
             'created' => Yii::t('app', 'Created'),
         ];
     }
+
+    public function afterDelete()
+    {
+        RecordTask::deleteAll(['task_id' => $this->id]);
+        parent::afterDelete();
+    }
 }

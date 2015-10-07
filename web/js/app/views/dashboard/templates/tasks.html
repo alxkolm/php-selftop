@@ -1,7 +1,10 @@
 <div id="dashboard-tasks">
     <div class="task-list">
         <% tasks.forEach(function(task){ %>
-        <div class="task" task-id="<%= task.get('id') %>"><%= task.get('name')%></div>
+        <div class="task" task-id="<%= task.get('id') %>">
+            <%= task.get('name')%>
+            <a class="c-remove" task-id="<%= task.get('id') %>"><i class="remove icon"></i></a>
+        </div>
         <% })%>
     </div>
 </div>
