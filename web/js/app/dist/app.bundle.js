@@ -15557,6 +15557,7 @@
 	
 	        this.$el.html(_.template(Template)());
 	        this.date = this.$el.find('#filter-date-input');
+	        this.date[0].valueAsDate = new Date();
 	        // bind events
 	        this.$el.find('.filter-date-input').change(function (e) {
 	            e.preventDefault();
