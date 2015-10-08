@@ -118,6 +118,10 @@ module.exports = Backbone.View.extend({
                         container.popup('show');
                     }
                 },
+                mouseleave: function (d, el) {
+                    var container = $(el).parents('.sunburst');
+                    container.popup('destroy');
+                },
                 dragend: function (d) {
                     var el = $(d3.event.sourceEvent.toElement);
                     var taskId = el.attr('task-id');
