@@ -147,7 +147,7 @@ class AppController extends Controller
         ];
     }
 
-    public function actionData()
+    public function actionData($fields = [])
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -162,17 +162,34 @@ class AppController extends Controller
             $from = strtotime('today', $filter->date ? $filter->date : time());
             $to   = strtotime('tomorrow', $filter->date ? $filter->date : time());
 
+
+
             $reply = [
                 'processList' => StatsHelper::getProcessList($from, $to),
-                'timeLine' => StatsHelper::timeline($from, $to),
-                'durationProcess' => StatsHelper::getProcessWindowHierarchy($from, $to),
-                'durationTask' => StatsHelper::getTaskWindowHierarchy($from, $to),
-                'keys' => StatsHelper::keysActivity($from, $to)
             ];
 
-            $clusterData = $this->clusterData($from, $to);
-            $reply['clusterList'] = $clusterData['clusters'];
-            $reply['durationCluster'] = $clusterData['durations'];
+            if (empty($fields) || in_array('timeLine', $fields)){
+                $reply['timeLine'] = StatsHelper::timeline($from, $to);
+            }
+
+            if (empty($fields) || in_array('durationProcess', $fields)){
+                $reply['durationProcess'] = StatsHelper::getProcessWindowHierarchy($from, $to);
+            }
+
+            if (empty($fields) || in_array('durationTask', $fields)){
+                $reply['durationTask'] = StatsHelper::getTaskWindowHierarchy($from, $to);
+            }
+
+            if (empty($fields) || in_array('keys', $fields)){
+                $reply['keys'] = StatsHelper::keysActivity($from, $to);
+            }
+
+            if (empty($fields) || in_array('durationCluster', $fields)){
+                $clusterData = $this->clusterData($from, $to);
+                $reply['clusterList'] = $clusterData['clusters'];
+                $reply['durationCluster'] = $clusterData['durations'];
+            }
+
         } else {
             throw new BadRequestHttpException;
         }
