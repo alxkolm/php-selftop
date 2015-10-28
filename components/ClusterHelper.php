@@ -39,7 +39,8 @@ class ClusterHelper
         $exitCode = 0;
         $result = exec($cmd, $clusterRaw, $exitCode);
         if ($exitCode != 0){
-            throw new Exception('Can\'t run cluster command. ' . $result);
+            return [];
+//            throw new Exception('Can\'t run cluster command. ' . $result);
         }
         unlink($filename);
 
