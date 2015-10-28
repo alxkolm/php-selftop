@@ -14526,6 +14526,9 @@
 	            dragend: function dragend(d) {
 	                var el = $(d3.event.sourceEvent.toElement);
 	                var taskId = el.attr('task-id');
+	                if (taskId == undefined) {
+	                    return;
+	                }
 	                var window_id;
 	                var process_id;
 	                switch (d.depth) {
@@ -14610,7 +14613,31 @@
 	        var chart = $('#sunburst-task', this.$el);
 	        chart.sunburst({
 	            color: dashboard.taskColor,
-	            data: dashboardTaskDurations
+	            data: dashboardTaskDurations,
+	            dragend: function dragend(d) {
+	                debugger;
+	                var el = $(d3.event.sourceEvent.toElement);
+	                var taskId = el.attr('task-id');
+	                var window_id;
+	                switch (d.depth) {
+	                    case 1:
+	                        window_id = d.children.map(function (a) {
+	                            return a.window_id;
+	                        });
+	                        break;
+	                    case 2:
+	                        window_id = [d.window_id];
+	                        break;
+	                }
+	
+	                $.ajax('/record/assign', {
+	                    type: 'POST',
+	                    data: { task: taskId, window: window_id },
+	                    success: function success() {
+	                        el.css({ backgroundColor: 'green' }).animate({ backgroundColor: 'none' });
+	                    }
+	                });
+	            }
 	        });
 	        app.on('update:sunburst-task', chart[0].update);
 	    },
