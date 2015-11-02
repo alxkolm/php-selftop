@@ -21,10 +21,10 @@ module.exports = function (options) {
             app.toolbar.append(viewFilter.render().el);
 
             // add task list
-            var viewTask = new ViewTask({
-                collection: app.tasks
-            });
-            view.$el.append(viewTask.render().el);
+            //var viewTask = new ViewTask({
+            //    collection: app.tasks
+            //});
+            //view.$el.append(viewTask.render().el);
         }
     };
 };

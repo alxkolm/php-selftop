@@ -17,7 +17,7 @@ module.exports = Backbone.View.extend({
     initCharts: function () {
         this.initChartProcessStrip();
         this.initChartSunburstWindows();
-        this.initChartSunburstTasks();
+        //this.initChartSunburstTasks();
         this.initChartSunburstClusters();
         this.initChartKeysActivity();
     },

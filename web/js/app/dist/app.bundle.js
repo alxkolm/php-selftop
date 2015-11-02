@@ -14438,10 +14438,10 @@
 	            app.toolbar.append(viewFilter.render().el);
 	
 	            // add task list
-	            var viewTask = new ViewTask({
-	                collection: app.tasks
-	            });
-	            view.$el.append(viewTask.render().el);
+	            //var viewTask = new ViewTask({
+	            //    collection: app.tasks
+	            //});
+	            //view.$el.append(viewTask.render().el);
 	        }
 	    };
 	};
@@ -14471,7 +14471,7 @@
 	    initCharts: function initCharts() {
 	        this.initChartProcessStrip();
 	        this.initChartSunburstWindows();
-	        this.initChartSunburstTasks();
+	        //this.initChartSunburstTasks();
 	        this.initChartSunburstClusters();
 	        this.initChartKeysActivity();
 	    },
@@ -14661,7 +14661,7 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <button class=\"ui olive basic mini button\" onclick=\"app.showCreateTaskDialog()\">Add task</button>\n        <div id=\"sunburst-task\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>\n";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>\n";
 
 /***/ },
 /* 11 */
