@@ -29,20 +29,21 @@
 
 }
 
-.process-list {
-
+.process-hint {
+    font-size: 10px;
 }
 
-.process-item-duration {
-    font-weight: bold;
-    padding: 0.25em  1em 0.25em 0.25em;
-}
-
-.process-item:nth-child(odd) {
-    background: #eee8d5;
+.process-hint--item:nth-child(even) {
+    background: #073642;
 }
 
 .process-hint--duration {
     font-weight: bold;
     padding: 0.25em  1em 0.25em 0.25em;
+}
+
+.process-hint--name {
+    word-wrap: break-word;
+    word-break: break-word;
+    table-layout: fixed;
 }

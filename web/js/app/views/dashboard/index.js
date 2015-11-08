@@ -34,6 +34,7 @@ module.exports = Backbone.View.extend({
     },
     initChartSunburstWindows: function () {
         var stripChart = $('#process-strip', this.$el)[0];
+        var processList = $('#chart-process-list', this.$el);
         var el = $('#sunburst-windows', this.$el);
         el.sunburst({
             color: dashboard.processColor,
@@ -48,16 +49,8 @@ module.exports = Backbone.View.extend({
                 if (d.depth == 1) {
                     stripChart.dim(d.process_id);
 
-                    var tpl = _.template(HintTemplate)({items: d.children.slice(0,5)});
-                    var content = $(tpl);
-                    var container = $(el).parents('.sunburst');
-                    container.popup({
-                        title: d.name,
-                        position: 'right center',
-                        variation: 'very wide',
-                        html: content
-                    });
-                    container.popup('show');
+                    var tpl = _.template(HintTemplate)({items: d.children});
+                    processList.html(tpl);
 
                 } else if (d.depth == 2) {
                     stripChart.dimByWindow(d.window_id);
@@ -97,6 +90,7 @@ module.exports = Backbone.View.extend({
         app.on('update:sunburst-windows', el[0].update);
     },
     initChartSunburstClusters: function () {
+        var processList = $('#chart-process-list', this.$el);
         if (typeof dashboardClustersDurations != 'undefined'){
             var chart = $('#sunburst-clusters', this.$el);
             chart.sunburst({
@@ -109,16 +103,8 @@ module.exports = Backbone.View.extend({
                 },
                 mouseover:  (d, el) => {
                     if (d.depth == 1) {
-                        var tpl       = _.template(HintTemplate)({items: d.children.slice(0, 5)});
-                        var content   = $(tpl);
-                        var container = $(el).parents('.sunburst');
-                        container.popup({
-                            title:     d.name,
-                            position:  'right center',
-                            variation: 'very wide',
-                            html:      content
-                        });
-                        container.popup('show');
+                        var tpl = _.template(HintTemplate)({items: d.children});
+                        processList.html(tpl);
                     }
                 },
                 mouseleave: function (d, el) {

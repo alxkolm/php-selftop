@@ -1,6 +1,6 @@
 <table class="process-hint">
     <% items.map(function(item){ %>
-        <tr>
+        <tr class="process-hint--item">
             <td class="process-hint--duration"><%= dashboard.formatDuration(item.value) %></td>
             <td class="process-hint--name"><%= item.name %></td>
         </tr>

@@ -14490,6 +14490,7 @@
 	        var _this = this;
 	
 	        var stripChart = $('#process-strip', this.$el)[0];
+	        var processList = $('#chart-process-list', this.$el);
 	        var el = $('#sunburst-windows', this.$el);
 	        el.sunburst({
 	            color: dashboard.processColor,
@@ -14504,16 +14505,8 @@
 	                if (d.depth == 1) {
 	                    stripChart.dim(d.process_id);
 	
-	                    var tpl = _.template(HintTemplate)({ items: d.children.slice(0, 5) });
-	                    var content = $(tpl);
-	                    var container = $(el).parents('.sunburst');
-	                    container.popup({
-	                        title: d.name,
-	                        position: 'right center',
-	                        variation: 'very wide',
-	                        html: content
-	                    });
-	                    container.popup('show');
+	                    var tpl = _.template(HintTemplate)({ items: d.children });
+	                    processList.html(tpl);
 	                } else if (d.depth == 2) {
 	                    stripChart.dimByWindow(d.window_id);
 	                }
@@ -14554,6 +14547,7 @@
 	    initChartSunburstClusters: function initChartSunburstClusters() {
 	        var _this2 = this;
 	
+	        var processList = $('#chart-process-list', this.$el);
 	        if (typeof dashboardClustersDurations != 'undefined') {
 	            var chart = $('#sunburst-clusters', this.$el);
 	            chart.sunburst({
@@ -14566,16 +14560,8 @@
 	                },
 	                mouseover: function mouseover(d, el) {
 	                    if (d.depth == 1) {
-	                        var tpl = _.template(HintTemplate)({ items: d.children.slice(0, 5) });
-	                        var content = $(tpl);
-	                        var container = $(el).parents('.sunburst');
-	                        container.popup({
-	                            title: d.name,
-	                            position: 'right center',
-	                            variation: 'very wide',
-	                            html: content
-	                        });
-	                        container.popup('show');
+	                        var tpl = _.template(HintTemplate)({ items: d.children });
+	                        processList.html(tpl);
 	                    }
 	                },
 	                mouseleave: function mouseleave(d, el) {
@@ -14661,13 +14647,13 @@
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column text-center\">\n\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>\n";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column\">\n        <div id=\"chart-process-list\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>\n";
 
 /***/ },
 /* 11 */
 /***/ function(module, exports) {
 
-	module.exports = "<table class=\"process-hint\">\n    <% items.map(function(item){ %>\n        <tr>\n            <td class=\"process-hint--duration\"><%= dashboard.formatDuration(item.value) %></td>\n            <td class=\"process-hint--name\"><%= item.name %></td>\n        </tr>\n    <% }) %>\n</table>";
+	module.exports = "<table class=\"process-hint\">\n    <% items.map(function(item){ %>\n        <tr class=\"process-hint--item\">\n            <td class=\"process-hint--duration\"><%= dashboard.formatDuration(item.value) %></td>\n            <td class=\"process-hint--name\"><%= item.name %></td>\n        </tr>\n    <% }) %>\n</table>";
 
 /***/ },
 /* 12 */
@@ -14942,7 +14928,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-holder {\n    position: relative;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n\n}\n\n.process-list {\n\n}\n\n.process-item-duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}\n\n.process-item:nth-child(odd) {\n    background: #eee8d5;\n}\n\n.process-hint--duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}", ""]);
+	exports.push([module.id, ".sunburst {\n    margin-bottom: 2em;\n}\n.sunburst .sunburst-chart{\n    position: relative;\n    display: inline-block;\n}\n.sunburst .sunburst-info {\n    position: absolute;\n    top: 85px;\n    left: 67px;\n    text-align: center;\n    width: 170px;\n}\n.sunburst .sunburst-holder {\n    position: relative;\n}\n.sunburst .sunburst-duration {\n    font-weight: bold;\n}\n.sunburst .sunburst-percentage {\n    font-size: 16px;\n}\n\n.process-list-wrapper {\n    height: 400px;\n    overflow: scroll;\n    color: #586e75;\n\n}\n\n.process-hint {\n    font-size: 10px;\n}\n\n.process-hint--item:nth-child(even) {\n    background: #073642;\n}\n\n.process-hint--duration {\n    font-weight: bold;\n    padding: 0.25em  1em 0.25em 0.25em;\n}\n\n.process-hint--name {\n    word-wrap: break-word;\n    word-break: break-word;\n    table-layout: fixed;\n}", ""]);
 	
 	// exports
 
