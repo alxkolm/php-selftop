@@ -29,6 +29,11 @@
 
 }
 
+#chart-process-list {
+    overflow-y: auto;
+    height: 400px;
+}
+
 .process-hint {
     font-size: 10px;
 }
