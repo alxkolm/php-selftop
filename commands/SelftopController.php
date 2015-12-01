@@ -104,6 +104,27 @@ class SelftopController extends Controller
         );
     }
 
+    /**
+     * Output window.titles today
+     */
+    public function actionTitlesToday()
+    {
+        $titles = Record::find()
+            ->joinWith('window')
+            ->select([
+                'window.title'
+            ])
+            ->distinct(true)
+            ->where('start >= :from AND start < :to', [':from' => date('c', strtotime('today')), ':to' => date('c', strtotime('tomorrow'))])
+            ->orderBy('window.title')
+            ->createCommand()
+            ->queryAll();
+        array_walk(
+            array_filter($titles, function ($a) {return trim($a['title']) != '';}),
+            function ($a) { echo trim($a['title']) . PHP_EOL; }
+        );
+    }
+
     public function actionTrainData()
     {
         $trainFile = fopen('train.svm', 'w');
