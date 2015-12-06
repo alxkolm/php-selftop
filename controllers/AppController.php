@@ -38,6 +38,10 @@ class AppController extends Controller
         return $this->render('index');
     }
 
+    /**
+     * Expose data to Javascript
+     * @throws \yii\base\InvalidConfigException
+     */
     public function exposeData(){
         $searchModel           = new WindowSearch();
         $searchModel->date = date('Y-m-d');
@@ -99,6 +103,10 @@ class AppController extends Controller
         $this->view->registerAssetBundle(DashboardAsset::className());
     }
 
+    /**
+     * Expose cluster data to Javascript
+     * @param $searchModel
+     */
     public function clusterChart($searchModel)
     {
         $from = strtotime('today', $searchModel->timestamp);
@@ -147,6 +155,12 @@ class AppController extends Controller
         ];
     }
 
+    /**
+     * Action for data
+     * @param array $fields
+     * @return array
+     * @throws BadRequestHttpException
+     */
     public function actionData($fields = [])
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
