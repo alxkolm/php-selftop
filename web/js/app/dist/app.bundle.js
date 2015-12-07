@@ -63,8 +63,8 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(30);
-	var TaskCreateModal = __webpack_require__(31);
+	var MainView = __webpack_require__(31);
+	var TaskCreateModal = __webpack_require__(32);
 	var _ = __webpack_require__(7);
 	
 	module.exports = function (options) {
@@ -14417,8 +14417,8 @@
 	'use strict';
 	
 	var ViewIndex = __webpack_require__(9);
-	var ViewFilter = __webpack_require__(26);
-	var ViewTask = __webpack_require__(28);
+	var ViewFilter = __webpack_require__(27);
+	var ViewTask = __webpack_require__(29);
 	var Backbone = __webpack_require__(3);
 	var $ = __webpack_require__(5);
 	
@@ -14461,6 +14461,7 @@
 	__webpack_require__(18);
 	__webpack_require__(23);
 	__webpack_require__(24);
+	__webpack_require__(25);
 	//debugger;
 	
 	module.exports = Backbone.View.extend({
@@ -14474,134 +14475,114 @@
 	        //this.initChartSunburstTasks();
 	        this.initChartSunburstClusters();
 	        this.initChartKeysActivity();
+	        this.initChartForceGraph();
 	    },
-	    initChartProcessStrip: function initChartProcessStrip() {
-	        var el = $('#process-strip', this.$el);
-	        el.colorStrip({
-	            data: dashboardTimeline,
-	            color: dashboard.processColor,
-	            xDomain: dashboard.timeExtent,
-	            tickFormat: dashboard.tickFormat
-	        });
+	    initChartProcessStrip: initChartProcessStripFn,
+	    initChartSunburstWindows: initChartSunburstWindowsFn,
+	    initChartSunburstClusters: initChartSunburstClustersFn,
+	    initChartSunburstTasks: initChartSunburstTasksFn,
+	    initChartKeysActivity: initChartKeysActivityFn,
+	    initChartForceGraph: initChartForceGraphFn,
+	    showProcessPopup: function showProcessPopup(data) {
+	        var el = $(_.template(ProcessModalTemplate)({ data: data }));
+	        $(el).modal('show');
+	    }
+	});
 	
-	        app.on('update:timeline', el[0].update);
-	    },
-	    initChartSunburstWindows: function initChartSunburstWindows() {
-	        var _this = this;
+	function initChartProcessStripFn() {
+	    var el = $('#process-strip', this.$el);
+	    el.colorStrip({
+	        data: dashboardTimeline,
+	        color: dashboard.processColor,
+	        xDomain: dashboard.timeExtent,
+	        tickFormat: dashboard.tickFormat
+	    });
 	
-	        var stripChart = $('#process-strip', this.$el)[0];
-	        var processList = $('#chart-process-list', this.$el);
-	        var el = $('#sunburst-windows', this.$el);
-	        el.sunburst({
-	            color: dashboard.processColor,
-	            data: dashboardDurations,
-	            showLabels: true,
-	            mouseleave: function mouseleave(d, el) {
-	                stripChart.undim();
-	                var container = $(el).parents('.sunburst');
-	                container.popup('destroy');
+	    app.on('update:timeline', el[0].update);
+	}
+	function initChartSunburstWindowsFn() {
+	    var _this = this;
+	
+	    var stripChart = $('#process-strip', this.$el)[0];
+	    var processList = $('#chart-process-list', this.$el);
+	    var el = $('#sunburst-windows', this.$el);
+	    el.sunburst({
+	        color: dashboard.processColor,
+	        data: dashboardDurations,
+	        showLabels: true,
+	        mouseleave: function mouseleave(d, el) {
+	            stripChart.undim();
+	            var container = $(el).parents('.sunburst');
+	            container.popup('destroy');
+	        },
+	        mouseover: function mouseover(d, el) {
+	            if (d.depth == 1) {
+	                stripChart.dim(d.process_id);
+	
+	                var tpl = _.template(HintTemplate)({ items: d.children });
+	                processList.html(tpl);
+	            } else if (d.depth == 2) {
+	                stripChart.dimByWindow(d.window_id);
+	            }
+	        },
+	        onclick: function onclick(d, el) {
+	            if (d.depth == 1) {
+	                _this.showProcessPopup(d);
+	            }
+	        },
+	        dragend: function dragend(d) {
+	            var el = $(d3.event.sourceEvent.toElement);
+	            var taskId = el.attr('task-id');
+	            if (taskId == undefined) {
+	                return;
+	            }
+	            var window_id;
+	            var process_id;
+	            switch (d.depth) {
+	                case 1:
+	                    process_id = d.process_id;
+	                    break;
+	                case 2:
+	                    window_id = [d.window_id];
+	                    break;
+	            }
+	
+	            $.ajax('/record/assign', {
+	                type: 'POST',
+	                data: { task: taskId, window: window_id, process: process_id },
+	                success: function success() {
+	                    el.css({ backgroundColor: 'green' }).animate({ backgroundColor: 'none' });
+	                }
+	            });
+	        }
+	    });
+	    app.on('update:sunburst-windows', el[0].update);
+	}
+	function initChartSunburstClustersFn() {
+	    var _this2 = this;
+	
+	    var processList = $('#chart-process-list', this.$el);
+	    if (typeof dashboardClustersDurations != 'undefined') {
+	        var chart = $('#sunburst-clusters', this.$el);
+	        chart.sunburst({
+	            color: dashboard.clusterColor,
+	            data: dashboardClustersDurations,
+	            onclick: function onclick(d, el) {
+	                if (d.depth == 1) {
+	                    _this2.showProcessPopup(d);
+	                }
 	            },
 	            mouseover: function mouseover(d, el) {
 	                if (d.depth == 1) {
-	                    stripChart.dim(d.process_id);
-	
 	                    var tpl = _.template(HintTemplate)({ items: d.children });
 	                    processList.html(tpl);
-	                } else if (d.depth == 2) {
-	                    stripChart.dimByWindow(d.window_id);
 	                }
 	            },
-	            onclick: function onclick(d, el) {
-	                if (d.depth == 1) {
-	                    _this.showProcessPopup(d);
-	                }
+	            mouseleave: function mouseleave(d, el) {
+	                var container = $(el).parents('.sunburst');
+	                container.popup('destroy');
 	            },
 	            dragend: function dragend(d) {
-	                var el = $(d3.event.sourceEvent.toElement);
-	                var taskId = el.attr('task-id');
-	                if (taskId == undefined) {
-	                    return;
-	                }
-	                var window_id;
-	                var process_id;
-	                switch (d.depth) {
-	                    case 1:
-	                        process_id = d.process_id;
-	                        break;
-	                    case 2:
-	                        window_id = [d.window_id];
-	                        break;
-	                }
-	
-	                $.ajax('/record/assign', {
-	                    type: 'POST',
-	                    data: { task: taskId, window: window_id, process: process_id },
-	                    success: function success() {
-	                        el.css({ backgroundColor: 'green' }).animate({ backgroundColor: 'none' });
-	                    }
-	                });
-	            }
-	        });
-	        app.on('update:sunburst-windows', el[0].update);
-	    },
-	    initChartSunburstClusters: function initChartSunburstClusters() {
-	        var _this2 = this;
-	
-	        var processList = $('#chart-process-list', this.$el);
-	        if (typeof dashboardClustersDurations != 'undefined') {
-	            var chart = $('#sunburst-clusters', this.$el);
-	            chart.sunburst({
-	                color: dashboard.clusterColor,
-	                data: dashboardClustersDurations,
-	                onclick: function onclick(d, el) {
-	                    if (d.depth == 1) {
-	                        _this2.showProcessPopup(d);
-	                    }
-	                },
-	                mouseover: function mouseover(d, el) {
-	                    if (d.depth == 1) {
-	                        var tpl = _.template(HintTemplate)({ items: d.children });
-	                        processList.html(tpl);
-	                    }
-	                },
-	                mouseleave: function mouseleave(d, el) {
-	                    var container = $(el).parents('.sunburst');
-	                    container.popup('destroy');
-	                },
-	                dragend: function dragend(d) {
-	                    var el = $(d3.event.sourceEvent.toElement);
-	                    var taskId = el.attr('task-id');
-	                    var window_id;
-	                    switch (d.depth) {
-	                        case 1:
-	                            window_id = d.children.map(function (a) {
-	                                return a.window_id;
-	                            });
-	                            break;
-	                        case 2:
-	                            window_id = [d.window_id];
-	                            break;
-	                    }
-	
-	                    $.ajax('/record/assign', {
-	                        type: 'POST',
-	                        data: { task: taskId, window: window_id },
-	                        success: function success() {
-	                            el.css({ backgroundColor: 'green' }).animate({ backgroundColor: 'none' });
-	                        }
-	                    });
-	                }
-	            });
-	            app.on('update:sunburst-cluster', chart[0].update);
-	        }
-	    },
-	    initChartSunburstTasks: function initChartSunburstTasks() {
-	        var chart = $('#sunburst-task', this.$el);
-	        chart.sunburst({
-	            color: dashboard.taskColor,
-	            data: dashboardTaskDurations,
-	            dragend: function dragend(d) {
-	                debugger;
 	                var el = $(d3.event.sourceEvent.toElement);
 	                var taskId = el.attr('task-id');
 	                var window_id;
@@ -14625,29 +14606,66 @@
 	                });
 	            }
 	        });
-	        app.on('update:sunburst-task', chart[0].update);
-	    },
-	    initChartKeysActivity: function initChartKeysActivity() {
-	        var chart = $('#keys-activity', this.$el);
-	        chart.keys({
-	            data: dashboardKeys,
-	            xDomain: dashboard.timeExtent,
-	            tickFormat: dashboard.tickFormat
-	        });
-	
-	        app.on('update:keys', chart[0].update);
-	    },
-	    showProcessPopup: function showProcessPopup(data) {
-	        var el = $(_.template(ProcessModalTemplate)({ data: data }));
-	        $(el).modal('show');
+	        app.on('update:sunburst-cluster', chart[0].update);
 	    }
-	});
+	}
+	function initChartSunburstTasksFn() {
+	    var chart = $('#sunburst-task', this.$el);
+	    chart.sunburst({
+	        color: dashboard.taskColor,
+	        data: dashboardTaskDurations,
+	        dragend: function dragend(d) {
+	            debugger;
+	            var el = $(d3.event.sourceEvent.toElement);
+	            var taskId = el.attr('task-id');
+	            var window_id;
+	            switch (d.depth) {
+	                case 1:
+	                    window_id = d.children.map(function (a) {
+	                        return a.window_id;
+	                    });
+	                    break;
+	                case 2:
+	                    window_id = [d.window_id];
+	                    break;
+	            }
+	
+	            $.ajax('/record/assign', {
+	                type: 'POST',
+	                data: { task: taskId, window: window_id },
+	                success: function success() {
+	                    el.css({ backgroundColor: 'green' }).animate({ backgroundColor: 'none' });
+	                }
+	            });
+	        }
+	    });
+	    app.on('update:sunburst-task', chart[0].update);
+	}
+	function initChartKeysActivityFn() {
+	    var chart = $('#keys-activity', this.$el);
+	    chart.keys({
+	        data: dashboardKeys,
+	        xDomain: dashboard.timeExtent,
+	        tickFormat: dashboard.tickFormat
+	    });
+	
+	    app.on('update:keys', chart[0].update);
+	}
+	function initChartForceGraphFn() {
+	    var chart = $('#force-graph', this.$el);
+	    chart.forceGraph({
+	        nodes: dashboardWindows,
+	        links: dashboardLinks
+	    });
+	
+	    app.on('update:force-graph', chart[0].update);
+	}
 
 /***/ },
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column\">\n        <div id=\"chart-process-list\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n</div>\n";
+	module.exports = "<div id=\"charts\" class=\"ui grid container\">\n    <div class=\"five wide column\">\n        <div id=\"sunburst-windows\"></div>\n    </div>\n    <div class=\"six wide column\">\n        <div id=\"chart-process-list\"></div>\n    </div>\n    <div class=\"five wide column text-right\">\n        <div id=\"sunburst-clusters\"></div>\n    </div>\n    <div id=\"process-strip\"></div>\n    <div id=\"keys-activity\"></div>\n    <div id=\"force-graph\"></div>\n</div>\n";
 
 /***/ },
 /* 11 */
@@ -15522,10 +15540,79 @@
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	
+	(function (factory) {
+	    if (true) {
+	        // AMD. Register as an anonymous module.
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof module === 'object' && module.exports) {
+	        // Node/CommonJS
+	        module.exports = factory(require('jquery'));
+	    } else {
+	        // Browser globals
+	        factory(jQuery);
+	    }
+	})(function ($) {
+	    __webpack_require__(21);
+	    __webpack_require__(34);
+	    $.fn.forceGraph = function (options) {
+	        var nodes = options.nodes;
+	        var links = options.links;
+	
+	        var width = 960,
+	            height = 500;
+	
+	        var color = d3.scale.category20();
+	
+	        var force = d3.layout.force().charge(-120).linkDistance(30).size([width, height]);
+	
+	        var svg = d3.select(this[0]).append("svg").attr("width", width).attr("height", height);
+	
+	        force.nodes(nodes).links(links).start();
+	
+	        var link = svg.selectAll(".link").data(links).enter().append("line").attr("class", "link").style("stroke-width", function (d) {
+	            return Math.sqrt(d.value);
+	        });
+	
+	        var node = svg.selectAll(".node").data(nodes).enter().append("circle").attr("class", "node").attr("r", 5).style("fill", function (d) {
+	            return color(d.id);
+	        }).call(force.drag);
+	
+	        node.append("title").text(function (d) {
+	            return d.name;
+	        });
+	
+	        force.on("tick", function () {
+	            link.attr("x1", function (d) {
+	                return d.source.x;
+	            }).attr("y1", function (d) {
+	                return d.source.y;
+	            }).attr("x2", function (d) {
+	                return d.target.x;
+	            }).attr("y2", function (d) {
+	                return d.target.y;
+	            });
+	
+	            node.attr("cx", function (d) {
+	                return d.x;
+	            }).attr("cy", function (d) {
+	                return d.y;
+	            });
+	        });
+	
+	        //this[0].update = $.proxy(update, this);
+	    };
+	});
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(25);
+	var content = __webpack_require__(26);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(17)(content, {});
@@ -15545,7 +15632,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(16)();
@@ -15559,13 +15646,13 @@
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var Backbone = __webpack_require__(3);
-	var Template = __webpack_require__(27);
+	var Template = __webpack_require__(28);
 	var _ = __webpack_require__(7);
 	
 	module.exports = Backbone.View.extend({
@@ -15585,13 +15672,13 @@
 	});
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"one \">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        Date\n                    </div>\n                    <input type=\"date\" name=\"date\" title=\"From\" id=\"filter-date-input\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15599,7 +15686,7 @@
 	var Backbone = __webpack_require__(3);
 	var _ = __webpack_require__(7);
 	var $ = __webpack_require__(5);
-	var tasksTpl = __webpack_require__(29);
+	var tasksTpl = __webpack_require__(30);
 	
 	module.exports = Backbone.View.extend({
 	    initialize: function initialize() {
@@ -15624,13 +15711,13 @@
 	});
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\">\n            <%= task.get('name')%>\n            <a class=\"c-remove\" task-id=\"<%= task.get('id') %>\"><i class=\"remove icon\"></i></a>\n        </div>\n        <% })%>\n    </div>\n</div>\n";
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15644,13 +15731,13 @@
 	});
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var Backbone = __webpack_require__(3);
-	var ModalTemplate = __webpack_require__(32);
+	var ModalTemplate = __webpack_require__(33);
 	var _ = __webpack_require__(7);
 	
 	module.exports = Backbone.View.extend({
@@ -15677,10 +15764,50 @@
 	});
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary ok button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(35);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(17)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./force-graph.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./force-graph.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(16)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "#force-graph .link {\n    stroke: #999;\n    stroke-opacity: .6;\n}\n", ""]);
+	
+	// exports
+
 
 /***/ }
 /******/ ]);

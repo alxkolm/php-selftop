@@ -258,6 +258,75 @@ class StatsHelper
         return $out;
     }
 
+    /**
+     * Return Transition Matrix
+     * Number of switch between windows
+     */
+    public static function transitionMatrix($fromTime, $toTime)
+    {
+        $query = Record::find()
+            ->joinWith(['window'])
+            ->select([
+                'window_id',
+            ])
+            ->orderBy('start ASC');
+        self::whereFromTo($query, $fromTime, $toTime);
+        $data = $query->createCommand()->queryColumn();
+        $matrix = [];
+        $prevWindow = array_shift($data);
+        foreach ($data as $windowId){
+            if (!isset($matrix[$prevWindow])){
+                $matrix[$prevWindow] = [];
+            }
+
+            if (!isset($matrix[$prevWindow][$windowId])){
+                $matrix[$prevWindow][$windowId] = 0;
+            }
+
+            $matrix[$prevWindow][$windowId]++;
+
+            $prevWindow = $windowId;
+        }
+        return $matrix;
+    }
+
+    public static function windows($fromTime, $toTime)
+    {
+        $query = Record::find()
+            ->joinWith(['window'])
+            ->select([
+                'window_id',
+                'window.title'
+            ]);
+        self::whereFromTo($query, $fromTime, $toTime);
+        return $query->createCommand()->queryAll();
+    }
+
+    public static function windowsList($windows)
+    {
+        return array_map(function ($a) {
+            return ['id' => $a['window_id'], 'title' => $a['title']];
+        }, $windows);
+    }
+
+    /**
+     * Convert transition matrix to flat list for D3.js
+     */
+    public  static function flattenTransitionMatrix($matrix, $windows)
+    {
+        $list = [];
+        $winIds = array_map(function ($w) {
+            return $w['window_id'];
+        }, $windows);
+
+        foreach ($matrix as $k=>$row){
+            foreach ($row as $j => $value){
+                $list[] = ['source' => array_search($k, $winIds), 'target' => array_search($j, $winIds), 'value' => $value];
+            }
+        }
+        return $list;
+    }
+
     public static function whereFromTo(ActiveQuery $query, $fromTime, $toTime = null, $column = '{{record}}.start')
     {
         $timezone = new \DateTimeZone(\Yii::$app->timeZone);

@@ -101,6 +101,20 @@ class AppController extends Controller
             View::POS_HEAD);
 
         $this->view->registerAssetBundle(DashboardAsset::className());
+
+        // Transition matrix
+        $transitionMatrix = StatsHelper::transitionMatrix($from, $to);
+        $windows          = StatsHelper::windows($from, $to);
+        $windowList       = StatsHelper::windowsList($windows);
+        $links = StatsHelper::flattenTransitionMatrix($transitionMatrix, $windows);
+        $this->view->registerJs(
+            'var dashboardWindows = ' . json_encode($windowList),
+            View::POS_HEAD);
+
+        $this->view->registerJs(
+            'var dashboardLinks = ' . json_encode($links),
+            View::POS_HEAD);
+
     }
 
     /**

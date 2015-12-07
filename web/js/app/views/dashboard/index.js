@@ -21,12 +21,14 @@ module.exports = Backbone.View.extend({
         //this.initChartSunburstTasks();
         this.initChartSunburstClusters();
         this.initChartKeysActivity();
+        this.initChartForceGraph();
     },
     initChartProcessStrip: initChartProcessStripFn,
     initChartSunburstWindows: initChartSunburstWindowsFn,
     initChartSunburstClusters: initChartSunburstClustersFn,
     initChartSunburstTasks: initChartSunburstTasksFn,
     initChartKeysActivity: initChartKeysActivityFn,
+    initChartForceGraph: initChartForceGraphFn,
     showProcessPopup: function (data) {
         var el = $(_.template(ProcessModalTemplate)({data: data}));
         $(el).modal('show');
@@ -191,4 +193,13 @@ function initChartKeysActivityFn() {
     });
 
     app.on('update:keys', chart[0].update);
+}
+function initChartForceGraphFn() {
+    var chart = $('#force-graph', this.$el);
+    chart.forceGraph({
+        nodes: dashboardWindows,
+        links: dashboardLinks
+    });
+
+    app.on('update:force-graph', chart[0].update);
 }
