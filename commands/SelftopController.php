@@ -9,6 +9,7 @@
 namespace app\commands;
 
 
+use app\components\StatsHelper;
 use app\models\Record;
 use app\models\RecordTask;
 use app\models\Window;
@@ -305,6 +306,18 @@ class SelftopController extends Controller
         }
         $transaction->commit();
         echo "Skiped {$skiped} records\n";
+    }
+
+    public function actionTransitionMatrix()
+    {
+        $from          = strtotime('today');
+        $to            = strtotime('tomorrow');
+        $matrix        = StatsHelper::transitionMatrix($from, $to);
+        $windows       = StatsHelper::windows($from, $to);
+        $flattenMatrix = StatsHelper::flattenTransitionMatrix($matrix, $windows);
+        foreach ($flattenMatrix as $key => $value){
+            echo $value['source'] . "\t" . $value['target'] . "\t" . $value['value'] . PHP_EOL;
+        }
     }
 
     /**
