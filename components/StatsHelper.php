@@ -294,6 +294,7 @@ class StatsHelper
     {
         $query = Record::find()
             ->joinWith(['window'])
+            ->distinct()
             ->select([
                 'window_id',
                 'window.title'
