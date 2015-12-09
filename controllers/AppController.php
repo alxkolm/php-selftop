@@ -17,6 +17,7 @@ use app\assets\SinglePageAppAsset;
 use app\assets\SunburstAsset;
 use app\components\ClusterHelper;
 use app\components\StatsHelper;
+use app\components\TransitionClusterHelper;
 use app\models\DateFilterForm;
 use app\models\Task;
 use app\models\Window;
@@ -106,10 +107,15 @@ class AppController extends Controller
         $transitionMatrix = StatsHelper::transitionMatrix($from, $to);
         $windows          = StatsHelper::windows($from, $to);
         $windowList       = StatsHelper::windowsList($windows);
+
         $links = StatsHelper::flattenTransitionMatrix($transitionMatrix, $windows);
+        $clusters = TransitionClusterHelper::clusterizeMatrix($links);
+        foreach ($windowList as $key => &$w){
+            $w['cluster'] = (int)$clusters[$key];
+        }
         $this->view->registerJs(
-            'var dashboardWindows = ' . json_encode($windowList),
-            View::POS_HEAD);
+        'var dashboardWindows = ' . json_encode($windowList),
+        View::POS_HEAD);
 
         $this->view->registerJs(
             'var dashboardLinks = ' . json_encode($links),

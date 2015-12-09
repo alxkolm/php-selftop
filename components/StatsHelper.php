@@ -269,6 +269,7 @@ class StatsHelper
             ->select([
                 'window_id',
             ])
+            ->where('duration >= 5000')
             ->orderBy('start ASC');
         self::whereFromTo($query, $fromTime, $toTime);
         $data = $query->createCommand()->queryColumn();

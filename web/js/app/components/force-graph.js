@@ -21,9 +21,16 @@
 
         var color = d3.scale.category20();
 
+        var maxValue = d3.max(links, (a)=>{return a.value});
+        //links = links.filter((d)=>{
+        //    return d.value/maxValue <= 0.5;
+        //});
         var force = d3.layout.force()
             .charge(-120)
             .linkDistance(30)
+            .linkStrength(function(d){
+                return d.value/maxValue;
+            })
             .size([width, height]);
 
         var svg = d3.select(this[0]).append("svg")
@@ -49,7 +56,7 @@
             .attr("class", "node")
             .attr("r", 5)
             .style("fill", function (d) {
-                return color(d.id);
+                return color(d.cluster);
             })
             .call(force.drag);
 

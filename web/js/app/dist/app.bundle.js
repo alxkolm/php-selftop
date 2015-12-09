@@ -63,8 +63,8 @@
 	var Router = __webpack_require__(2);
 	var Backbone = __webpack_require__(3);
 	var DashboardController = __webpack_require__(8);
-	var MainView = __webpack_require__(31);
-	var TaskCreateModal = __webpack_require__(32);
+	var MainView = __webpack_require__(33);
+	var TaskCreateModal = __webpack_require__(34);
 	var _ = __webpack_require__(7);
 	
 	module.exports = function (options) {
@@ -14417,8 +14417,8 @@
 	'use strict';
 	
 	var ViewIndex = __webpack_require__(9);
-	var ViewFilter = __webpack_require__(27);
-	var ViewTask = __webpack_require__(29);
+	var ViewFilter = __webpack_require__(29);
+	var ViewTask = __webpack_require__(31);
 	var Backbone = __webpack_require__(3);
 	var $ = __webpack_require__(5);
 	
@@ -14461,7 +14461,7 @@
 	__webpack_require__(18);
 	__webpack_require__(23);
 	__webpack_require__(24);
-	__webpack_require__(25);
+	__webpack_require__(27);
 	//debugger;
 	
 	module.exports = Backbone.View.extend({
@@ -15555,7 +15555,7 @@
 	    }
 	})(function ($) {
 	    __webpack_require__(21);
-	    __webpack_require__(34);
+	    __webpack_require__(25);
 	    $.fn.forceGraph = function (options) {
 	        var nodes = options.nodes;
 	        var links = options.links;
@@ -15565,7 +15565,15 @@
 	
 	        var color = d3.scale.category20();
 	
-	        var force = d3.layout.force().charge(-120).linkDistance(30).size([width, height]);
+	        var maxValue = d3.max(links, function (a) {
+	            return a.value;
+	        });
+	        //links = links.filter((d)=>{
+	        //    return d.value/maxValue <= 0.5;
+	        //});
+	        var force = d3.layout.force().charge(-120).linkDistance(30).linkStrength(function (d) {
+	            return d.value / maxValue;
+	        }).size([width, height]);
 	
 	        var svg = d3.select(this[0]).append("svg").attr("width", width).attr("height", height);
 	
@@ -15576,7 +15584,7 @@
 	        });
 	
 	        var node = svg.selectAll(".node").data(nodes).enter().append("circle").attr("class", "node").attr("r", 5).style("fill", function (d) {
-	            return color(d.id);
+	            return color(d.cluster);
 	        }).call(force.drag);
 	
 	        node.append("title").text(function (d) {
@@ -15621,8 +15629,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./dashboard.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./dashboard.css");
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./force-graph.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./force-graph.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -15640,7 +15648,7 @@
 	
 	
 	// module
-	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
+	exports.push([module.id, "#force-graph .link {\n    stroke: #999;\n    stroke-opacity: .6;\n}\n", ""]);
 	
 	// exports
 
@@ -15649,10 +15657,50 @@
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(28);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(17)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./dashboard.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./dashboard.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(16)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "text {\n    fill: #fdf6e3;\n}\n\n.task-list .task {\n    border: 1px solid #888;\n    padding: 5px;\n}\n\n.task-list {\n    position: fixed;\n    top: 100px;\n    left: 5px;\n    width: 150px;\n}\n\n.text-right {\n    text-align: right;\n}\n\n.text-center {\n    text-align: center;\n}", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	
 	var Backbone = __webpack_require__(3);
-	var Template = __webpack_require__(28);
+	var Template = __webpack_require__(30);
 	var _ = __webpack_require__(7);
 	
 	module.exports = Backbone.View.extend({
@@ -15672,13 +15720,13 @@
 	});
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"filter-date\">\n    <form action=\"\" class=\"ui form\" id=\"filter-date-form\">\n        <div class=\"one \">\n            <div class=\"field\">\n                <div class=\"ui mini labeled input\">\n                    <div class=\"ui label\">\n                        Date\n                    </div>\n                    <input type=\"date\" name=\"date\" title=\"From\" id=\"filter-date-input\" class=\"filter-date-input\">\n                </div>\n            </div>\n        </div>\n    </form>\n</div>\n";
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15686,7 +15734,7 @@
 	var Backbone = __webpack_require__(3);
 	var _ = __webpack_require__(7);
 	var $ = __webpack_require__(5);
-	var tasksTpl = __webpack_require__(30);
+	var tasksTpl = __webpack_require__(32);
 	
 	module.exports = Backbone.View.extend({
 	    initialize: function initialize() {
@@ -15711,13 +15759,13 @@
 	});
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = "<div id=\"dashboard-tasks\">\n    <div class=\"task-list\">\n        <% tasks.forEach(function(task){ %>\n        <div class=\"task\" task-id=\"<%= task.get('id') %>\">\n            <%= task.get('name')%>\n            <a class=\"c-remove\" task-id=\"<%= task.get('id') %>\"><i class=\"remove icon\"></i></a>\n        </div>\n        <% })%>\n    </div>\n</div>\n";
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -15731,13 +15779,13 @@
 	});
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var Backbone = __webpack_require__(3);
-	var ModalTemplate = __webpack_require__(33);
+	var ModalTemplate = __webpack_require__(35);
 	var _ = __webpack_require__(7);
 	
 	module.exports = Backbone.View.extend({
@@ -15764,50 +15812,10 @@
 	});
 
 /***/ },
-/* 33 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports = "<i class=\"close icon\"></i>\n<div class=\"header\">\n    Create task\n</div>\n<div class=\"content\">\n    <form action=\"\" id=\"form-add-task\">\n        <div class=\"ui input fluid\">\n            <input type=\"text\" name=\"name\" placeholder=\"Task name\">\n        </div>\n    </form>\n</div>\n<div class=\"actions\">\n    <button form=\"form-add-task\"  class=\"ui black primary ok button button-add-task\">\n        Create\n    </button>\n    <div class=\"ui black deny button\">\n        Close\n    </div>\n</div>\n";
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(35);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(17)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./force-graph.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./force-graph.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(16)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "#force-graph .link {\n    stroke: #999;\n    stroke-opacity: .6;\n}\n", ""]);
-	
-	// exports
-
 
 /***/ }
 /******/ ]);
