@@ -27,6 +27,10 @@ class TransitionClusterHelper
         foreach ($flattenTransitionMatrix as $key => $value){
             fwrite($f, $value['source'] . "\t" . $value['target'] . "\t" . $value['value'] . PHP_EOL);
         }
+        // matrix diagonal cells for consistent output
+        foreach ($windows as $key => $value){
+            fwrite($f, $key . "\t" . $key . "\t" . '0' . PHP_EOL);
+        }
 
         fclose($f);
         chmod($filename, 0666);
@@ -44,7 +48,7 @@ class TransitionClusterHelper
         unlink($filename);
         $winIdCluster = [];
         foreach ($windows as $key => $window){
-            $winIdCluster[$window['window_id']] = $clusterRaw[$key];
+            $winIdCluster[$window['id']] = $clusterRaw[$key];
         }
         return [$clusterRaw, $winIdCluster];
     }

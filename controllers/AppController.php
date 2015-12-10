@@ -9,12 +9,14 @@
 namespace app\controllers;
 
 
+use app\assets\AlchemyAssets;
 use app\assets\ColorStripAsset;
 use app\assets\DashboardAsset;
 use app\assets\KeysAreaAsset;
 use app\assets\KeysAsset;
 use app\assets\SinglePageAppAsset;
 use app\assets\SunburstAsset;
+use app\components\AlchemyHelper;
 use app\components\ClusterHelper;
 use app\components\StatsHelper;
 use app\components\TransitionClusterHelper;
@@ -109,7 +111,7 @@ class AppController extends Controller
         $windowList       = StatsHelper::windowsList($windows);
 
         $links = StatsHelper::flattenTransitionMatrix($transitionMatrix, $windows);
-        list($clusters,) = TransitionClusterHelper::clusterizeMatrix($transitionMatrix, $windows);
+        list($clusters, $winIdCluster) = TransitionClusterHelper::clusterizeMatrix($transitionMatrix, $windows);
         foreach ($windowList as $key => &$w){
             $w['cluster'] = (int)$clusters[$key];
         }
@@ -120,6 +122,12 @@ class AppController extends Controller
         $this->view->registerJs(
             'var dashboardLinks = ' . json_encode($links),
             View::POS_HEAD);
+
+//        $graphJson = AlchemyHelper::buildData($transitionMatrix, $windows, $winIdCluster);
+//
+//        $this->view->registerJs(
+//            'var dashboardGraphJson = ' . json_encode($graphJson),
+//            View::POS_HEAD);
 
     }
 

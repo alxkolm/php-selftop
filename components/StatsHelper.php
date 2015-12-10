@@ -297,7 +297,7 @@ class StatsHelper
             ->joinWith(['window'])
             ->distinct()
             ->select([
-                'window_id',
+                'window_id as id',
                 'window.title'
             ]);
         self::whereFromTo($query, $fromTime, $toTime);
@@ -307,7 +307,7 @@ class StatsHelper
     public static function windowsList($windows)
     {
         return array_map(function ($a) {
-            return ['id' => $a['window_id'], 'title' => $a['title']];
+            return ['id' => $a['id'], 'title' => $a['title']];
         }, $windows);
     }
 
@@ -318,7 +318,7 @@ class StatsHelper
     {
         $list = [];
         $winIds = array_map(function ($w) {
-            return $w['window_id'];
+            return $w['id'];
         }, $windows);
 
         foreach ($matrix as $k=>$row){
