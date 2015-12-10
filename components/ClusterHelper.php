@@ -16,7 +16,7 @@ use yii\web\ServerErrorHttpException;
 
 class ClusterHelper
 {
-    public static function clusterizeStrings(array $strings)
+    public static function clusterizeStrings(array $windows)
     {
         $path = \Yii::getAlias('@runtime/string_cluster');
         FileHelper::createDirectory($path);
@@ -26,8 +26,8 @@ class ClusterHelper
 
         // Write strings to file
         $f = fopen($filename, 'w');
-        foreach ($strings as $str){
-            fwrite($f, $str.PHP_EOL);
+        foreach ($windows as $win){
+            fwrite($f, $win['title'].PHP_EOL);
         }
         fclose($f);
         chmod($filename, 0666);
@@ -45,13 +45,12 @@ class ClusterHelper
         unlink($filename);
 
         // Transform results
-        $clusters = [];
-        foreach ($clusterRaw as $line) {
-            list($clusterId, $str) = explode(' ', $line, 2);
-            $clusters[trim($str)] = ((int)$clusterId) + 1;
+        $winIdCluster = [];
+        foreach ($windows as $key => $window){
+            $winIdCluster[$window['id']] = $clusterRaw[$key];
         }
 
-        return $clusters;
+        return [$clusterRaw, $winIdCluster];
     }
 
     public static function timeline($clusters, $fromTime, $toTime = null)
@@ -85,7 +84,7 @@ class ClusterHelper
         return $records;
     }
 
-    public static function getProcessWindowHierarchy($clusters, $fromTime, $toTime = null)
+    public static function getProcessWindowHierarchy($winIdCluster, $fromTime, $toTime = null)
     {
         $query = Record::find();
         StatsHelper::whereFromTo($query, $fromTime, $toTime);
@@ -108,7 +107,7 @@ class ClusterHelper
             if ((int) $window['duration'] == 0) {
                 continue;
             }
-            $clusterId = isset($clusters[trim($window['title'])]) ? $clusters[trim($window['title'])] : '-1';
+            $clusterId = isset($winIdCluster[$window['window_id']]) ? $winIdCluster[$window['window_id']] : '-1';
             if (!isset($groups['children'][$clusterId])){
                 $groups['children'][$clusterId] = [
                     'name'       => 'Cluster #'.$clusterId,

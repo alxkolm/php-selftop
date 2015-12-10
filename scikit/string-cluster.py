@@ -19,4 +19,4 @@ labels = estimator.fit_predict(x_train)
 
 
 for x in zip(titles, labels):
-    print x[1], x[0]
+    print x[1]

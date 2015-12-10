@@ -153,17 +153,9 @@ class AppController extends Controller
 
     public function clusterData($fromTimestamp, $toTimestamp)
     {
-        $query = Window::find()
-            ->select(['title'])
-            ->joinWith('records')
-            ->distinct(true)
-            ->orderBy('title');
-        StatsHelper::whereFromTo($query, $fromTimestamp, $toTimestamp);
-        $titles = $query
-            ->createCommand()
-            ->queryColumn();
-        $titles = array_filter($titles, function ($a) {return trim($a) != '';});
-        $clusters = ClusterHelper::clusterizeStrings($titles);
+
+        $windows = StatsHelper::windows($fromTimestamp, $toTimestamp);
+        list($clusters, $winIdCluster) = ClusterHelper::clusterizeStrings($windows);
 
         $from = $fromTimestamp;
         $to = $toTimestamp;
@@ -175,7 +167,7 @@ class AppController extends Controller
             ];
         }, array_unique(array_values($clusters)));
 
-        $durations = ClusterHelper::getProcessWindowHierarchy($clusters, $from, $to);
+        $durations = ClusterHelper::getProcessWindowHierarchy($winIdCluster, $from, $to);
 
         return [
             'clusters'  => $clustersList,
