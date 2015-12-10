@@ -109,7 +109,7 @@ class AppController extends Controller
         $windowList       = StatsHelper::windowsList($windows);
 
         $links = StatsHelper::flattenTransitionMatrix($transitionMatrix, $windows);
-        $clusters = TransitionClusterHelper::clusterizeMatrix($links);
+        list($clusters,) = TransitionClusterHelper::clusterizeMatrix($transitionMatrix, $windows);
         foreach ($windowList as $key => &$w){
             $w['cluster'] = (int)$clusters[$key];
         }

@@ -13,8 +13,9 @@ use yii\helpers\FileHelper;
 
 class TransitionClusterHelper
 {
-    public static function clusterizeMatrix($flattenTransitionMatrix)
+    public static function clusterizeMatrix($transitionMatrix, $windows)
     {
+        $flattenTransitionMatrix = StatsHelper::flattenTransitionMatrix($transitionMatrix, $windows);
         $path = \Yii::getAlias('@runtime/transition_cluster');
         FileHelper::createDirectory($path);
         /** @var string $filename Temp file */
@@ -41,6 +42,10 @@ class TransitionClusterHelper
 //            throw new Exception('Can\'t run cluster command. ' . $result);
         }
         unlink($filename);
-        return $clusterRaw;
+        $winIdCluster = [];
+        foreach ($windows as $key => $window){
+            $winIdCluster[$window['window_id']] = $clusterRaw[$key];
+        }
+        return [$clusterRaw, $winIdCluster];
     }
 }
