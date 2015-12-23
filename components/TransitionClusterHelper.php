@@ -58,13 +58,11 @@ class TransitionClusterHelper
         $path = \Yii::getAlias('@runtime/transition_cluster');
         FileHelper::createDirectory($path);
         /** @var string $filename Temp file */
-        $filename    = tempnam($path, 'data');
-        $filenameMci = tempnam($path, 'mci');
-        $filenameTab = tempnam($path, 'tab');
-        $filenameClusterNative = tempnam($path, 'clstrn');
-        $filenameCluster = tempnam($path, 'clstr');
-
-
+        $filename    = tempnam($path, 'data_');
+        $filenameMci = tempnam($path, 'mci_');
+        $filenameTab = tempnam($path, 'tab_');
+        $filenameClusterNative = tempnam($path, 'clstrn_');
+        $filenameCluster = tempnam($path, 'clstr_');
 
         // Write strings to file
         $f = fopen($filename, 'w');
@@ -80,12 +78,11 @@ class TransitionClusterHelper
         chmod($filename, 0666);
 
         // make clusters
-        // mcxload --stream-mirror -abc scikit/matrix-norm.csv -o data.mci -write-tab data.tab
         $cmd = "mcxload --stream-mirror -abc {$filename} -o {$filenameMci} -write-tab {$filenameTab}"
             ." && mcl {$filenameMci} -o {$filenameClusterNative}"
             ." && mcxdump -icl {$filenameClusterNative} -tabr {$filenameTab} -o {$filenameCluster}";
         $exitCode = 0;
-        $result = exec($cmd, $clusterRaw, $exitCode);
+        $result = exec($cmd, $output, $exitCode);
         if ($exitCode != 0){
 //            return [];
             throw new Exception('Can\'t run cluster command. ' . $result);
@@ -96,11 +93,20 @@ class TransitionClusterHelper
         chmod($filenameClusterNative, 0666);
         chmod($filenameCluster, 0666);
 
+        $clustersLines = file($filenameCluster);
+        $clustersLines = array_map('trim', $clustersLines);
+        $winIdCluster = array_map(function($line, $clusterId) use ($windows) {
+            $idx = explode("\t", $line);
+            $wids = array_map(function($a)use($windows){return $windows[$a]['id'];}, $idx);
+            return array_combine($wids, array_fill(0,count($wids), $clusterId));
+        }, $clustersLines, array_keys($clustersLines));
+        $winIdCluster = array_reduce($winIdCluster, function($r,$v){
+            return $r + $v;
+        }, []);
+        $clusterRaw = array_map(function($win) use ($winIdCluster){
+            return $winIdCluster[$win['id']];
+        }, $windows);
 
-        $winIdCluster = [];
-        foreach ($windows as $key => $window){
-            $winIdCluster[$window['id']] = $clusterRaw[$key];
-        }
         unlink($filename);
         unlink($filenameMci);
         unlink($filenameTab);
