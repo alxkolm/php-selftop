@@ -270,6 +270,7 @@ class StatsHelper
                 'window_id',
             ])
             ->where('duration >= 10000')
+            ->andWhere('window.title != "" AND window.class != ""')
             ->orderBy('start ASC');
         self::whereFromTo($query, $fromTime, $toTime);
         $data = $query->createCommand()->queryColumn();
