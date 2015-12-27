@@ -12,6 +12,7 @@
 }(function ($) {
     require('../css/axis.css');
     require('../css/force-graph.css');
+    require('../css/d3tip.css');
     $.fn.forceGraph = function (options) {
         var nodes = options.nodes;
         var links = options.links;
@@ -50,6 +51,11 @@
                 return Math.sqrt(d.value);
             });
 
+        // init d3tip
+        var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { console.log(d);return d.title; });
+
+        svg.call(tip);
+
         var node = svg.selectAll(".node")
             .data(nodes)
             .enter().append("circle")
@@ -58,6 +64,8 @@
             .style("fill", function (d) {
                 return color(d.cluster);
             })
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide)
             .call(force.drag);
 
         node.append("title")

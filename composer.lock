@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2966b313ca0f64f3cbe8995129e56a54",
+    "hash": "85eb8ed8645f7ed20593c960ba673431",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -54,6 +54,74 @@
                 "responsive",
                 "web"
             ]
+        },
+        {
+            "name": "bower-asset/d3",
+            "version": "v3.5.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mbostock/d3.git",
+                "reference": "a40a611d6b9fc4ff3815ca830d86b6c00d130995"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mbostock/d3/zipball/a40a611d6b9fc4ff3815ca830d86b6c00d130995",
+                "reference": "a40a611d6b9fc4ff3815ca830d86b6c00d130995",
+                "shasum": ""
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "d3.js",
+                "bower-asset-ignore": [
+                    ".DS_Store",
+                    ".git",
+                    ".gitignore",
+                    ".npmignore",
+                    ".spmignore",
+                    ".travis.yml",
+                    "Makefile",
+                    "bin",
+                    "component.json",
+                    "composer.json",
+                    "index.js",
+                    "lib",
+                    "node_modules",
+                    "package.json",
+                    "src",
+                    "test"
+                ]
+            }
+        },
+        {
+            "name": "bower-asset/d3-tip",
+            "version": "v0.6.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Caged/d3-tip.git",
+                "reference": "07cf158c54cf1686b3000d784ef55d27b095cc0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Caged/d3-tip/zipball/07cf158c54cf1686b3000d784ef55d27b095cc0e",
+                "reference": "07cf158c54cf1686b3000d784ef55d27b095cc0e",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/d3": "3.5.5"
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "index.js",
+                "bower-asset-ignore": [
+                    "**/.*",
+                    "node_modules",
+                    "components",
+                    "bower_components",
+                    "examples",
+                    "Makefile",
+                    "docs"
+                ]
+            }
         },
         {
             "name": "bower-asset/jquery",
@@ -206,16 +274,16 @@
         },
         {
             "name": "bower-asset/yii2-pjax",
-            "version": "v2.0.4",
+            "version": "v2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/jquery-pjax.git",
-                "reference": "3f20897307cca046fca5323b318475ae9dac0ca0"
+                "reference": "6818718408086db6bdcf33649cecb86b6b4f9b67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/jquery-pjax/zipball/3f20897307cca046fca5323b318475ae9dac0ca0",
-                "reference": "3f20897307cca046fca5323b318475ae9dac0ca0",
+                "url": "https://api.github.com/repos/yiisoft/jquery-pjax/zipball/6818718408086db6bdcf33649cecb86b6b4f9b67",
+                "reference": "6818718408086db6bdcf33649cecb86b6b4f9b67",
                 "shasum": ""
             },
             "require": {
@@ -484,21 +552,21 @@
         },
         {
             "name": "yiisoft/yii2-bootstrap",
-            "version": "2.0.4",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-bootstrap.git",
-                "reference": "1b6b1e61cf91c3cdd517d6a7e71d30bb212e4af0"
+                "reference": "1464f93834b1d5edb1f5625f7ffd6c3723fa4923"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/1b6b1e61cf91c3cdd517d6a7e71d30bb212e4af0",
-                "reference": "1b6b1e61cf91c3cdd517d6a7e71d30bb212e4af0",
+                "url": "https://api.github.com/repos/yiisoft/yii2-bootstrap/zipball/1464f93834b1d5edb1f5625f7ffd6c3723fa4923",
+                "reference": "1464f93834b1d5edb1f5625f7ffd6c3723fa4923",
                 "shasum": ""
             },
             "require": {
                 "bower-asset/bootstrap": "3.3.* | 3.2.* | 3.1.*",
-                "yiisoft/yii2": ">=2.0.4"
+                "yiisoft/yii2": ">=2.0.6"
             },
             "type": "yii2-extension",
             "extra": {
@@ -530,7 +598,7 @@
                 "bootstrap",
                 "yii2"
             ],
-            "time": "2015-05-10 22:08:17"
+            "time": "2015-09-23 17:48:24"
         },
         {
             "name": "yiisoft/yii2-composer",

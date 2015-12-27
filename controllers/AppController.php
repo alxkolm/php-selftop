@@ -11,6 +11,7 @@ namespace app\controllers;
 
 use app\assets\AlchemyAssets;
 use app\assets\ColorStripAsset;
+use app\assets\D3TipAsset;
 use app\assets\DashboardAsset;
 use app\assets\KeysAreaAsset;
 use app\assets\KeysAsset;
@@ -122,6 +123,8 @@ class AppController extends Controller
         $this->view->registerJs(
             'var dashboardLinks = ' . json_encode($links),
             View::POS_HEAD);
+
+        $this->view->registerAssetBundle(D3TipAsset::className());
 
 //        $graphJson = AlchemyHelper::buildData($transitionMatrix, $windows, $winIdCluster);
 //
