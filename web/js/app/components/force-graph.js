@@ -52,7 +52,7 @@
             });
 
         // init d3tip
-        var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { console.log(d);return d.title; });
+        var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.title; });
 
         svg.call(tip);
 
