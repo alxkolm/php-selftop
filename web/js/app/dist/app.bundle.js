@@ -15591,7 +15591,9 @@
 	
 	        svg.call(tip);
 	
-	        var node = svg.selectAll(".node").data(nodes).enter().append("circle").attr("class", "node").attr("r", 5).style("fill", function (d) {
+	        var node = svg.selectAll(".node").data(nodes).enter().append("circle").attr("class", "node").attr("r", function (d) {
+	            return 5 + d.weight;
+	        }).style("fill", function (d) {
 	            return color(d.cluster);
 	        }).on('mouseover', tip.show).on('mouseout', tip.hide).call(force.drag);
 	
