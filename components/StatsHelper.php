@@ -308,7 +308,7 @@ class StatsHelper
     public static function windowsList($windows)
     {
         return array_map(function ($a) {
-            return ['id' => $a['id'], 'title' => $a['title']];
+            return ['id' => (int)$a['id'], 'title' => $a['title']];
         }, $windows);
     }
 
