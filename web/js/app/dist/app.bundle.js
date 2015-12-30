@@ -14048,7 +14048,12 @@
 	        });
 	
 	        var force = d3.layout.force().charge(-120).linkDistance(30).linkStrength(function (d) {
-	            return 0.7 + 0.3 * (d.value / maxValue);
+	            var strength = 0.7 + 0.3 * (d.value / maxValue);
+	
+	            // amplify strength for nodes with same class
+	            strength = d.source.cluster === d.target.cluster ? strength *= 10 : strength;
+	
+	            return strength;
 	        }).size([width, height]);
 	
 	        var svg = d3.select(this[0]).append("svg").attr("width", width).attr("height", height);
