@@ -60,7 +60,7 @@
             .data(nodes)
             .enter().append("circle")
             .attr("class", "node")
-            .attr("r", function(d){return 5 + d.weight;})
+            .attr("r", function(d){return 3 + Math.sqrt(5*d.weight);})
             .style("fill", function (d) {
                 return color(d.cluster);
             })
