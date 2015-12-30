@@ -14004,8 +14004,39 @@
 	    __webpack_require__(24);
 	    __webpack_require__(26);
 	    $.fn.forceGraph = function (options) {
-	        var nodes = options.nodes;
-	        var links = options.links;
+	        var nodes = options.nodes.slice(0);
+	        var links = options.links.slice(0);
+	
+	        // filter weak links
+	        //links = links.filter((a) => {
+	        //    return a.value > 1
+	        //});
+	
+	        // filter nodes without links
+	        var nodesWithLink = links.reduce(function (out, link) {
+	            out.push(link.source);
+	            out.push(link.target);
+	            return out;
+	        }, []);
+	        nodesWithLink = nodesWithLink.filter(function (value, index, self) {
+	            return self.indexOf(value) === index;
+	        });
+	
+	        nodes = nodes.filter(function (a) {
+	            return nodesWithLink.indexOf(a.id) != -1;
+	        });
+	
+	        // Convert id to index
+	        var nodeIds = nodes.map(function (a) {
+	            return a.id;
+	        });
+	        links = links.map(function (a) {
+	            return {
+	                source: nodeIds.indexOf(a.source),
+	                target: nodeIds.indexOf(a.target),
+	                value: a.value
+	            };
+	        });
 	
 	        var width = 960,
 	            height = 500;
@@ -14015,11 +14046,9 @@
 	        var maxValue = d3.max(links, function (a) {
 	            return a.value;
 	        });
-	        //links = links.filter((d)=>{
-	        //    return d.value/maxValue <= 0.5;
-	        //});
+	
 	        var force = d3.layout.force().charge(-120).linkDistance(30).linkStrength(function (d) {
-	            return d.value / maxValue;
+	            return 0.7 + 0.3 * (d.value / maxValue);
 	        }).size([width, height]);
 	
 	        var svg = d3.select(this[0]).append("svg").attr("width", width).attr("height", height);

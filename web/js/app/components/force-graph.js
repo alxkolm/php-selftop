@@ -14,8 +14,39 @@
     require('../css/force-graph.css');
     require('../css/d3tip.css');
     $.fn.forceGraph = function (options) {
-        var nodes = options.nodes;
-        var links = options.links;
+        var nodes = options.nodes.slice(0);
+        var links = options.links.slice(0);
+
+        // filter weak links
+        //links = links.filter((a) => {
+        //    return a.value > 1
+        //});
+
+        // filter nodes without links
+        var nodesWithLink = links.reduce((out, link) => {
+            out.push(link.source);
+            out.push(link.target);
+            return out;
+        }, []);
+        nodesWithLink = nodesWithLink.filter((value, index, self) => {
+            return self.indexOf(value) === index;
+        });
+
+        nodes = nodes.filter((a) => {
+            return nodesWithLink.indexOf(a.id) != -1;
+        });
+
+        // Convert id to index
+        var nodeIds = nodes.map((a) => {
+            return a.id;
+        });
+        links = links.map((a) => {
+            return {
+                source: nodeIds.indexOf(a.source),
+                target: nodeIds.indexOf(a.target),
+                value: a.value
+            }
+        });
 
         var width  = 960,
             height = 500;
@@ -23,14 +54,12 @@
         var color = d3.scale.category20();
 
         var maxValue = d3.max(links, (a)=>{return a.value});
-        //links = links.filter((d)=>{
-        //    return d.value/maxValue <= 0.5;
-        //});
+
         var force = d3.layout.force()
             .charge(-120)
             .linkDistance(30)
             .linkStrength(function(d){
-                return d.value/maxValue;
+                return 0.7 + 0.3 * (d.value / maxValue);
             })
             .size([width, height]);
 

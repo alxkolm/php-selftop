@@ -13,12 +13,17 @@ use app\models\Key;
 use app\models\Process;
 use app\models\Record;
 use app\models\Task;
+use yii\base\Exception;
+use yii\base\ExitException;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 class StatsHelper
 {
+    const FLATTEN_MATRIX_BY_INDEX = 1;
+    const FLATTEN_MATRIX_BY_ID = 2;
+
     public static function totalActivity($fromTime, $toTime = null)
     {
         $query = Record::find();
@@ -314,8 +319,12 @@ class StatsHelper
 
     /**
      * Convert transition matrix to flat list for D3.js
+     * @param $matrix
+     * @param $windows
+     * @param int $flags
+     * @return array
      */
-    public  static function flattenTransitionMatrix($matrix, $windows)
+    public  static function flattenTransitionMatrix($matrix, $windows, $flags = self::FLATTEN_MATRIX_BY_INDEX)
     {
         $list = [];
         $winIds = array_map(function ($w) {
@@ -324,7 +333,24 @@ class StatsHelper
 
         foreach ($matrix as $k=>$row){
             foreach ($row as $j => $value){
-                $list[] = ['source' => array_search($k, $winIds), 'target' => array_search($j, $winIds), 'value' => $value];
+                switch ($flags){
+                    case self::FLATTEN_MATRIX_BY_INDEX:
+                        $source = array_search($k, $winIds);
+                        $target = array_search($j, $winIds);
+                        break;
+                    case self::FLATTEN_MATRIX_BY_ID:
+                        $source = $k;
+                        $target = $j;
+                        break;
+                    default:
+                        throw new Exception('Wrong flags');
+
+                }
+                $list[] = [
+                    'source' => $source,
+                    'target' => $target,
+                    'value'  => $value
+                ];
             }
         }
         return $list;
