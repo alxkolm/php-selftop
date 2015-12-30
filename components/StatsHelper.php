@@ -266,15 +266,19 @@ class StatsHelper
     /**
      * Return Transition Matrix
      * Number of switch between windows
+     * @param $fromTime
+     * @param $toTime
+     * @param int $durationThreshold
+     * @return array
      */
-    public static function transitionMatrix($fromTime, $toTime)
+    public static function transitionMatrix($fromTime, $toTime, $durationThreshold = 15000)
     {
         $query = Record::find()
             ->joinWith(['window'])
             ->select([
                 'window_id',
             ])
-            ->where('duration >= 10000')
+            ->where(['>=','duration', $durationThreshold])
             ->andWhere('window.title != "" AND window.class != ""')
             ->orderBy('start ASC');
         self::whereFromTo($query, $fromTime, $toTime);

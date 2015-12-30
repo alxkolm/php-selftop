@@ -107,7 +107,7 @@ class AppController extends Controller
         $this->view->registerAssetBundle(DashboardAsset::className());
 
         // Transition matrix
-        $transitionMatrix = StatsHelper::transitionMatrix($from, $to);
+        $transitionMatrix = StatsHelper::transitionMatrix($from, $to, 30000);
         $windows          = StatsHelper::windows($from, $to);
         $windowList       = StatsHelper::windowsList($windows);
 
