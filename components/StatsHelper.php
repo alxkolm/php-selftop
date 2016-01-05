@@ -224,7 +224,7 @@ class StatsHelper
         $query = Key::find()
             ->select([
                 new Expression('COUNT(*) as count'),
-                new Expression('strftime("%Y-%m-%d %H:%M:00", `at`, "localtime") as `date`'),
+                new Expression('strftime("%Y-%m-%d %H:%M:00", `at`) as `date`'),
             ])
             ->groupBy(new Expression('strftime("%Y-%m-%d %H:%M", `at`) '));
 
