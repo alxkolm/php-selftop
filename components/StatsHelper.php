@@ -249,12 +249,12 @@ class StatsHelper
             $date = $min->format('Y-m-d H:i:00');
             if (isset($data[$date])){
                 $out[] = [
-                    'date'  => $min->setTimezone($timezone)->format('Y-m-d H:i:s'),
+                    'date'  => $min->setTimezone($timezone)->format('c'),
                     'count' => (int)$data[$date],
                 ];
             } else {
                 $out[] = [
-                    'date'  => $min->setTimezone($timezone)->format('Y-m-d H:i:s'),
+                    'date'  => $min->setTimezone($timezone)->format('c'),
                     'count' => 0,
                 ];
             }
