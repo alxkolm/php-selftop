@@ -59,36 +59,27 @@ class AppController extends Controller
         $to = strtotime('tomorrow', $searchModel->timestamp);
 
         $processList = StatsHelper::getProcessList($from, $to);
-        $this->view->registerJs(
-            'var dashboardProcess = '.json_encode($processList),
-            View::POS_HEAD);
+        $this->exposeToJs('dashboardProcess', $processList);
 
         $timeline = StatsHelper::timeline($from, $to);
-        $this->view->registerJs(
-            'var dashboardTimeline = '.json_encode($timeline),
-            View::POS_HEAD);
+        $this->exposeToJs('dashboardTimeline', $timeline);
+
 
 //        $this->view->registerAssetBundle(ColorStripAsset::className());
 
         // Durations split by process
         $durations = StatsHelper::getProcessWindowHierarchy($from, $to);
-        $this->view->registerJs(
-            'var dashboardDurations = '.json_encode($durations),
-            View::POS_HEAD);
+        $this->exposeToJs('dashboardDurations', $durations);
 
 //        $this->view->registerAssetBundle(SunburstAsset::className());
 
         // Durations split by task
         $durations = StatsHelper::getTaskWindowHierarchy($from, $to);
-        $this->view->registerJs(
-            'var dashboardTaskDurations = '.json_encode($durations),
-            View::POS_HEAD);
+        $this->exposeToJs('dashboardTaskDurations', $durations);
 
         // Keys
         $keysActivity = StatsHelper::keysActivity($from, $to);
-        $this->view->registerJs(
-            'var dashboardKeys = '.json_encode($keysActivity),
-            View::POS_HEAD);
+        $this->exposeToJs('dashboardKeys', $keysActivity);
         $this->view->registerAssetBundle(KeysAsset::className());
         $this->view->registerAssetBundle(KeysAreaAsset::className());
 
@@ -100,10 +91,7 @@ class AppController extends Controller
                 'name' => $task->name,
             ];
         }, Task::find()->all());
-        $this->view->registerJs(
-            'var dashboardTasks = '.json_encode($tasks),
-            View::POS_HEAD);
-
+        $this->exposeToJs('dashboardTasks', $tasks);
         $this->view->registerAssetBundle(DashboardAsset::className());
 
         // Transition matrix
@@ -116,14 +104,8 @@ class AppController extends Controller
         foreach ($windowList as $key => &$w){
             $w['cluster'] = (int)$clusters[$key];
         }
-        $this->view->registerJs(
-        'var dashboardWindows = ' . json_encode($windowList),
-        View::POS_HEAD);
-
-        $this->view->registerJs(
-            'var dashboardLinks = ' . json_encode($links),
-            View::POS_HEAD);
-
+        $this->exposeToJs('dashboardWindows', $windowList);
+        $this->exposeToJs('dashboardLinks', $links);
         $this->view->registerAssetBundle(D3TipAsset::className());
 
 //        $graphJson = AlchemyHelper::buildData($transitionMatrix, $windows, $winIdCluster);
@@ -144,14 +126,8 @@ class AppController extends Controller
         $to = strtotime('tomorrow', $searchModel->timestamp);
 
         $data = $this->clusterData($from, $to);
-
-        $this->view->registerJs(
-            'var dashboardClusters = '.json_encode($data['clusters']),
-            View::POS_HEAD);
-
-        $this->view->registerJs(
-            'var dashboardClustersDurations = '.json_encode($data['durations']),
-            View::POS_HEAD);
+        $this->exposeToJs('dashboardClusters', $data['clusters']);
+        $this->exposeToJs('dashboardClustersDurations', $data['durations']);
     }
 
     public function clusterData($fromTimestamp, $toTimestamp)
@@ -232,5 +208,11 @@ class AppController extends Controller
         }
 
         return $reply;
+    }
+
+    function exposeToJs($varName, $data){
+        $this->view->registerJs(
+            "var {$varName} = ".json_encode($data),
+            View::POS_HEAD);
     }
 }
