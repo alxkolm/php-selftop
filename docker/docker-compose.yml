@@ -3,5 +3,5 @@ web:
   ports:
    - "8080:80"
   volumes:
-   - /home/alx/www/selftop.dev:/var/www:rw
+   - ../:/var/www:rw
    - ~/.selftop:/selftop:rw
