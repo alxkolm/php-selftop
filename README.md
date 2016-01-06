@@ -8,6 +8,7 @@ Before use this software you need install and run this
 The easiest way to use this software is run docker image
     
     cd docker
+    sudo docker build -t selftop .
     sudo docker-compose up
     
 And then open ```localhost:8080``` in browser
