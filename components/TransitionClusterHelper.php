@@ -93,8 +93,7 @@ class TransitionClusterHelper
         chmod($filenameClusterNative, 0666);
         chmod($filenameCluster, 0666);
 
-        $clustersLines = file($filenameCluster);
-        $clustersLines = array_map('trim', $clustersLines);
+        $clustersLines = array_map('trim', file($filenameCluster));
         $winIdCluster = array_map(function($line, $clusterId) use ($windows) {
             $idx = explode("\t", $line);
             $wids = array_map(function($a)use($windows){return $windows[$a]['id'];}, $idx);
