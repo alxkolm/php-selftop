@@ -27,7 +27,6 @@ And then open ```localhost:8080``` in browser
     git clone https://github.com/alxkolm/php-selftop.git
     cd php-selftop
     sudo ln -s ~/.selftop /selftop
-    ./yii migrate
     
 ## Run
 
