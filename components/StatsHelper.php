@@ -9,6 +9,7 @@
 namespace app\components;
 
 
+use app\components\TransitionMatrix\Matrix;
 use app\models\Key;
 use app\models\Process;
 use app\models\Record;
@@ -269,7 +270,7 @@ class StatsHelper
      * @param $fromTime
      * @param $toTime
      * @param int $durationThreshold
-     * @return array
+     * @return Matrix
      */
     public static function transitionMatrix($fromTime, $toTime, $durationThreshold = 15000)
     {
@@ -282,22 +283,7 @@ class StatsHelper
             ->andWhere('window.title != "" AND window.class != ""')
             ->orderBy('start ASC');
         self::whereFromTo($query, $fromTime, $toTime);
-        $data = $query->createCommand()->queryColumn();
-        $matrix = [];
-        $prevWindow = array_shift($data);
-        foreach ($data as $windowId){
-            if (!isset($matrix[$prevWindow])){
-                $matrix[$prevWindow] = [];
-            }
-
-            if (!isset($matrix[$prevWindow][$windowId])){
-                $matrix[$prevWindow][$windowId] = 0;
-            }
-
-            $matrix[$prevWindow][$windowId]++;
-
-            $prevWindow = $windowId;
-        }
+        $matrix = new Matrix(['query' => $query]);
         return $matrix;
     }
 

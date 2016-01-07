@@ -20,12 +20,13 @@ use app\assets\SunburstAsset;
 use app\components\AlchemyHelper;
 use app\components\ClusterHelper;
 use app\components\StatsHelper;
-use app\components\TransitionClusterHelper;
+use app\components\TransitionMatrix\Matrix;
 use app\models\DateFilterForm;
 use app\models\Task;
 use app\models\Window;
 use app\models\WindowSearch;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Response;
@@ -98,9 +99,8 @@ class AppController extends Controller
         $transitionMatrix = StatsHelper::transitionMatrix($from, $to, 30000);
         $windows          = StatsHelper::windows($from, $to);
         $windowList       = StatsHelper::windowsList($windows);
-
-        $links = StatsHelper::flattenTransitionMatrix($transitionMatrix, $windows, StatsHelper::FLATTEN_MATRIX_BY_ID);
-        list($clusters, $winIdCluster) = TransitionClusterHelper::clusterizeMatrixMcl($transitionMatrix, $windows);
+        $links = $transitionMatrix->flatten(Matrix::FLATTEN_MATRIX_BY_ID);
+        $clusters = $transitionMatrix->clusterization()->mapToClusters(array_values(ArrayHelper::map($windowList, 'id', 'id')));
         foreach ($windowList as $key => &$w){
             $w['cluster'] = (int)$clusters[$key];
         }
