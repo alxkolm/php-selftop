@@ -14,7 +14,7 @@ use yii\web\AssetBundle;
 class SinglePageAppAsset extends AssetBundle
 {
     public $js = [
-        'js/app/dist/app.bundle.js'
+        'js/app.bundle.js'
     ];
 
     public $depends = [

@@ -14,11 +14,11 @@ use yii\web\AssetBundle;
 class SemanticUIAsset extends AssetBundle
 {
     public $js = [
-        'js/app/semantic/dist/semantic.js'
+        'src/semantic/dist/semantic.js'
     ];
 
     public $css = [
-        'js/app/semantic/dist/semantic.css'
+        'src/semantic/dist/semantic.css'
     ];
 
     public $depends = [
