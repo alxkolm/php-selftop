@@ -1,0 +1,12 @@
+.color-strip {
+    margin: 0.5em;
+    font-size: 10px;
+}
+
+.color-strip text {
+    fill: #fdf6e3;
+}
+
+.color-strip .interval-hide {
+    display: none;
+}

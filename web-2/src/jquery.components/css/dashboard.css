@@ -1,0 +1,23 @@
+text {
+    fill: #fdf6e3;
+}
+
+.task-list .task {
+    border: 1px solid #888;
+    padding: 5px;
+}
+
+.task-list {
+    position: fixed;
+    top: 100px;
+    left: 5px;
+    width: 150px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}

@@ -1,0 +1,22 @@
+.x-axis {
+    font-size: 10px;
+}
+.y-axis {
+    font-size: 8px;
+}
+.x-axis path,
+.y-axis path {
+    fill: none;
+    stroke: #fdf6e3;
+    shape-rendering: crispEdges;
+}
+.x-axis .tick line,
+.y-axis .tick line {
+    stroke: #fdf6e3;
+}
+
+.x-axis .tick text,
+.y-axis .tick text {
+    fill: #fdf6e3;
+}
+

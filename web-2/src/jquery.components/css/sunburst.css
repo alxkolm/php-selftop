@@ -1,0 +1,54 @@
+.sunburst {
+    margin-bottom: 2em;
+}
+.sunburst .sunburst-chart{
+    position: relative;
+    display: inline-block;
+}
+.sunburst .sunburst-info {
+    position: absolute;
+    top: 85px;
+    left: 67px;
+    text-align: center;
+    width: 170px;
+}
+.sunburst .sunburst-holder {
+    position: relative;
+}
+.sunburst .sunburst-duration {
+    font-weight: bold;
+}
+.sunburst .sunburst-percentage {
+    font-size: 16px;
+}
+
+.process-list-wrapper {
+    height: 400px;
+    overflow: scroll;
+    color: #586e75;
+
+}
+
+#chart-process-list {
+    overflow-y: auto;
+    height: 400px;
+}
+
+.process-hint {
+    font-size: 10px;
+}
+
+.process-hint--item:nth-child(even) {
+    background: #073642;
+}
+
+.process-hint--duration {
+    font-weight: bold;
+    padding: 0.25em  1em 0.25em 0.25em;
+}
+
+.process-hint--name {
+    word-wrap: break-word;
+    word-break: break-word;
+    table-layout: fixed;
+}
