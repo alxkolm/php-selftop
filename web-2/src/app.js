@@ -4,4 +4,10 @@ import {Route} from './app.route';
 
 angular
     .module('app', ['ngRoute'])
+    .constant('ApiBaseUrl', 'http://selftop.dev')
     .config(['$routeProvider', Route]);
+
+require('./services/durationFilter');
+require('./controllers/dashboard');
+require('./services/dashboardApi');
+require('./sunburst/directive');
