@@ -1,21 +1,27 @@
 import 'angular';
+var moment = require('moment');
 
 function DashboardController(ApiBaseUrl, DashboardApi, $q){
     var vm = this;
-    var processDurationDeferred = $q.defer();
-    vm.processDuration = processDurationDeferred.promise;
+    vm.isLoaded = false;
+    vm.processDuration = null;
     init();
 
     function init(){
         return DashboardApi
-            .fetchData('2016-01-11')
+            .fetchData(moment().format('YYYY-MM-DD'))
             .then((data) => {
-                processDurationDeferred.resolve(data.processDuration);
+
+                vm.processDuration = $q.when(data.processDuration);
+                vm.clusterDuration = $q.when(data.clusterDuration);
                 return data;
             })
             .catch((error) => {
                 processDurationDeferred.reject(error);
                 return error;
+            })
+            .finally(()=>{
+                vm.isLoaded = true;
             });
     }
 }

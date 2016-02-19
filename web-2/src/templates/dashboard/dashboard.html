@@ -1,3 +1,20 @@
-<div ng-controller="DashboardController as controller">
-    <sunburst  data="controller.processDuration"/>
+<div class="container-fluid">
+    <header>
+        <strong>Dashboard</strong>
+    </header>
+    <div ng-controller="DashboardController as controller">
+        <div class="row">
+            <div class="col-md-3">
+                <div ng-if="controller.isLoaded">
+                    <sunburst data="controller.processDuration"/>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+                <div ng-if="controller.isLoaded">
+                    <sunburst data="controller.clusterDuration"/>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
