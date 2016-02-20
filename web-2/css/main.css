@@ -1,0 +1,5 @@
+.process-list-wrapper {
+    height: 365px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

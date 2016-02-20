@@ -9,10 +9,13 @@
                     <sunburst data="controller.processDuration" on-process-list-update="controller.updateProcessList(data)"/>
                 </div>
             </div>
-            <div class="col-md-6">
-                <p ng-repeat="item in controller.processList">
-                    {{item.name}}
-                </p>
+            <div class="col-md-6 process-list-wrapper">
+                <table class="table table-striped .table-condensed">
+                    <tr ng-repeat="item in controller.processList">
+                        <td><strong>{{item.value | durationFilter}}</strong></td>
+                        <td>{{item.name}}</td>
+                    </tr>
+                </table>
             </div>
             <div class="col-md-3">
                 <div ng-if="controller.isLoaded">
