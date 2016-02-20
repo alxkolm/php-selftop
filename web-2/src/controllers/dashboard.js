@@ -1,10 +1,15 @@
 import 'angular';
 var moment = require('moment');
 
-function DashboardController(ApiBaseUrl, DashboardApi, $q){
+function DashboardController(DashboardApi, $q, $scope){
     var vm = this;
     vm.isLoaded = false;
     vm.processDuration = null;
+    vm.processList = [];
+    vm.updateProcessList = (processList)=> {
+        vm.processList = processList;
+        $scope.$apply(); // why we need this?
+    };
     init();
 
     function init(){
@@ -17,7 +22,7 @@ function DashboardController(ApiBaseUrl, DashboardApi, $q){
                 return data;
             })
             .catch((error) => {
-                processDurationDeferred.reject(error);
+                console.log(error);
                 return error;
             })
             .finally(()=>{
@@ -28,8 +33,8 @@ function DashboardController(ApiBaseUrl, DashboardApi, $q){
 
 angular.module('app')
     .controller('DashboardController', [
-        'ApiBaseUrl',
         'DashboardApi',
         '$q',
+        '$scope',
         DashboardController
     ]);

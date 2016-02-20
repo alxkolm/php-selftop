@@ -6,13 +6,17 @@
         <div class="row">
             <div class="col-md-3">
                 <div ng-if="controller.isLoaded">
-                    <sunburst data="controller.processDuration"/>
+                    <sunburst data="controller.processDuration" on-process-list-update="controller.updateProcessList(data)"/>
                 </div>
             </div>
-            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <p ng-repeat="item in controller.processList">
+                    {{item.name}}
+                </p>
+            </div>
             <div class="col-md-3">
                 <div ng-if="controller.isLoaded">
-                    <sunburst data="controller.clusterDuration"/>
+                    <sunburst data="controller.clusterDuration" on-process-list-update="controller.updateProcessList(data)"/>
                 </div>
             </div>
         </div>
