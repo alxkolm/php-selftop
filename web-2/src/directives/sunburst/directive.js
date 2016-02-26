@@ -1,6 +1,6 @@
 import 'angular';
 var $ = require('jquery');
-var colorbrewer =  require('../libs/colorbrewer').colorbrewer;
+var colorbrewer =  require('../../libs/colorbrewer').colorbrewer;
 
 function SunburstDirective($filter, $injector) {
     return {

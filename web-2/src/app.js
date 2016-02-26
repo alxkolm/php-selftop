@@ -10,4 +10,4 @@ angular
 require('./services/durationFilter');
 require('./controllers/dashboard');
 require('./services/dashboardApi');
-require('./sunburst/directive');
+require('./directives/sunburst/directive');
