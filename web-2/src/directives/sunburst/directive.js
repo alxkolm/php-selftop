@@ -13,7 +13,8 @@ function SunburstDirective($filter, $injector) {
             height:     '@',
             width:      '@',
             showLabels: '@',
-            onProcessListUpdate: '&'
+            onProcessListUpdate: '&',
+            onMouseover: '&'
         },
         link: (scope, element, attrs) => {
             scope.data.then((data) => {
@@ -188,6 +189,7 @@ function initChart(data, scope, element, attrs) {
         if (d.depth == 1) {
             scope.onProcessListUpdate({data: d.children});
         }
+        scope.onMouseover({data:d});
         // Execute callback
         //if (typeof options.mouseover != 'undefined') {
         //    options.mouseover(d, this);

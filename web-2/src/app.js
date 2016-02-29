@@ -11,3 +11,4 @@ require('./services/durationFilter');
 require('./controllers/dashboard');
 require('./services/dashboardApi');
 require('./directives/sunburst/directive');
+require('./directives/color-strip/directive');
