@@ -6,7 +6,10 @@
         <div class="row">
             <div class="col-md-3">
                 <div ng-if="controller.isLoaded">
-                    <sunburst data="controller.processDuration" on-process-list-update="controller.updateProcessList(data)" on-mouseover="controller.processDurationMouseHover(data)"/>
+                    <sunburst
+                            data="controller.processDuration"
+                            on-process-list-update="controller.updateProcessList(data)"
+                            on-mouseover="controller.processDurationMouseHover(data)"/>
                 </div>
             </div>
             <div class="col-md-6 process-list-wrapper">
