@@ -2,14 +2,13 @@ import 'angular';
 var $ = require('jquery');
 var colorbrewer =  require('../../libs/colorbrewer').colorbrewer;
 
-function SunburstDirective($filter, $injector) {
+function SunburstDirective(ColorScale) {
     return {
         restrict: 'E',
         replace:  false,
         template: require('./template.html'),
         scope:    {
             data:       '=',
-            color:      '@',
             height:     '@',
             width:      '@',
             showLabels: '@',
@@ -18,7 +17,7 @@ function SunburstDirective($filter, $injector) {
         },
         link: (scope, element, attrs) => {
             scope.data.then((data) => {
-                initChart(data, scope, element, attrs);
+                initChart(data, scope, element, attrs, ColorScale);
             });
         }
     };
@@ -26,15 +25,15 @@ function SunburstDirective($filter, $injector) {
 
 angular
     .module('app')
-    .directive('sunburst', ['$filter', '$injector', SunburstDirective]);
+    .directive('sunburst', ['ColorScale', SunburstDirective]);
 
 
 
-function initChart(data, scope, element, attrs) {
+function initChart(data, scope, element, attrs, color) {
+    debugger;
     var durationFilter = angular.injector(['app']).get('$filter')('durationFilter');
     var width      = scope.width || 300,
         height     = scope.height || 300,
-        color      = scope.color || d3.scale.ordinal().range(colorbrewer.Set1[9]),
         showLabels = scope.showLabels || false,
         radius     = Math.min(width, height) / 2,
         totalSize  = 0,

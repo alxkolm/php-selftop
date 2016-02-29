@@ -2,13 +2,12 @@ import 'angular';
 var $ = require('jquery');
 var colorbrewer =  require('../../libs/colorbrewer').colorbrewer;
 
-function ColorStripDirective($filter, $injector) {
+function ColorStripDirective(ColorScale) {
     return {
         restrict: 'E',
         replace:  false,
         scope:    {
             data:       '=',
-            color:      '@',
             height:     '@',
             width:      '@',
             showLabels: '@',
@@ -17,7 +16,7 @@ function ColorStripDirective($filter, $injector) {
         link: (scope, element, attrs) => {
 
             scope.data.then((data) => {
-                initChart(data, scope, element, attrs);
+                initChart(data, scope, element, attrs, ColorScale);
             });
 
             var el = $(element[0]);
@@ -61,13 +60,13 @@ function ColorStripDirective($filter, $injector) {
 
 angular
     .module('app')
-    .directive('colorstrip', ['$filter', '$injector', ColorStripDirective]);
+    .directive('colorstrip', ['ColorScale', ColorStripDirective]);
 
-function initChart(data, scope, element, attrs){
+function initChart(data, scope, element, attrs, colors){
     // this.addClass('color-strip');
+    debugger;
     var values = data;
     var xDomain = scope.timeExtent || timeLineExtent(data);
-    var colors = scope.color || d3.scale.ordinal().range(colorbrewer.Set1[9]);
     var margin = {left: 10, right: 10};
     var width = 1140 - margin.left - margin.right;
     var tickFormat = scope.tickFormat || d3.time.format.multi([

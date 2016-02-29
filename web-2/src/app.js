@@ -10,5 +10,6 @@ angular
 require('./services/durationFilter');
 require('./controllers/dashboard');
 require('./services/dashboardApi');
+require('./services/colorScale');
 require('./directives/sunburst/directive');
 require('./directives/color-strip/directive');
