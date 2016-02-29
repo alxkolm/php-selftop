@@ -52,7 +52,7 @@ function ColorStripDirective(ColorScale) {
              * Undim all intervals
              */
             function undimFn(){
-                debugger;
+                d3.selectAll(el.find('rect.interval')).classed('interval-hide', false);
             }
         }
     };
@@ -63,8 +63,6 @@ angular
     .directive('colorstrip', ['ColorScale', ColorStripDirective]);
 
 function initChart(data, scope, element, attrs, colors){
-    // this.addClass('color-strip');
-    debugger;
     var values = data;
     var xDomain = scope.timeExtent || timeLineExtent(data);
     var margin = {left: 10, right: 10};

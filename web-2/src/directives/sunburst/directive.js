@@ -13,7 +13,8 @@ function SunburstDirective(ColorScale) {
             width:      '@',
             showLabels: '@',
             onProcessListUpdate: '&',
-            onMouseover: '&'
+            onMouseover: '&',
+            onMouseleave: '&'
         },
         link: (scope, element, attrs) => {
             scope.data.then((data) => {
@@ -30,7 +31,6 @@ angular
 
 
 function initChart(data, scope, element, attrs, color) {
-    debugger;
     var durationFilter = angular.injector(['app']).get('$filter')('durationFilter');
     var width      = scope.width || 300,
         height     = scope.height || 300,
@@ -200,7 +200,7 @@ function initChart(data, scope, element, attrs, color) {
      */
     function mouseleave(d) {
         showTotalText();
-
+        scope.onMouseleave({data:d});
         //// Execute callback
         //if (typeof options.mouseleave != 'undefined') {
         //    options.mouseleave(d, this);

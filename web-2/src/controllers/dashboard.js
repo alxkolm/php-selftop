@@ -13,6 +13,7 @@ function DashboardController(DashboardApi, $q, $scope){
         $scope.$apply(); // why we need this?
     };
     vm.processDurationMouseHover = processDurationMouseHoverFn;
+    vm.processDurationMouseLeave = processDurationMouseLeaveFn;
     init();
 
     function init(){
@@ -43,6 +44,10 @@ function DashboardController(DashboardApi, $q, $scope){
                 vm.timelineApi.dimByWindow(data.window_id);
                 break;
         }
+    }
+
+    function processDurationMouseLeaveFn(data){
+        vm.timelineApi.undim();
     }
 }
 

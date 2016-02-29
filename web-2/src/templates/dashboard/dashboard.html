@@ -9,7 +9,8 @@
                     <sunburst
                             data="controller.processDuration"
                             on-process-list-update="controller.updateProcessList(data)"
-                            on-mouseover="controller.processDurationMouseHover(data)"/>
+                            on-mouseover="controller.processDurationMouseHover(data)"
+                            on-mouseleave="controller.processDurationMouseLeave(data)"/>
                 </div>
             </div>
             <div class="col-md-6 process-list-wrapper">
