@@ -27,10 +27,17 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-if="controller.commonTimeDomain">
             <div class="col-md-12">
                 <div ng-if="controller.isLoaded">
-                    <colorstrip data="controller.timeline" api="controller.timelineApi"/>
+                    <colorstrip data="controller.timeline" api="controller.timelineApi" timeDomain="controller.commonTimeDomain"/>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-if="controller.commonTimeDomain">
+            <div class="col-md-12">
+                <div ng-if="controller.isLoaded">
+                    <key-activity data="controller.keys" timeDomain="controller.commonTimeDomain"/>
                 </div>
             </div>
         </div>

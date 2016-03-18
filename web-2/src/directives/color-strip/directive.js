@@ -11,6 +11,7 @@ function ColorStripDirective(ColorScale) {
             height:     '@',
             width:      '@',
             showLabels: '@',
+            timeDomain: '@',
             api:        '='
         },
         link: (scope, element, attrs) => {
@@ -64,7 +65,7 @@ angular
 
 function initChart(data, scope, element, attrs, colors){
     var values = data;
-    var xDomain = scope.timeExtent || timeLineExtent(data);
+    var xDomain = scope.timeDomain || timeLineExtent(data);
     var margin = {left: 10, right: 10};
     var width = 1140 - margin.left - margin.right;
     var tickFormat = scope.tickFormat || d3.time.format.multi([

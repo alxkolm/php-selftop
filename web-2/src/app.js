@@ -13,3 +13,4 @@ require('./services/dashboardApi');
 require('./services/colorScale');
 require('./directives/sunburst/directive');
 require('./directives/color-strip/directive');
+require('./directives/key-activity/directive');

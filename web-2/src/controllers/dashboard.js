@@ -8,6 +8,8 @@ function DashboardController(DashboardApi, $q, $scope){
     vm.processList = [];
     vm.timeline = [];
     vm.timelineApi = null;
+    vm.keys = [];
+    vm.commonTimeDomain = null;
     vm.updateProcessList = (processList)=> {
         vm.processList = processList;
         $scope.$apply(); // why we need this?
@@ -23,6 +25,13 @@ function DashboardController(DashboardApi, $q, $scope){
                 vm.timeline        = $q.when(data.timeLine);
                 vm.processDuration = $q.when(data.processDuration);
                 vm.clusterDuration = $q.when(data.clusterDuration);
+                vm.keys            = $q.when(data.keys);
+                $q.all([vm.timeline, vm.keys])
+                    .then(getCommonTimeDomain)
+                    .then((commonTimeDomain) => {
+                        vm.commonTimeDomain = commonTimeDomain;
+                        return commonTimeDomain;
+                    });
                 return data;
             })
             .catch((error) => {
@@ -48,6 +57,30 @@ function DashboardController(DashboardApi, $q, $scope){
 
     function processDurationMouseLeaveFn(data){
         vm.timelineApi.undim();
+    }
+
+    /**
+     * Calculate common time domain
+     * @returns {*[]}
+     */
+    function getCommonTimeDomain([timelineData, keysData]) {
+        // Filter out zero values from keys data
+        var keys = keysData.filter((a)=>{return a.count > 0});
+
+        // Merge all dates and convert its to Date-objects
+        var dates = [].concat(
+            timelineData.reduce((result, item) => {
+                result.push(new Date(item.start));
+                result.push(new Date(item.end));
+                return result;
+            }, []),
+            keys.map((a) => {return new Date(a.date)})
+        );
+
+        return [
+            new Date(Math.min.apply(this, dates)),
+            new Date(Math.max.apply(this, dates))
+        ];
     }
 }
 
