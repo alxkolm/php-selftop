@@ -2,7 +2,7 @@ import 'angular';
 var $ = require('jquery');
 var colorbrewer =  require('../../libs/colorbrewer').colorbrewer;
 
-function SunburstDirective(ColorScale) {
+function SunburstDirective() {
     return {
         restrict: 'E',
         replace:  false,
@@ -12,13 +12,14 @@ function SunburstDirective(ColorScale) {
             height:     '@',
             width:      '@',
             showLabels: '@',
+            colors:      '=',
             onProcessListUpdate: '&',
             onMouseover: '&',
             onMouseleave: '&'
         },
         link: (scope, element, attrs) => {
             scope.data.then((data) => {
-                initChart(data, scope, element, attrs, ColorScale);
+                initChart(data, scope, element, attrs);
             });
         }
     };
@@ -26,11 +27,11 @@ function SunburstDirective(ColorScale) {
 
 angular
     .module('app')
-    .directive('sunburst', ['ColorScale', SunburstDirective]);
+    .directive('sunburst', [SunburstDirective]);
 
 
 
-function initChart(data, scope, element, attrs, color) {
+function initChart(data, scope, element, attrs) {
     var durationFilter = angular.injector(['app']).get('$filter')('durationFilter');
     var width      = scope.width || 300,
         height     = scope.height || 300,
@@ -38,6 +39,8 @@ function initChart(data, scope, element, attrs, color) {
         radius     = Math.min(width, height) / 2,
         totalSize  = 0,
         el         = $(element[0]),
+        colorbrewer =  require('../../libs/colorbrewer').colorbrewer,
+        colors      = scope.colors || d3.scale.ordinal().range(colorbrewer.Set1[9]),
         that       = this;
 
     var svg = d3.select(el.find('.sunburst-holder')[0]).append("svg")
@@ -140,7 +143,7 @@ function initChart(data, scope, element, attrs, color) {
                 .attr('text-anchor', 'middle')
                 .attr('letter-spacing', '0.25em')
                 .style('fill', function (d) {
-                    var c = d3.hcl(color(d.sector_id));
+                    var c = d3.hcl(colors(d.sector_id));
                     c.l   = c.l > 80 ? c.l = 0 : c.l;
                     return c.brighter(3);
                 })
@@ -264,11 +267,11 @@ function initChart(data, scope, element, attrs, color) {
             case 0:
                 return '#000000';
             case 1:
-                return color(d.sector_id);
+                return colors(d.sector_id);
             case 2:
-                var shiftColorStart = d3.hcl(color(d.parent.sector_id));
+                var shiftColorStart = d3.hcl(colors(d.parent.sector_id));
                 shiftColorStart.c   = 100;
-                var shiftColorEnd   = d3.hcl(color(d.parent.sector_id));
+                var shiftColorEnd   = d3.hcl(colors(d.parent.sector_id));
                 //shiftColorEnd.h += 40;
                 shiftColorEnd.c = 10;
                 shiftColorEnd.l = 90;
@@ -293,7 +296,7 @@ function initChart(data, scope, element, attrs, color) {
 
         }
 
-        return d.depth == 1 ? color(d.sector_id) : color(d.name);
+        return d.depth == 1 ? colors(d.sector_id) : colors(d.name);
     }
 
     function showTotalText() {

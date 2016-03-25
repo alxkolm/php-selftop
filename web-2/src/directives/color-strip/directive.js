@@ -8,6 +8,7 @@ function ColorStripDirective(ColorScale) {
         replace:  false,
         scope:    {
             data:       '=',
+            colors:     '=',
             height:     '@',
             width:      '@',
             showLabels: '@',
@@ -17,7 +18,7 @@ function ColorStripDirective(ColorScale) {
         link: (scope, element, attrs) => {
 
             scope.data.then((data) => {
-                initChart(data, scope, element, attrs, ColorScale);
+                initChart(data, scope, element, attrs);
             });
 
             var el = $(element[0]);
@@ -63,7 +64,7 @@ angular
     .module('app')
     .directive('colorstrip', ['ColorScale', ColorStripDirective]);
 
-function initChart(data, scope, element, attrs, colors){
+function initChart(data, scope, element, attrs){
     var values = data;
     var xDomain = scope.timeDomain || timeLineExtent(data);
     var margin = {left: 10, right: 10};
@@ -78,6 +79,8 @@ function initChart(data, scope, element, attrs, colors){
             ["%B", function(d) { return d.getMonth(); }],
             ["%Y", function() { return true; }]
         ]);
+    var colorbrewer =  require('../../libs/colorbrewer').colorbrewer;
+    var colors      = scope.colors || d3.scale.ordinal().range(colorbrewer.Set1[9]);
     var el = $(element[0]);
 
     var x = d3.time.scale()
@@ -153,7 +156,9 @@ function initChart(data, scope, element, attrs, colors){
     values.forEach(function(v){
         process[v.process.id] = v.process.name;
     });
+
     var xOffset = 0;
+    var cd = colors.domain();
     colors.domain().forEach(function(pid, index){
         var legendLine = legend.append('g')
             .attr('class', 'legend-item')
@@ -165,7 +170,7 @@ function initChart(data, scope, element, attrs, colors){
             .attr('r', 6)
             .style('fill', colors(pid));
         legendLine.append('text')
-            .text(process[pid] ? process[pid] : 'n/a')
+            .text(process[pid] ? process[pid] : pid)
             .attr('x', 8)
             .attr('y', 4);
         var box = legendLine[0][0].getBoundingClientRect();
