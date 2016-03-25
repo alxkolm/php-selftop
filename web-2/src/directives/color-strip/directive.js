@@ -171,42 +171,4 @@ function initChart(data, scope, element, attrs, colors){
         var box = legendLine[0][0].getBoundingClientRect();
         xOffset += box.width + 10;
     });
-
-    var update = function (data) {
-        console.log('update color strip ...');
-        draw(data);
-    };
-
-    /**
-     * Hide elements
-     * @param except_id process_id that skip to hide
-     */
-    var colorStripDim = function (except_id) {
-        d3.selectAll($(this).find('rect.interval')).classed('interval-hide', true);
-        d3.selectAll($(this).find('rect.interval[process="' + except_id +'"]')).classed('interval-hide', false);
-    };
-
-    /**
-     * Hide elements
-     * @param except_id window_id that skip to hide
-     */
-    var colorStripDimByWindow = function (except_id) {
-        d3.selectAll($(this).find('rect.interval')).classed('interval-hide', true);
-        d3.selectAll($(this).find('rect.interval[window="' + except_id +'"]')).classed('interval-hide', false);
-    };
-
-    /**
-     * Show all elements
-     */
-    var colorStripUndim = function (){
-        d3.selectAll($(this).find('rect.interval')).classed('interval-hide', false);
-    };
-
-
-
-    // Attach functions
-    // this[0].dim         = $.proxy(colorStripDim, this);
-    // this[0].dimByWindow = $.proxy(colorStripDimByWindow, this);
-    // this[0].undim       = $.proxy(colorStripUndim, this);
-    // this[0].update      = $.proxy(update, this);
 }
