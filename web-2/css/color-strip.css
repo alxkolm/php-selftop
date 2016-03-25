@@ -1,3 +1,25 @@
 .interval-hide {
     visibility: hidden;
 }
+
+.color-strip {
+    margin: 0.5em;
+    font-size: 10px;
+}
+
+.x-axis {
+    font-size: 10px;
+}
+.y-axis {
+    font-size: 8px;
+}
+.x-axis path,
+.y-axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.x-axis .tick line,
+.y-axis .tick line {
+    stroke: #000;
+}
